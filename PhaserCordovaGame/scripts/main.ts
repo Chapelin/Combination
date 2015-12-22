@@ -8,7 +8,7 @@ module PhaserCordovaGame {
 
 
         create() {
-
+            var p = new Piece(this.game, "bille");
         }
 
         update() {

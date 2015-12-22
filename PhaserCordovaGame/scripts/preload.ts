@@ -1,6 +1,7 @@
 module PhaserCordovaGame {
 
     export var assetLogo: string = "logo";
+    export var assetBille: string = "bille";
 
     export class Preload extends Phaser.State {
         game: Phaser.Game;
@@ -12,6 +13,7 @@ module PhaserCordovaGame {
 
         preload() {
             this.game.load.image(assetLogo, "images/phaser2.png");
+            this.game.load.image(assetBille, "images/bille.png");
         }
 
         create() {

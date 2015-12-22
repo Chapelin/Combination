@@ -4,7 +4,8 @@
 
 
         constructor(game: Phaser.Game, texture : string) {
-            super(game,0,0,texture);
+            super(game, 0, 0, texture);
+            game.add.existing(this);
         }        
     }
 }

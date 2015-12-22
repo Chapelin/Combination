@@ -106,6 +106,8 @@ var PhaserCordovaGame;
             var logo = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, PhaserCordovaGame.assetLogo);
             logo.anchor.setTo(0.5, 0.5);
             logo.scale.setTo(0.2, 0.2);
+            logo.inputEnabled = true;
+            logo.events.onInputDown.add(this.startGame, this);
             this.game.add.tween(logo.scale).to({ x: 1, y: 1 }, 2000, Phaser.Easing.Bounce.Out, true);
         };
         GameTitle.prototype.startGame = function () {
@@ -155,6 +157,7 @@ var PhaserCordovaGame;
             _super.call(this);
         }
         Main.prototype.create = function () {
+            var p = new PhaserCordovaGame.Piece(this.game, "bille");
         };
         Main.prototype.update = function () {
         };
@@ -171,6 +174,7 @@ var PhaserCordovaGame;
         __extends(Piece, _super);
         function Piece(game, texture) {
             _super.call(this, game, 0, 0, texture);
+            game.add.existing(this);
         }
         return Piece;
     })(Phaser.Sprite);
@@ -193,6 +197,7 @@ var PhaserCordovaGame;
 var PhaserCordovaGame;
 (function (PhaserCordovaGame) {
     PhaserCordovaGame.assetLogo = "logo";
+    PhaserCordovaGame.assetBille = "bille";
     var Preload = (function (_super) {
         __extends(Preload, _super);
         function Preload() {
@@ -200,6 +205,7 @@ var PhaserCordovaGame;
         }
         Preload.prototype.preload = function () {
             this.game.load.image(PhaserCordovaGame.assetLogo, "images/phaser2.png");
+            this.game.load.image(PhaserCordovaGame.assetBille, "images/bille.png");
         };
         Preload.prototype.create = function () {
             this.game.state.start(PhaserCordovaGame.stateGameTitle);
