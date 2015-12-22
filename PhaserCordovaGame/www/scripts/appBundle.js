@@ -157,7 +157,13 @@ var PhaserCordovaGame;
             _super.call(this);
         }
         Main.prototype.create = function () {
+            this.plateauJoueur = new PhaserCordovaGame.Plateau(this.game, 10);
             var p = new PhaserCordovaGame.Piece(this.game, "bille");
+            var p2 = new PhaserCordovaGame.Piece(this.game, "bille");
+            var p3 = new PhaserCordovaGame.Piece(this.game, "bille");
+            this.plateauJoueur.insertPiece(0, p);
+            this.plateauJoueur.insertPiece(1, p2);
+            this.plateauJoueur.insertPiece(1, p3);
         };
         Main.prototype.update = function () {
         };
@@ -174,6 +180,7 @@ var PhaserCordovaGame;
         __extends(Piece, _super);
         function Piece(game, texture) {
             _super.call(this, game, 0, 0, texture);
+            this.scale = new Phaser.Point(0.5, 0.5);
             game.add.existing(this);
         }
         return Piece;
@@ -182,16 +189,35 @@ var PhaserCordovaGame;
 })(PhaserCordovaGame || (PhaserCordovaGame = {}));
 var PhaserCordovaGame;
 (function (PhaserCordovaGame) {
-    var Plateau = (function () {
-        function Plateau(size) {
-            this.maxSize = size;
+    var Plateau = (function (_super) {
+        __extends(Plateau, _super);
+        function Plateau(game, size) {
+            _super.call(this, game, null, "plateau", true);
+            this.tailleCercle = 100;
+            this.centre = new Phaser.Point(200, 200);
+            this.taillePlateau = size;
+            this.pieces = [];
         }
         Plateau.prototype.insertPiece = function (position, pieceAInserer) {
-            PhaserCordovaGame.Assert.AssertBetween(position, 0, this.maxSize);
+            PhaserCordovaGame.Assert.AssertBetween(position, 0, this.taillePlateau);
             this.pieces = PhaserCordovaGame.ArrayUtil.insert(this.pieces, pieceAInserer, position);
+            this.refreshPositions();
+        };
+        Plateau.prototype.refreshPositions = function () {
+            var _this = this;
+            var taille = this.pieces.length;
+            var angle = 0;
+            var pas = (2 * Math.PI) / taille;
+            this.pieces.forEach(function (p, i) {
+                var x = Math.round(_this.centre.x + _this.tailleCercle * Math.cos(angle) - _this.centre.x / 2);
+                var y = Math.round(_this.centre.y + _this.tailleCercle * Math.sin(angle) - _this.centre.y / 2);
+                p.x = x;
+                p.y = y;
+                angle += pas;
+            });
         };
         return Plateau;
-    })();
+    })(Phaser.Group);
     PhaserCordovaGame.Plateau = Plateau;
 })(PhaserCordovaGame || (PhaserCordovaGame = {}));
 var PhaserCordovaGame;
