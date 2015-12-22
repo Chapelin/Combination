@@ -1,3 +1,33 @@
+var PhaserCordovaGame;
+(function (PhaserCordovaGame) {
+    var Assert = (function () {
+        function Assert() {
+        }
+        /// Pete si valeur < min ou > MAX
+        Assert.AssertBetween = function (valeur, min, max) {
+            if (valeur < min || valeur > max) {
+                throw new RangeError("La valeur " + valeur + " n'est pas dans la fourchette " + min + " - " + max);
+            }
+        };
+        return Assert;
+    })();
+    PhaserCordovaGame.Assert = Assert;
+    var ArrayUtil = (function () {
+        function ArrayUtil() {
+        }
+        ArrayUtil.insert = function (arrayToUpdate, element, position) {
+            Assert.AssertBetween(position, 0, arrayToUpdate.length);
+            var firstPart = arrayToUpdate.slice(0, position);
+            var secondePart = arrayToUpdate.slice(position, arrayToUpdate.length);
+            var result = firstPart;
+            result.push(element);
+            secondePart.forEach(function (e, i, arr) { return result.push(e); });
+            return result;
+        };
+        return ArrayUtil;
+    })();
+    PhaserCordovaGame.ArrayUtil = ArrayUtil;
+})(PhaserCordovaGame || (PhaserCordovaGame = {}));
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -134,6 +164,31 @@ var PhaserCordovaGame;
         return Main;
     })(Phaser.State);
     PhaserCordovaGame.Main = Main;
+})(PhaserCordovaGame || (PhaserCordovaGame = {}));
+var PhaserCordovaGame;
+(function (PhaserCordovaGame) {
+    var Piece = (function (_super) {
+        __extends(Piece, _super);
+        function Piece(game, texture) {
+            _super.call(this, game, 0, 0, texture);
+        }
+        return Piece;
+    })(Phaser.Sprite);
+    PhaserCordovaGame.Piece = Piece;
+})(PhaserCordovaGame || (PhaserCordovaGame = {}));
+var PhaserCordovaGame;
+(function (PhaserCordovaGame) {
+    var Plateau = (function () {
+        function Plateau(size) {
+            this.maxSize = size;
+        }
+        Plateau.prototype.insertPiece = function (position, pieceAInserer) {
+            PhaserCordovaGame.Assert.AssertBetween(position, 0, this.maxSize);
+            this.pieces = PhaserCordovaGame.ArrayUtil.insert(this.pieces, pieceAInserer, position);
+        };
+        return Plateau;
+    })();
+    PhaserCordovaGame.Plateau = Plateau;
 })(PhaserCordovaGame || (PhaserCordovaGame = {}));
 var PhaserCordovaGame;
 (function (PhaserCordovaGame) {
