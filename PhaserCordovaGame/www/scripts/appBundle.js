@@ -161,12 +161,9 @@ var PhaserCordovaGame;
             button.inputEnabled = true;
             button.onInputUp.add(this.ajout1, this);
             this.plateauJoueur = new PhaserCordovaGame.Plateau(this.game, 10);
-            var p = new PhaserCordovaGame.Piece(this.game, "billeVert");
-            var p2 = new PhaserCordovaGame.Piece(this.game, "billeRouge");
-            var p3 = new PhaserCordovaGame.Piece(this.game, "billeVert");
-            this.plateauJoueur.insertPiece(0, p);
-            this.plateauJoueur.insertPiece(1, p2);
-            this.plateauJoueur.insertPiece(1, p3);
+            this.plateauJoueur.insertPiece(0, PhaserCordovaGame.PieceFactory.CreatePiece(this.game, PhaserCordovaGame.TypePiece.Vert));
+            this.plateauJoueur.insertPiece(1, PhaserCordovaGame.PieceFactory.CreatePiece(this.game, PhaserCordovaGame.TypePiece.Rouge));
+            this.plateauJoueur.insertPiece(1, PhaserCordovaGame.PieceFactory.CreatePiece(this.game, PhaserCordovaGame.TypePiece.Vert));
         };
         Main.prototype.update = function () {
         };
@@ -174,26 +171,12 @@ var PhaserCordovaGame;
             this.game.state.start(PhaserCordovaGame.stateGameOver);
         };
         Main.prototype.ajout1 = function () {
-            var p = new PhaserCordovaGame.Piece(this.game, "billeRouge");
-            this.plateauJoueur.insertPiece(2, p);
+            this.plateauJoueur.insertPiece(2, PhaserCordovaGame.PieceFactory.CreatePiece(this.game, PhaserCordovaGame.TypePiece.Rouge));
             console.log("Appuyé");
         };
         return Main;
     })(Phaser.State);
     PhaserCordovaGame.Main = Main;
-})(PhaserCordovaGame || (PhaserCordovaGame = {}));
-var PhaserCordovaGame;
-(function (PhaserCordovaGame) {
-    var Piece = (function (_super) {
-        __extends(Piece, _super);
-        function Piece(game, texture) {
-            _super.call(this, game, 0, 0, texture);
-            this.scale = new Phaser.Point(0.5, 0.5);
-            game.add.existing(this);
-        }
-        return Piece;
-    })(Phaser.Sprite);
-    PhaserCordovaGame.Piece = Piece;
 })(PhaserCordovaGame || (PhaserCordovaGame = {}));
 var PhaserCordovaGame;
 (function (PhaserCordovaGame) {
@@ -250,5 +233,70 @@ var PhaserCordovaGame;
         return Preload;
     })(Phaser.State);
     PhaserCordovaGame.Preload = Preload;
+})(PhaserCordovaGame || (PhaserCordovaGame = {}));
+var PhaserCordovaGame;
+(function (PhaserCordovaGame) {
+    var Piece = (function (_super) {
+        __extends(Piece, _super);
+        function Piece(game, texture) {
+            _super.call(this, game, 0, 0, texture);
+            this.scale = new Phaser.Point(0.5, 0.5);
+            game.add.existing(this);
+        }
+        return Piece;
+    })(Phaser.Sprite);
+    PhaserCordovaGame.Piece = Piece;
+    (function (TypePiece) {
+        TypePiece[TypePiece["Vert"] = 0] = "Vert";
+        TypePiece[TypePiece["Rouge"] = 1] = "Rouge";
+    })(PhaserCordovaGame.TypePiece || (PhaserCordovaGame.TypePiece = {}));
+    var TypePiece = PhaserCordovaGame.TypePiece;
+})(PhaserCordovaGame || (PhaserCordovaGame = {}));
+var PhaserCordovaGame;
+(function (PhaserCordovaGame) {
+    var PieceFactory = (function () {
+        function PieceFactory() {
+        }
+        PieceFactory.CreatePiece = function (game, typeP) {
+            var result;
+            switch (typeP) {
+                case PhaserCordovaGame.TypePiece.Vert:
+                    result = new PhaserCordovaGame.PieceVerte(game);
+                    break;
+                case PhaserCordovaGame.TypePiece.Rouge:
+                    result = new PhaserCordovaGame.PieceRouge(game);
+                    break;
+                default:
+                    throw new TypeError("Type de piece non géré");
+            }
+            return result;
+        };
+        return PieceFactory;
+    })();
+    PhaserCordovaGame.PieceFactory = PieceFactory;
+})(PhaserCordovaGame || (PhaserCordovaGame = {}));
+var PhaserCordovaGame;
+(function (PhaserCordovaGame) {
+    var PieceRouge = (function (_super) {
+        __extends(PieceRouge, _super);
+        function PieceRouge(game) {
+            _super.call(this, game, "billeRouge");
+            this.type = PhaserCordovaGame.TypePiece.Rouge;
+        }
+        return PieceRouge;
+    })(PhaserCordovaGame.Piece);
+    PhaserCordovaGame.PieceRouge = PieceRouge;
+})(PhaserCordovaGame || (PhaserCordovaGame = {}));
+var PhaserCordovaGame;
+(function (PhaserCordovaGame) {
+    var PieceVerte = (function (_super) {
+        __extends(PieceVerte, _super);
+        function PieceVerte(game) {
+            _super.call(this, game, "billeVert");
+            this.type = PhaserCordovaGame.TypePiece.Vert;
+        }
+        return PieceVerte;
+    })(PhaserCordovaGame.Piece);
+    PhaserCordovaGame.PieceVerte = PieceVerte;
 })(PhaserCordovaGame || (PhaserCordovaGame = {}));
 //# sourceMappingURL=appBundle.js.map
