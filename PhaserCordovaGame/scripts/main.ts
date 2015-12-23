@@ -11,6 +11,11 @@
             var button = this.game.add.button(200, 600, "boutonVert",null,this);
             button.inputEnabled = true;
             button.onInputUp.add(this.ajout1, this);
+
+            var button2 = this.game.add.button(400, 600, "boutonVert", null, this);
+            button2.inputEnabled = true;
+            button2.onInputUp.add(this.testCombinaison, this);
+
             this.plateauJoueur = new Plateau(this.game, 10);
             this.plateauJoueur.insertPiece(0, PieceFactory.CreatePiece(this.game, TypePiece.Vert));
             this.plateauJoueur.insertPiece(1, PieceFactory.CreatePiece(this.game, TypePiece.Rouge));
@@ -29,6 +34,10 @@
             this.plateauJoueur.insertPiece(2, PieceFactory.CreatePiece(this.game, TypePiece.Rouge));
             console.log("Appuyé");
 
+        }
+
+        testCombinaison() {
+            this.plateauJoueur.findCombinaison();
         }
     }
 }

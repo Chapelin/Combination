@@ -1,33 +1,3 @@
-var PhaserCordovaGame;
-(function (PhaserCordovaGame) {
-    var Assert = (function () {
-        function Assert() {
-        }
-        /// Pete si valeur < min ou > MAX
-        Assert.AssertBetween = function (valeur, min, max) {
-            if (valeur < min || valeur > max) {
-                throw new RangeError("La valeur " + valeur + " n'est pas dans la fourchette " + min + " - " + max);
-            }
-        };
-        return Assert;
-    })();
-    PhaserCordovaGame.Assert = Assert;
-    var ArrayUtil = (function () {
-        function ArrayUtil() {
-        }
-        ArrayUtil.insert = function (arrayToUpdate, element, position) {
-            Assert.AssertBetween(position, 0, arrayToUpdate.length);
-            var firstPart = arrayToUpdate.slice(0, position);
-            var secondePart = arrayToUpdate.slice(position, arrayToUpdate.length);
-            var result = firstPart;
-            result.push(element);
-            secondePart.forEach(function (e, i, arr) { return result.push(e); });
-            return result;
-        };
-        return ArrayUtil;
-    })();
-    PhaserCordovaGame.ArrayUtil = ArrayUtil;
-})(PhaserCordovaGame || (PhaserCordovaGame = {}));
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -160,6 +130,9 @@ var PhaserCordovaGame;
             var button = this.game.add.button(200, 600, "boutonVert", null, this);
             button.inputEnabled = true;
             button.onInputUp.add(this.ajout1, this);
+            var button2 = this.game.add.button(400, 600, "boutonVert", null, this);
+            button2.inputEnabled = true;
+            button2.onInputUp.add(this.testCombinaison, this);
             this.plateauJoueur = new PhaserCordovaGame.Plateau(this.game, 10);
             this.plateauJoueur.insertPiece(0, PhaserCordovaGame.PieceFactory.CreatePiece(this.game, PhaserCordovaGame.TypePiece.Vert));
             this.plateauJoueur.insertPiece(1, PhaserCordovaGame.PieceFactory.CreatePiece(this.game, PhaserCordovaGame.TypePiece.Rouge));
@@ -173,6 +146,9 @@ var PhaserCordovaGame;
         Main.prototype.ajout1 = function () {
             this.plateauJoueur.insertPiece(2, PhaserCordovaGame.PieceFactory.CreatePiece(this.game, PhaserCordovaGame.TypePiece.Rouge));
             console.log("Appuyé");
+        };
+        Main.prototype.testCombinaison = function () {
+            this.plateauJoueur.findCombinaison();
         };
         return Main;
     })(Phaser.State);
@@ -206,6 +182,24 @@ var PhaserCordovaGame;
                 p.y = y;
                 angle += pas;
             });
+        };
+        Plateau.prototype.findCombinaison = function () {
+            var threehold = 4;
+            var tableauSimple = this.pieces.map(function (p, i, a) { return p.type; });
+            var combinations = [];
+            var current = [];
+            var last = null;
+            for (var i = 0; i < tableauSimple.length; i++) {
+                if (last != tableauSimple[i]) {
+                    if (current.length >= threehold) {
+                        combinations.push(current);
+                    }
+                    current = [];
+                    last = tableauSimple[i];
+                }
+                current.push([i, tableauSimple[i].toString()]);
+            }
+            console.log(combinations);
         };
         return Plateau;
     })(Phaser.Group);
@@ -298,5 +292,35 @@ var PhaserCordovaGame;
         return PieceVerte;
     })(PhaserCordovaGame.Piece);
     PhaserCordovaGame.PieceVerte = PieceVerte;
+})(PhaserCordovaGame || (PhaserCordovaGame = {}));
+var PhaserCordovaGame;
+(function (PhaserCordovaGame) {
+    var Assert = (function () {
+        function Assert() {
+        }
+        /// Pete si valeur < min ou > MAX
+        Assert.AssertBetween = function (valeur, min, max) {
+            if (valeur < min || valeur > max) {
+                throw new RangeError("La valeur " + valeur + " n'est pas dans la fourchette " + min + " - " + max);
+            }
+        };
+        return Assert;
+    })();
+    PhaserCordovaGame.Assert = Assert;
+    var ArrayUtil = (function () {
+        function ArrayUtil() {
+        }
+        ArrayUtil.insert = function (arrayToUpdate, element, position) {
+            Assert.AssertBetween(position, 0, arrayToUpdate.length);
+            var firstPart = arrayToUpdate.slice(0, position);
+            var secondePart = arrayToUpdate.slice(position, arrayToUpdate.length);
+            var result = firstPart;
+            result.push(element);
+            secondePart.forEach(function (e, i, arr) { return result.push(e); });
+            return result;
+        };
+        return ArrayUtil;
+    })();
+    PhaserCordovaGame.ArrayUtil = ArrayUtil;
 })(PhaserCordovaGame || (PhaserCordovaGame = {}));
 //# sourceMappingURL=appBundle.js.map

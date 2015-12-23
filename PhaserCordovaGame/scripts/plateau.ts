@@ -30,5 +30,24 @@
                 angle += pas;
             });
         }
+
+        public findCombinaison() {
+            var threehold = 4;
+            var tableauSimple: TypePiece[] = this.pieces.map((p, i, a) => p.type);
+            var combinations = [];
+            var current = [];
+            var last = null;
+            for (var i = 0; i < tableauSimple.length; i++) {
+                if (last != tableauSimple[i]) {
+                    if (current.length >= threehold){
+                        combinations.push(current);
+                    }
+                    current = [];
+                    last = tableauSimple[i];
+                }
+                current.push([i, tableauSimple[i].toString()]);
+            }
+            console.log(combinations);
+        }
     }
 }
