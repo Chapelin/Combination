@@ -157,10 +157,13 @@ var PhaserCordovaGame;
             _super.call(this);
         }
         Main.prototype.create = function () {
+            var button = this.game.add.button(200, 600, "boutonVert", null, this);
+            button.inputEnabled = true;
+            button.onInputUp.add(this.ajout1, this);
             this.plateauJoueur = new PhaserCordovaGame.Plateau(this.game, 10);
-            var p = new PhaserCordovaGame.Piece(this.game, "bille");
-            var p2 = new PhaserCordovaGame.Piece(this.game, "bille");
-            var p3 = new PhaserCordovaGame.Piece(this.game, "bille");
+            var p = new PhaserCordovaGame.Piece(this.game, "billeVert");
+            var p2 = new PhaserCordovaGame.Piece(this.game, "billeRouge");
+            var p3 = new PhaserCordovaGame.Piece(this.game, "billeVert");
             this.plateauJoueur.insertPiece(0, p);
             this.plateauJoueur.insertPiece(1, p2);
             this.plateauJoueur.insertPiece(1, p3);
@@ -169,6 +172,11 @@ var PhaserCordovaGame;
         };
         Main.prototype.gameOver = function () {
             this.game.state.start(PhaserCordovaGame.stateGameOver);
+        };
+        Main.prototype.ajout1 = function () {
+            var p = new PhaserCordovaGame.Piece(this.game, "billeRouge");
+            this.plateauJoueur.insertPiece(2, p);
+            console.log("Appuyé");
         };
         return Main;
     })(Phaser.State);
@@ -223,7 +231,8 @@ var PhaserCordovaGame;
 var PhaserCordovaGame;
 (function (PhaserCordovaGame) {
     PhaserCordovaGame.assetLogo = "logo";
-    PhaserCordovaGame.assetBille = "bille";
+    PhaserCordovaGame.assetBilleVert = "billeVert";
+    PhaserCordovaGame.assetBillerouge = "billeRouge";
     var Preload = (function (_super) {
         __extends(Preload, _super);
         function Preload() {
@@ -231,7 +240,9 @@ var PhaserCordovaGame;
         }
         Preload.prototype.preload = function () {
             this.game.load.image(PhaserCordovaGame.assetLogo, "images/phaser2.png");
-            this.game.load.image(PhaserCordovaGame.assetBille, "images/bille.png");
+            this.game.load.image(PhaserCordovaGame.assetBilleVert, "images/bille.png");
+            this.game.load.image(PhaserCordovaGame.assetBillerouge, "images/billeRouge.png");
+            this.game.load.image("boutonVert", "images/boutonVert.png");
         };
         Preload.prototype.create = function () {
             this.game.state.start(PhaserCordovaGame.stateGameTitle);
