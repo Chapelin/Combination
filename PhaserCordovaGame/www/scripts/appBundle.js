@@ -130,6 +130,9 @@ var PhaserCordovaGame;
             var button = this.game.add.button(200, 600, "boutonVert", null, this);
             button.inputEnabled = true;
             button.onInputUp.add(this.ajout1, this);
+            var button3 = this.game.add.button(200, 700, "boutonRouge", null, this);
+            button3.inputEnabled = true;
+            button3.onInputUp.add(this.ajout2, this);
             var button2 = this.game.add.button(400, 600, "boutonVert", null, this);
             button2.inputEnabled = true;
             button2.onInputUp.add(this.testCombinaison, this);
@@ -144,6 +147,10 @@ var PhaserCordovaGame;
             this.game.state.start(PhaserCordovaGame.stateGameOver);
         };
         Main.prototype.ajout1 = function () {
+            this.plateauJoueur.insertPiece(2, PhaserCordovaGame.PieceFactory.CreatePiece(this.game, PhaserCordovaGame.TypePiece.Vert));
+            console.log("Appuyé");
+        };
+        Main.prototype.ajout2 = function () {
             this.plateauJoueur.insertPiece(2, PhaserCordovaGame.PieceFactory.CreatePiece(this.game, PhaserCordovaGame.TypePiece.Rouge));
             console.log("Appuyé");
         };
@@ -183,6 +190,8 @@ var PhaserCordovaGame;
                 angle += pas;
             });
         };
+        // TODO : gerer la "boucle" entre la derniere et la premiere : 
+        // si derniere == premiere, on boucle jusqu'a ce qu'on ait une difference
         Plateau.prototype.findCombinaison = function () {
             var threehold = 4;
             var tableauSimple = this.pieces.map(function (p, i, a) { return p.type; });
@@ -197,7 +206,10 @@ var PhaserCordovaGame;
                     current = [];
                     last = tableauSimple[i];
                 }
-                current.push([i, tableauSimple[i].toString()]);
+                current.push(i);
+            }
+            if (current.length >= threehold) {
+                combinations.push(current);
             }
             console.log(combinations);
         };
@@ -220,6 +232,7 @@ var PhaserCordovaGame;
             this.game.load.image(PhaserCordovaGame.assetBilleVert, "images/bille.png");
             this.game.load.image(PhaserCordovaGame.assetBillerouge, "images/billeRouge.png");
             this.game.load.image("boutonVert", "images/boutonVert.png");
+            this.game.load.image("boutonRouge", "images/boutonRouge.png");
         };
         Preload.prototype.create = function () {
             this.game.state.start(PhaserCordovaGame.stateGameTitle);

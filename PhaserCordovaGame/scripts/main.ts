@@ -12,6 +12,10 @@
             button.inputEnabled = true;
             button.onInputUp.add(this.ajout1, this);
 
+            var button3 = this.game.add.button(200, 700, "boutonRouge", null, this);
+            button3.inputEnabled = true;
+            button3.onInputUp.add(this.ajout2, this);
+
             var button2 = this.game.add.button(400, 600, "boutonVert", null, this);
             button2.inputEnabled = true;
             button2.onInputUp.add(this.testCombinaison, this);
@@ -31,6 +35,12 @@
         }
 
         ajout1() {
+            this.plateauJoueur.insertPiece(2, PieceFactory.CreatePiece(this.game, TypePiece.Vert));
+            console.log("Appuyé");
+
+        }
+
+        ajout2() {
             this.plateauJoueur.insertPiece(2, PieceFactory.CreatePiece(this.game, TypePiece.Rouge));
             console.log("Appuyé");
 

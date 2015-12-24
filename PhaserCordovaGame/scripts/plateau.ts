@@ -31,6 +31,9 @@
             });
         }
 
+
+        // TODO : gerer la "boucle" entre la derniere et la premiere : 
+        // si derniere == premiere, on boucle jusqu'a ce qu'on ait une difference
         public findCombinaison() {
             var threehold = 4;
             var tableauSimple: TypePiece[] = this.pieces.map((p, i, a) => p.type);
@@ -45,7 +48,10 @@
                     current = [];
                     last = tableauSimple[i];
                 }
-                current.push([i, tableauSimple[i].toString()]);
+                current.push(i);
+            }
+            if (current.length >= threehold) {
+                combinations.push(current);
             }
             console.log(combinations);
         }
