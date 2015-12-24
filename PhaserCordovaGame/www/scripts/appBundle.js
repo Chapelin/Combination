@@ -49,9 +49,9 @@ var PhaserCordovaGame;
     PhaserCordovaGame.stateGameOver = "GameOver";
     var SimpleGame = (function () {
         function SimpleGame() {
-            this.realHeight = window.innerHeight * window.devicePixelRatio;
-            this.realWidth = window.innerWidth * window.devicePixelRatio;
-            this.game = new Phaser.Game(this.realWidth, this.realHeight, Phaser.AUTO, 'content');
+            SimpleGame.realHeight = window.innerHeight * window.devicePixelRatio;
+            SimpleGame.realWidth = window.innerWidth * window.devicePixelRatio;
+            this.game = new Phaser.Game(SimpleGame.realWidth, SimpleGame.realHeight, Phaser.AUTO, 'content');
             //Add all states
             this.game.state.add(PhaserCordovaGame.stateBoot, PhaserCordovaGame.Boot);
             this.game.state.add(PhaserCordovaGame.statePreload, PhaserCordovaGame.Preload);
@@ -186,10 +186,16 @@ var PhaserCordovaGame;
         __extends(Plateau, _super);
         function Plateau(game, size) {
             _super.call(this, game, null, "plateau", true);
-            this.tailleCercle = 100;
+            this.tailleCercle = 200;
             this.centre = new Phaser.Point(200, 200);
             this.taillePlateau = size;
             this.pieces = [];
+            var min = (Math.min(PhaserCordovaGame.SimpleGame.realHeight, PhaserCordovaGame.SimpleGame.realWidth));
+            this.tailleCercle = min / 3;
+            this.centre = new Phaser.Point(PhaserCordovaGame.SimpleGame.realWidth / 2, PhaserCordovaGame.SimpleGame.realHeight / 2);
+            console.log("centre : ");
+            console.log(this.centre);
+            console.log("cercle : " + this.tailleCercle);
         }
         Plateau.prototype.insertPiece = function (position, pieceAInserer) {
             PhaserCordovaGame.Assert.AssertBetween(position, 0, this.taillePlateau);
@@ -219,8 +225,8 @@ var PhaserCordovaGame;
             var angle = 0;
             var pas = (2 * Math.PI) / taille;
             this.pieces.forEach(function (p, i) {
-                var x = Math.round(_this.centre.x + _this.tailleCercle * Math.cos(angle) - _this.centre.x / 2);
-                var y = Math.round(_this.centre.y + _this.tailleCercle * Math.sin(angle) - _this.centre.y / 2);
+                var x = Math.round(_this.centre.x + _this.tailleCercle * Math.cos(angle));
+                var y = Math.round(_this.centre.y + _this.tailleCercle * Math.sin(angle));
                 p.x = x;
                 p.y = y;
                 angle += pas;

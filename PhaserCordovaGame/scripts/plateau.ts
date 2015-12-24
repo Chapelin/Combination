@@ -2,13 +2,19 @@
     export class Plateau extends Phaser.Group {
         pieces: Array<Piece>;
         taillePlateau: number;
-        tailleCercle: number = 100;
+        tailleCercle: number = 200;
         centre: Phaser.Point = new Phaser.Point(200, 200);
 
         constructor(game: Phaser.Game, size: number) {
             super(game, null,"plateau",true);
             this.taillePlateau = size;
             this.pieces = [];
+            var min = (Math.min(SimpleGame.realHeight, SimpleGame.realWidth));
+            this.tailleCercle = min / 3;
+            this.centre = new Phaser.Point(SimpleGame.realWidth / 2, SimpleGame.realHeight / 2);
+            console.log("centre : ");
+            console.log(this.centre);
+            console.log("cercle : " + this.tailleCercle);
         }
 
         public insertPiece(position: number, pieceAInserer: Piece) {
@@ -39,8 +45,8 @@
             var angle = 0;
             var pas = (2 * Math.PI) / taille;
             this.pieces.forEach((p, i) => {
-                var x = Math.round(this.centre.x + this.tailleCercle * Math.cos(angle) - this.centre.x / 2);
-                var y = Math.round(this.centre.y + this.tailleCercle * Math.sin(angle) - this.centre.y / 2);
+                var x = Math.round(this.centre.x + this.tailleCercle * Math.cos(angle));
+                var y = Math.round(this.centre.y + this.tailleCercle * Math.sin(angle));
                 p.x = x;
                 p.y = y;
                 angle += pas;
