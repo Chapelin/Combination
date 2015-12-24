@@ -1,3 +1,17 @@
+var PhaserCordovaGame;
+(function (PhaserCordovaGame) {
+    var AssetKeys = (function () {
+        function AssetKeys() {
+        }
+        AssetKeys.assetLogo = "logo";
+        AssetKeys.assetBilleVert = "billeVert";
+        AssetKeys.assetBillerouge = "billeRouge";
+        AssetKeys.assetBoutonVert = "boutonVert";
+        AssetKeys.assetBoutonRouge = "boutonRouge";
+        return AssetKeys;
+    })();
+    PhaserCordovaGame.AssetKeys = AssetKeys;
+})(PhaserCordovaGame || (PhaserCordovaGame = {}));
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -73,7 +87,7 @@ var PhaserCordovaGame;
             _super.call(this);
         }
         GameTitle.prototype.create = function () {
-            var logo = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, PhaserCordovaGame.assetLogo);
+            var logo = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, PhaserCordovaGame.AssetKeys.assetLogo);
             logo.anchor.setTo(0.5, 0.5);
             logo.scale.setTo(0.2, 0.2);
             logo.inputEnabled = true;
@@ -127,13 +141,13 @@ var PhaserCordovaGame;
             _super.call(this);
         }
         Main.prototype.create = function () {
-            var button = this.game.add.button(200, 600, "boutonVert", null, this);
+            var button = this.game.add.button(200, 600, PhaserCordovaGame.AssetKeys.assetBoutonVert, null, this);
             button.inputEnabled = true;
             button.onInputUp.add(this.ajout1, this);
-            var button3 = this.game.add.button(200, 700, "boutonRouge", null, this);
+            var button3 = this.game.add.button(200, 700, PhaserCordovaGame.AssetKeys.assetBoutonRouge, null, this);
             button3.inputEnabled = true;
             button3.onInputUp.add(this.ajout2, this);
-            var button2 = this.game.add.button(400, 600, "boutonVert", null, this);
+            var button2 = this.game.add.button(400, 600, PhaserCordovaGame.AssetKeys.assetBoutonVert, null, this);
             button2.inputEnabled = true;
             button2.onInputUp.add(this.testCombinaison, this);
             this.plateauJoueur = new PhaserCordovaGame.Plateau(this.game, 10);
@@ -219,20 +233,17 @@ var PhaserCordovaGame;
 })(PhaserCordovaGame || (PhaserCordovaGame = {}));
 var PhaserCordovaGame;
 (function (PhaserCordovaGame) {
-    PhaserCordovaGame.assetLogo = "logo";
-    PhaserCordovaGame.assetBilleVert = "billeVert";
-    PhaserCordovaGame.assetBillerouge = "billeRouge";
     var Preload = (function (_super) {
         __extends(Preload, _super);
         function Preload() {
             _super.call(this);
         }
         Preload.prototype.preload = function () {
-            this.game.load.image(PhaserCordovaGame.assetLogo, "images/phaser2.png");
-            this.game.load.image(PhaserCordovaGame.assetBilleVert, "images/bille.png");
-            this.game.load.image(PhaserCordovaGame.assetBillerouge, "images/billeRouge.png");
-            this.game.load.image("boutonVert", "images/boutonVert.png");
-            this.game.load.image("boutonRouge", "images/boutonRouge.png");
+            this.game.load.image(PhaserCordovaGame.AssetKeys.assetLogo, "images/phaser2.png");
+            this.game.load.image(PhaserCordovaGame.AssetKeys.assetBilleVert, "images/bille.png");
+            this.game.load.image(PhaserCordovaGame.AssetKeys.assetBillerouge, "images/billeRouge.png");
+            this.game.load.image(PhaserCordovaGame.AssetKeys.assetBoutonVert, "images/boutonVert.png");
+            this.game.load.image(PhaserCordovaGame.AssetKeys.assetBoutonRouge, "images/boutonRouge.png");
         };
         Preload.prototype.create = function () {
             this.game.state.start(PhaserCordovaGame.stateGameTitle);

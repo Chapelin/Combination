@@ -8,15 +8,15 @@
         }
 
         create() {
-            var button = this.game.add.button(200, 600, "boutonVert",null,this);
+            var button = this.game.add.button(200, 600, AssetKeys.assetBoutonVert, null, this);
             button.inputEnabled = true;
             button.onInputUp.add(this.ajout1, this);
 
-            var button3 = this.game.add.button(200, 700, "boutonRouge", null, this);
+            var button3 = this.game.add.button(200, 700, AssetKeys.assetBoutonRouge, null, this);
             button3.inputEnabled = true;
             button3.onInputUp.add(this.ajout2, this);
 
-            var button2 = this.game.add.button(400, 600, "boutonVert", null, this);
+            var button2 = this.game.add.button(400, 600, AssetKeys.assetBoutonVert, null, this);
             button2.inputEnabled = true;
             button2.onInputUp.add(this.testCombinaison, this);
 
