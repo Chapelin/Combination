@@ -17,6 +17,22 @@
             this.refreshPositions();
         }
 
+        public deletePieces(...indexes: number[]) {
+
+            var newPieces: Array<Piece> = [];
+            for (var i = 0; i < this.pieces.length; i++) {
+                if (indexes.indexOf(i) == -1) {
+                    newPieces.push(this.pieces[i]);
+                }
+
+            }
+            this.pieces = newPieces;
+            this.refreshPositions;
+        }
+
+        public getIndexOf(p: Piece): number {
+            return (this.pieces.indexOf(p));
+        }
 
         public refreshPositions() {
             var taille = this.pieces.length;

@@ -49,7 +49,9 @@ var PhaserCordovaGame;
     PhaserCordovaGame.stateGameOver = "GameOver";
     var SimpleGame = (function () {
         function SimpleGame() {
-            this.game = new Phaser.Game(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio, Phaser.AUTO, 'content');
+            this.realHeight = window.innerHeight * window.devicePixelRatio;
+            this.realWidth = window.innerWidth * window.devicePixelRatio;
+            this.game = new Phaser.Game(this.realWidth, this.realHeight, Phaser.AUTO, 'content');
             //Add all states
             this.game.state.add(PhaserCordovaGame.stateBoot, PhaserCordovaGame.Boot);
             this.game.state.add(PhaserCordovaGame.statePreload, PhaserCordovaGame.Preload);
@@ -151,22 +153,25 @@ var PhaserCordovaGame;
             button2.inputEnabled = true;
             button2.onInputUp.add(this.testCombinaison, this);
             this.plateauJoueur = new PhaserCordovaGame.Plateau(this.game, 10);
-            this.plateauJoueur.insertPiece(0, PhaserCordovaGame.PieceFactory.CreatePiece(this.game, PhaserCordovaGame.TypePiece.Vert));
-            this.plateauJoueur.insertPiece(1, PhaserCordovaGame.PieceFactory.CreatePiece(this.game, PhaserCordovaGame.TypePiece.Rouge));
-            this.plateauJoueur.insertPiece(1, PhaserCordovaGame.PieceFactory.CreatePiece(this.game, PhaserCordovaGame.TypePiece.Vert));
         };
         Main.prototype.update = function () {
         };
         Main.prototype.gameOver = function () {
             this.game.state.start(PhaserCordovaGame.stateGameOver);
         };
-        Main.prototype.ajout1 = function () {
-            this.plateauJoueur.insertPiece(2, PhaserCordovaGame.PieceFactory.CreatePiece(this.game, PhaserCordovaGame.TypePiece.Vert));
+        Main.prototype.ajout = function (t) {
+            var _this = this;
+            var p = PhaserCordovaGame.PieceFactory.CreatePiece(this.game, t);
+            p.inputEnabled = true;
+            p.events.onInputUp.add(function () { var e = p; console.log(_this.plateauJoueur.getIndexOf(e)); }, this);
+            this.plateauJoueur.insertPiece(0, p);
             console.log("Appuyé");
         };
+        Main.prototype.ajout1 = function () {
+            this.ajout(PhaserCordovaGame.TypePiece.Vert);
+        };
         Main.prototype.ajout2 = function () {
-            this.plateauJoueur.insertPiece(2, PhaserCordovaGame.PieceFactory.CreatePiece(this.game, PhaserCordovaGame.TypePiece.Rouge));
-            console.log("Appuyé");
+            this.ajout(PhaserCordovaGame.TypePiece.Rouge);
         };
         Main.prototype.testCombinaison = function () {
             this.plateauJoueur.findCombinaison();
@@ -190,6 +195,23 @@ var PhaserCordovaGame;
             PhaserCordovaGame.Assert.AssertBetween(position, 0, this.taillePlateau);
             this.pieces = PhaserCordovaGame.ArrayUtil.insert(this.pieces, pieceAInserer, position);
             this.refreshPositions();
+        };
+        Plateau.prototype.deletePieces = function () {
+            var indexes = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                indexes[_i - 0] = arguments[_i];
+            }
+            var newPieces = [];
+            for (var i = 0; i < this.pieces.length; i++) {
+                if (indexes.indexOf(i) == -1) {
+                    newPieces.push(this.pieces[i]);
+                }
+            }
+            this.pieces = newPieces;
+            this.refreshPositions;
+        };
+        Plateau.prototype.getIndexOf = function (p) {
+            return (this.pieces.indexOf(p));
         };
         Plateau.prototype.refreshPositions = function () {
             var _this = this;

@@ -14,9 +14,12 @@ module PhaserCordovaGame {
     export var stateGameOver = "GameOver";
 
     export class SimpleGame {
-
+        public realWidth: number;
+        public realHeight: number;
         constructor() {
-            this.game = new Phaser.Game(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio, Phaser.AUTO, 'content');
+            this.realHeight = window.innerHeight * window.devicePixelRatio;
+            this.realWidth = window.innerWidth * window.devicePixelRatio;
+            this.game = new Phaser.Game(this.realWidth, this.realHeight, Phaser.AUTO, 'content');
 
             //Add all states
             this.game.state.add(stateBoot, Boot);

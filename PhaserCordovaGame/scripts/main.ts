@@ -21,10 +21,7 @@
             button2.onInputUp.add(this.testCombinaison, this);
 
             this.plateauJoueur = new Plateau(this.game, 10);
-            this.plateauJoueur.insertPiece(0, PieceFactory.CreatePiece(this.game, TypePiece.Vert));
-            this.plateauJoueur.insertPiece(1, PieceFactory.CreatePiece(this.game, TypePiece.Rouge));
-            this.plateauJoueur.insertPiece(1, PieceFactory.CreatePiece(this.game, TypePiece.Vert));
-        }
+          }
 
         update() {
 
@@ -34,15 +31,21 @@
             this.game.state.start(stateGameOver);
         }
 
-        ajout1() {
-            this.plateauJoueur.insertPiece(2, PieceFactory.CreatePiece(this.game, TypePiece.Vert));
+        ajout(t: TypePiece) {
+            var p = PieceFactory.CreatePiece(this.game, t)
+            p.inputEnabled = true;
+            p.events.onInputUp.add(() => { var e = p; console.log(this.plateauJoueur.getIndexOf(e)); }, this)
+            this.plateauJoueur.insertPiece(0, p);
             console.log("Appuyé");
+        }
+
+        ajout1() {
+            this.ajout(TypePiece.Vert);
 
         }
 
         ajout2() {
-            this.plateauJoueur.insertPiece(2, PieceFactory.CreatePiece(this.game, TypePiece.Rouge));
-            console.log("Appuyé");
+            this.ajout(TypePiece.Rouge);
 
         }
 
