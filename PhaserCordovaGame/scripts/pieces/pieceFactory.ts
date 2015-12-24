@@ -14,6 +14,7 @@
                 default:
                     throw new TypeError("Type de piece non géré");
             }
+            result.anchor = new Phaser.Point(0.5, 0.5);
             return result;
         }
 

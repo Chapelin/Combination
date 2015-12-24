@@ -20,7 +20,7 @@
             button2.inputEnabled = true;
             button2.onInputUp.add(this.testCombinaison, this);
 
-            this.plateauJoueur = new Plateau(this.game, 10);
+            this.plateauJoueur = new Plateau(this.game, 15);
           }
 
         update() {

@@ -152,7 +152,7 @@ var PhaserCordovaGame;
             var button2 = this.game.add.button(400, 600, PhaserCordovaGame.AssetKeys.assetBoutonVert, null, this);
             button2.inputEnabled = true;
             button2.onInputUp.add(this.testCombinaison, this);
-            this.plateauJoueur = new PhaserCordovaGame.Plateau(this.game, 10);
+            this.plateauJoueur = new PhaserCordovaGame.Plateau(this.game, 15);
         };
         Main.prototype.update = function () {
         };
@@ -286,7 +286,7 @@ var PhaserCordovaGame;
         __extends(Piece, _super);
         function Piece(game, texture) {
             _super.call(this, game, 0, 0, texture);
-            this.scale = new Phaser.Point(0.5, 0.5);
+            this.scale = new Phaser.Point(0.4, 0.4);
             game.add.existing(this);
         }
         return Piece;
@@ -315,6 +315,7 @@ var PhaserCordovaGame;
                 default:
                     throw new TypeError("Type de piece non géré");
             }
+            result.anchor = new Phaser.Point(0.5, 0.5);
             return result;
         };
         return PieceFactory;

@@ -6,7 +6,7 @@
 
         constructor(game: Phaser.Game, texture : string) {
             super(game, 0, 0, texture);
-            this.scale = new Phaser.Point(0.5, 0.5);
+            this.scale = new Phaser.Point(0.4, 0.4);
             game.add.existing(this);
         }        
     }
