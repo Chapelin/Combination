@@ -1,81 +1,48 @@
 ﻿module PhaserCordovaGame {
     export class Plateau extends Phaser.Group {
-        pieces: Array<Piece>;
-        taillePlateau: number;
-        tailleCercle: number = 200;
-        centre: Phaser.Point = new Phaser.Point(200, 200);
+        pieces: Array<Array<Piece>>;
+        taillePlateauX: number;
+        taillePlateauY: number;
+        
 
-        constructor(game: Phaser.Game, size: number) {
-            super(game, null,"plateau",true);
-            this.taillePlateau = size;
+        constructor(game: Phaser.Game, sizeX: number, sizeY : number) {
+            super(game, null, "plateau", true);
+            this.taillePlateauX = sizeX;
+            this.taillePlateauY = sizeY;
+            
+            this.initTableau();
+            this.refreshPosition();
+        }
+
+        private initTableau() {
             this.pieces = [];
-            var min = (Math.min(SimpleGame.realHeight, SimpleGame.realWidth));
-            this.tailleCercle = min / 3;
-            this.centre = new Phaser.Point(SimpleGame.realWidth / 2, SimpleGame.realHeight / 2);
-            console.log("centre : ");
-            console.log(this.centre);
-            console.log("cercle : " + this.tailleCercle);
-        }
-
-        public insertPiece(position: number, pieceAInserer: Piece) {
-            Assert.AssertBetween(position, 0, this.taillePlateau);
-            this.pieces = ArrayUtil.insert(this.pieces, pieceAInserer, position);
-            this.refreshPositions();
-        }
-
-        public deletePieces(...indexes: number[]) {
-
-            var newPieces: Array<Piece> = [];
-            for (var i = 0; i < this.pieces.length; i++) {
-                if (indexes.indexOf(i) == -1) {
-                    newPieces.push(this.pieces[i]);
+            for (var x = 0; x < this.taillePlateauX; x++) {
+                this.pieces[x] = [];
+                for (var y = 0; y < this.taillePlateauY; y++) {
+                    this.pieces[x][y] = PieceFactory.CreatePiece(this.game, TypePiece.Vert);
                 }
-
             }
-            this.pieces = newPieces;
-            this.refreshPositions;
-        }
-
-        public getIndexOf(p: Piece): number {
-            return (this.pieces.indexOf(p));
-        }
-
-        public refreshPositions() {
-            var taille = this.pieces.length;
-            var angle = 0;
-            var pas = (2 * Math.PI) / taille;
-            this.pieces.forEach((p, i) => {
-                var x = Math.round(this.centre.x + this.tailleCercle * Math.cos(angle));
-                var y = Math.round(this.centre.y + this.tailleCercle * Math.sin(angle));
-                p.x = x;
-                p.y = y;
-                angle += pas;
-            });
         }
 
 
-        // TODO : gerer la "boucle" entre la derniere et la premiere : 
-        // si derniere == premiere, on boucle jusqu'a ce qu'on ait une difference
-        public findCombinaison() {
-            var threehold = 4;
-            var tableauSimple: TypePiece[] = this.pieces.map((p, i, a) => p.type);
-            var combinations = [];
-            var current = [];
-            var last = null;
-            for (var i = 0; i < tableauSimple.length; i++) {
-                if (last != tableauSimple[i]) {
-                    if (current.length >= threehold){
-                        combinations.push(current);
-                    }
-                    current = [];
-                    last = tableauSimple[i];
+        public refreshPosition() {
+            // on part du principe que
+            //   * 20% de rab de chaque coté
+            // taille plateau  X >> taille Y
+            var pas = (SimpleGame.realWidth * 0.8) / this.taillePlateauX;
+            var originalHeight = PieceFactory.CreatePiece(this.game, TypePiece.Vert).texture.height
+            var scale = new Phaser.Point(pas / originalHeight, pas / originalHeight);
+            var debutX = SimpleGame.realWidth * 0.1;
+            var debutY = (SimpleGame.realHeight - (this.taillePlateauY * pas)) / 2;
+            for (var x = 0; x < this.taillePlateauX; x++) {
+                for (var y = 0; y < this.taillePlateauY; y++) {
+                    this.pieces[x][y].position = new Phaser.Point(debutX + pas * x, debutY + pas * y);
+                    this.pieces[x][y].scale = scale;
                 }
-                current.push(i);
             }
-            if (current.length >= threehold) {
-                combinations.push(current);
-            }
-            console.log(combinations);
         }
+
+
+       
     }
 }

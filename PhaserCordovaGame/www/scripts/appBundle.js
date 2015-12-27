@@ -143,16 +143,16 @@ var PhaserCordovaGame;
             _super.call(this);
         }
         Main.prototype.create = function () {
-            var button = this.game.add.button(200, 600, PhaserCordovaGame.AssetKeys.assetBoutonVert, null, this);
-            button.inputEnabled = true;
-            button.onInputUp.add(this.ajout1, this);
-            var button3 = this.game.add.button(200, 700, PhaserCordovaGame.AssetKeys.assetBoutonRouge, null, this);
-            button3.inputEnabled = true;
-            button3.onInputUp.add(this.ajout2, this);
-            var button2 = this.game.add.button(400, 600, PhaserCordovaGame.AssetKeys.assetBoutonVert, null, this);
-            button2.inputEnabled = true;
-            button2.onInputUp.add(this.testCombinaison, this);
-            this.plateauJoueur = new PhaserCordovaGame.Plateau(this.game, 15);
+            //var button = this.game.add.button(200, 600, AssetKeys.assetBoutonVert, null, this);
+            //button.inputEnabled = true;
+            //button.onInputUp.add(this.ajout1, this);
+            //var button3 = this.game.add.button(200, 700, AssetKeys.assetBoutonRouge, null, this);
+            //button3.inputEnabled = true;
+            //button3.onInputUp.add(this.ajout2, this);
+            //var button2 = this.game.add.button(400, 600, AssetKeys.assetBoutonVert, null, this);
+            //button2.inputEnabled = true;
+            //button2.onInputUp.add(this.testCombinaison, this);
+            this.plateauJoueur = new PhaserCordovaGame.Plateau(this.game, 7, 5);
         };
         Main.prototype.update = function () {
         };
@@ -160,11 +160,6 @@ var PhaserCordovaGame;
             this.game.state.start(PhaserCordovaGame.stateGameOver);
         };
         Main.prototype.ajout = function (t) {
-            var _this = this;
-            var p = PhaserCordovaGame.PieceFactory.CreatePiece(this.game, t);
-            p.inputEnabled = true;
-            p.events.onInputUp.add(function () { var e = p; console.log(_this.plateauJoueur.getIndexOf(e)); }, this);
-            this.plateauJoueur.insertPiece(0, p);
             console.log("Appuyé");
         };
         Main.prototype.ajout1 = function () {
@@ -174,7 +169,7 @@ var PhaserCordovaGame;
             this.ajout(PhaserCordovaGame.TypePiece.Rouge);
         };
         Main.prototype.testCombinaison = function () {
-            this.plateauJoueur.findCombinaison();
+            //this.plateauJoueur.findCombinaison();
         };
         return Main;
     })(Phaser.State);
@@ -184,76 +179,37 @@ var PhaserCordovaGame;
 (function (PhaserCordovaGame) {
     var Plateau = (function (_super) {
         __extends(Plateau, _super);
-        function Plateau(game, size) {
+        function Plateau(game, sizeX, sizeY) {
             _super.call(this, game, null, "plateau", true);
-            this.tailleCercle = 200;
-            this.centre = new Phaser.Point(200, 200);
-            this.taillePlateau = size;
-            this.pieces = [];
-            var min = (Math.min(PhaserCordovaGame.SimpleGame.realHeight, PhaserCordovaGame.SimpleGame.realWidth));
-            this.tailleCercle = min / 3;
-            this.centre = new Phaser.Point(PhaserCordovaGame.SimpleGame.realWidth / 2, PhaserCordovaGame.SimpleGame.realHeight / 2);
-            console.log("centre : ");
-            console.log(this.centre);
-            console.log("cercle : " + this.tailleCercle);
+            this.taillePlateauX = sizeX;
+            this.taillePlateauY = sizeY;
+            this.initTableau();
+            this.refreshPosition();
         }
-        Plateau.prototype.insertPiece = function (position, pieceAInserer) {
-            PhaserCordovaGame.Assert.AssertBetween(position, 0, this.taillePlateau);
-            this.pieces = PhaserCordovaGame.ArrayUtil.insert(this.pieces, pieceAInserer, position);
-            this.refreshPositions();
-        };
-        Plateau.prototype.deletePieces = function () {
-            var indexes = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                indexes[_i - 0] = arguments[_i];
-            }
-            var newPieces = [];
-            for (var i = 0; i < this.pieces.length; i++) {
-                if (indexes.indexOf(i) == -1) {
-                    newPieces.push(this.pieces[i]);
+        Plateau.prototype.initTableau = function () {
+            this.pieces = [];
+            for (var x = 0; x < this.taillePlateauX; x++) {
+                this.pieces[x] = [];
+                for (var y = 0; y < this.taillePlateauY; y++) {
+                    this.pieces[x][y] = PhaserCordovaGame.PieceFactory.CreatePiece(this.game, PhaserCordovaGame.TypePiece.Vert);
                 }
             }
-            this.pieces = newPieces;
-            this.refreshPositions;
         };
-        Plateau.prototype.getIndexOf = function (p) {
-            return (this.pieces.indexOf(p));
-        };
-        Plateau.prototype.refreshPositions = function () {
-            var _this = this;
-            var taille = this.pieces.length;
-            var angle = 0;
-            var pas = (2 * Math.PI) / taille;
-            this.pieces.forEach(function (p, i) {
-                var x = Math.round(_this.centre.x + _this.tailleCercle * Math.cos(angle));
-                var y = Math.round(_this.centre.y + _this.tailleCercle * Math.sin(angle));
-                p.x = x;
-                p.y = y;
-                angle += pas;
-            });
-        };
-        // TODO : gerer la "boucle" entre la derniere et la premiere : 
-        // si derniere == premiere, on boucle jusqu'a ce qu'on ait une difference
-        Plateau.prototype.findCombinaison = function () {
-            var threehold = 4;
-            var tableauSimple = this.pieces.map(function (p, i, a) { return p.type; });
-            var combinations = [];
-            var current = [];
-            var last = null;
-            for (var i = 0; i < tableauSimple.length; i++) {
-                if (last != tableauSimple[i]) {
-                    if (current.length >= threehold) {
-                        combinations.push(current);
-                    }
-                    current = [];
-                    last = tableauSimple[i];
+        Plateau.prototype.refreshPosition = function () {
+            // on part du principe que
+            //   * 20% de rab de chaque coté
+            // taille plateau  X >> taille Y
+            var pas = (PhaserCordovaGame.SimpleGame.realWidth * 0.8) / this.taillePlateauX;
+            var originalHeight = PhaserCordovaGame.PieceFactory.CreatePiece(this.game, PhaserCordovaGame.TypePiece.Vert).texture.height;
+            var scale = new Phaser.Point(pas / originalHeight, pas / originalHeight);
+            var debutX = PhaserCordovaGame.SimpleGame.realWidth * 0.1;
+            var debutY = (PhaserCordovaGame.SimpleGame.realHeight - (this.taillePlateauY * pas)) / 2;
+            for (var x = 0; x < this.taillePlateauX; x++) {
+                for (var y = 0; y < this.taillePlateauY; y++) {
+                    this.pieces[x][y].position = new Phaser.Point(debutX + pas * x, debutY + pas * y);
+                    this.pieces[x][y].scale = scale;
                 }
-                current.push(i);
             }
-            if (current.length >= threehold) {
-                combinations.push(current);
-            }
-            console.log(combinations);
         };
         return Plateau;
     })(Phaser.Group);
