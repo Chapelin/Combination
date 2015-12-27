@@ -18,5 +18,17 @@
             return result;
         }
 
+        public static CreatePieceRandom(game: Phaser.Game): Piece {
+            var typePiece;
+            switch (Math.floor(Math.random() * NombreTypePiece)) {
+                case 0:
+                    typePiece = TypePiece.Vert;
+                    break;
+                case 1:
+                    typePiece = TypePiece.Rouge;
+                    break;
+            }
+            return PieceFactory.CreatePiece(game, typePiece);
+        }
     }
 }

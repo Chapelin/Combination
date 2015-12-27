@@ -183,31 +183,34 @@ var PhaserCordovaGame;
             _super.call(this, game, null, "plateau", true);
             this.taillePlateauX = sizeX;
             this.taillePlateauY = sizeY;
+            // X est plus petit que Y
+            this.pas = (PhaserCordovaGame.SimpleGame.realWidth * 0.8) / this.taillePlateauX;
+            this.processScale();
             this.initTableau();
             this.refreshPosition();
         }
+        Plateau.prototype.processScale = function () {
+            var p = PhaserCordovaGame.PieceFactory.CreatePiece(this.game, PhaserCordovaGame.TypePiece.Vert);
+            var originalHeight = p.texture.height;
+            this.scale = new Phaser.Point(this.pas / originalHeight, this.pas / originalHeight);
+            p.kill();
+        };
         Plateau.prototype.initTableau = function () {
             this.pieces = [];
             for (var x = 0; x < this.taillePlateauX; x++) {
                 this.pieces[x] = [];
                 for (var y = 0; y < this.taillePlateauY; y++) {
-                    this.pieces[x][y] = PhaserCordovaGame.PieceFactory.CreatePiece(this.game, PhaserCordovaGame.TypePiece.Vert);
+                    this.pieces[x][y] = PhaserCordovaGame.PieceFactory.CreatePieceRandom(this.game);
                 }
             }
         };
         Plateau.prototype.refreshPosition = function () {
-            // on part du principe que
-            //   * 20% de rab de chaque coté
-            // taille plateau  X >> taille Y
-            var pas = (PhaserCordovaGame.SimpleGame.realWidth * 0.8) / this.taillePlateauX;
-            var originalHeight = PhaserCordovaGame.PieceFactory.CreatePiece(this.game, PhaserCordovaGame.TypePiece.Vert).texture.height;
-            var scale = new Phaser.Point(pas / originalHeight, pas / originalHeight);
-            var debutX = PhaserCordovaGame.SimpleGame.realWidth * 0.1;
-            var debutY = (PhaserCordovaGame.SimpleGame.realHeight - (this.taillePlateauY * pas)) / 2;
+            var debutX = PhaserCordovaGame.SimpleGame.realWidth * 0.1 + this.pas / 2;
+            var debutY = (PhaserCordovaGame.SimpleGame.realHeight - (this.taillePlateauY * this.pas)) / 2;
             for (var x = 0; x < this.taillePlateauX; x++) {
                 for (var y = 0; y < this.taillePlateauY; y++) {
-                    this.pieces[x][y].position = new Phaser.Point(debutX + pas * x, debutY + pas * y);
-                    this.pieces[x][y].scale = scale;
+                    this.pieces[x][y].position = new Phaser.Point(debutX + this.pas * x, debutY + this.pas * y);
+                    this.pieces[x][y].scale = this.scale;
                 }
             }
         };
@@ -273,6 +276,18 @@ var PhaserCordovaGame;
             }
             result.anchor = new Phaser.Point(0.5, 0.5);
             return result;
+        };
+        PieceFactory.CreatePieceRandom = function (game) {
+            var typePiece;
+            switch (Math.floor(Math.random() * 2)) {
+                case 0:
+                    typePiece = PhaserCordovaGame.TypePiece.Vert;
+                    break;
+                case 1:
+                    typePiece = PhaserCordovaGame.TypePiece.Rouge;
+                    break;
+            }
+            return PieceFactory.CreatePiece(game, typePiece);
         };
         return PieceFactory;
     })();
