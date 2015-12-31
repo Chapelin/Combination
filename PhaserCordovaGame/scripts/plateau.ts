@@ -43,7 +43,7 @@
                     this.pieces[x][y] = PieceFactory.CreatePieceRandom(this.game);
                     this.pieces[x][y].inputEnabled = true; x
                     this.pieces[x][y].events.onInputUp.add((dummy, dummy2, dummy3, posX, posY) => {
-                        console.log(this.getZoneCombine(posX, posY));
+                        this.combineZone(posX, posY);
                     }, this, 0, x, y);
                 }
             }
@@ -112,6 +112,16 @@
                 }
             }, this);
             return result;
+        }
+
+        public combineZone(x: number, y: number) {
+            var list = this.getZoneCombine(x, y);
+            // à optimiser : refresh que les modifiés)
+            list.forEach((pos, i, arr) => {
+                var p = this.pieces[pos[0]][pos[1]];
+                p.delete();
+                this.pieces[pos[0]][pos[1]] = null;
+            });
         }
 
     }

@@ -216,7 +216,7 @@ var PhaserCordovaGame;
                     this.pieces[x][y].inputEnabled = true;
                     x;
                     this.pieces[x][y].events.onInputUp.add(function (dummy, dummy2, dummy3, posX, posY) {
-                        console.log(_this.getZoneCombine(posX, posY));
+                        _this.combineZone(posX, posY);
                     }, this, 0, x, y);
                 }
             }
@@ -280,6 +280,16 @@ var PhaserCordovaGame;
             }, this);
             return result;
         };
+        Plateau.prototype.combineZone = function (x, y) {
+            var _this = this;
+            var list = this.getZoneCombine(x, y);
+            // à optimiser : refresh que les modifiés)
+            list.forEach(function (pos, i, arr) {
+                var p = _this.pieces[pos[0]][pos[1]];
+                p.delete();
+                _this.pieces[pos[0]][pos[1]] = null;
+            });
+        };
         return Plateau;
     })(Phaser.Group);
     PhaserCordovaGame.Plateau = Plateau;
@@ -320,6 +330,10 @@ var PhaserCordovaGame;
                 throw new ReferenceError("Impossible de comparer à null");
             }
             return this.type == other.type;
+        };
+        Piece.prototype.delete = function () {
+            console.log("Deleté");
+            this.kill();
         };
         return Piece;
     })(Phaser.Sprite);

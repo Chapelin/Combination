@@ -1,6 +1,6 @@
 ﻿module PhaserCordovaGame {
 
-    export class Piece extends Phaser.Sprite {
+    export abstract class Piece extends Phaser.Sprite {
 
         type: TypePiece;
 
@@ -15,7 +15,12 @@
                 throw new ReferenceError("Impossible de comparer à null");
             }
             return this.type == other.type;
-        }        
+        } 
+        
+        public delete() {
+            console.log("Deleté");
+            this.kill();
+        }       
     }
 
     export const NombreTypePiece = 3;
