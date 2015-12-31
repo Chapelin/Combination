@@ -18,9 +18,10 @@
         }        
     }
 
-    export const NombreTypePiece = 2;
+    export const NombreTypePiece = 3;
     export enum TypePiece {
         Vert,
-        Rouge
+        Rouge,
+        Bleu
     }
 }

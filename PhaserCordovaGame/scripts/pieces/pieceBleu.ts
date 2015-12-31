@@ -1,7 +1,7 @@
 ﻿module PhaserCordovaGame {
-    export class PieceVerte extends Piece {
+    export class PieceBleu extends Piece {
         constructor(game: Phaser.Game) {
-            super(game, AssetKeys.assetBilleVert);
+            super(game, AssetKeys.assetBillebleu);
             this.type = TypePiece.Vert;
         } 
     }

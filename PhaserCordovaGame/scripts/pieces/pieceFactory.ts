@@ -11,6 +11,9 @@
                 case TypePiece.Rouge:
                     result = new PieceRouge(game);
                     break;
+                case TypePiece.Bleu:
+                    result = new PieceBleu(game);
+                    break;
                 default:
                     throw new TypeError("Type de piece non géré");
             }
@@ -26,6 +29,9 @@
                     break;
                 case 1:
                     typePiece = TypePiece.Rouge;
+                    break;
+                case 2:
+                    typePiece = TypePiece.Bleu;
                     break;
             }
             return PieceFactory.CreatePiece(game, typePiece);
