@@ -20,5 +20,24 @@
             secondePart.forEach((e, i, arr) => result.push(e));
             return result;
         } 
+
+        public static contains<T>(arrayToTest: Array<T>, elementToFind: T): boolean {
+            return arrayToTest.indexOf(elementToFind) !== -1;
+        }
+
+        public static containsArray<T>(arrayToTest: Array<Array<T>>, elementToFind: Array<T>): boolean {
+            for (var i = 0; i < arrayToTest.length; i++) {
+                var elem = arrayToTest[i];
+                if (elem.length === elementToFind.length) {
+                    var allOk = true;
+                    for (var j = 0; j < elem.length; j++) {
+                        allOk = allOk && (elem[j] == elementToFind[j]);
+                    }
+                    if (allOk)
+                        return true;
+                }
+            }
+            return false;
+        }
     }
 }

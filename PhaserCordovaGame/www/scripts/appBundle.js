@@ -195,12 +195,28 @@ var PhaserCordovaGame;
             this.scale = new Phaser.Point(this.pas / originalHeight, this.pas / originalHeight);
             p.kill();
         };
+        Plateau.prototype.getIndexForPiece = function (p) {
+            for (var x = 0; x < this.taillePlateauX; x++) {
+                for (var y = 0; y < this.taillePlateauY; y++) {
+                    if (this.pieces[x][y] == p) {
+                        return [x, y];
+                    }
+                }
+            }
+            throw new ReferenceError("Piece introuvable dans le plateau");
+        };
         Plateau.prototype.initTableau = function () {
+            var _this = this;
             this.pieces = [];
             for (var x = 0; x < this.taillePlateauX; x++) {
                 this.pieces[x] = [];
                 for (var y = 0; y < this.taillePlateauY; y++) {
                     this.pieces[x][y] = PhaserCordovaGame.PieceFactory.CreatePieceRandom(this.game);
+                    this.pieces[x][y].inputEnabled = true;
+                    x;
+                    this.pieces[x][y].events.onInputUp.add(function (dummy, dummy2, dummy3, posX, posY) {
+                        console.log(_this.getZoneCombine(posX, posY));
+                    }, this, 0, x, y);
                 }
             }
         };
@@ -213,6 +229,55 @@ var PhaserCordovaGame;
                     this.pieces[x][y].scale = this.scale;
                 }
             }
+        };
+        Plateau.prototype.getZoneCombine = function (x, y) {
+            var valid = [[x, y]];
+            // valid change de taille en live
+            for (var compteurDeTest = 0; compteurDeTest < valid.length; compteurDeTest++) {
+                var current = valid[compteurDeTest];
+                var temp = this.findValidNeighbors(current[0], current[1]);
+                // on traite les voisins possibles
+                for (var j = 0; j < temp.length; j++) {
+                    var currentNeigbhor = temp[j];
+                    // si le voisin n'a pas encore été prévu pour verification
+                    if (!PhaserCordovaGame.ArrayUtil.containsArray(valid, currentNeigbhor)) {
+                        // on l'ajoute à la liste des valides à tester.
+                        valid.push(currentNeigbhor);
+                    }
+                }
+            }
+            return valid;
+        };
+        Plateau.prototype.findValidNeighbors = function (x, y) {
+            var listNeigbor = this.getNeigbhor(x, y);
+            var p = this.pieces[x][y];
+            return this.selectNeighborForCombine(p, listNeigbor);
+        };
+        Plateau.prototype.getNeigbhor = function (x, y) {
+            var potentials = [];
+            if (x > 0) {
+                potentials.push([x - 1, y]);
+            }
+            if (y > 0) {
+                potentials.push([x, y - 1]);
+            }
+            if (y < this.taillePlateauY - 1) {
+                potentials.push([x, y + 1]);
+            }
+            if (x < this.taillePlateauX - 1) {
+                potentials.push([x + 1, y]);
+            }
+            return potentials;
+        };
+        Plateau.prototype.selectNeighborForCombine = function (origine, potentiels) {
+            var _this = this;
+            var result = [];
+            potentiels.forEach(function (pos, i, res) {
+                if (origine.canCombine(_this.pieces[pos[0]][pos[1]])) {
+                    result.push(pos);
+                }
+            }, this);
+            return result;
         };
         return Plateau;
     })(Phaser.Group);
@@ -248,9 +313,16 @@ var PhaserCordovaGame;
             this.scale = new Phaser.Point(0.4, 0.4);
             game.add.existing(this);
         }
+        Piece.prototype.canCombine = function (other) {
+            if (other == null || other == undefined) {
+                throw new ReferenceError("Impossible de comparer à null");
+            }
+            return this.type == other.type;
+        };
         return Piece;
     })(Phaser.Sprite);
     PhaserCordovaGame.Piece = Piece;
+    PhaserCordovaGame.NombreTypePiece = 2;
     (function (TypePiece) {
         TypePiece[TypePiece["Vert"] = 0] = "Vert";
         TypePiece[TypePiece["Rouge"] = 1] = "Rouge";
@@ -279,7 +351,7 @@ var PhaserCordovaGame;
         };
         PieceFactory.CreatePieceRandom = function (game) {
             var typePiece;
-            switch (Math.floor(Math.random() * 2)) {
+            switch (Math.floor(Math.random() * PhaserCordovaGame.NombreTypePiece)) {
                 case 0:
                     typePiece = PhaserCordovaGame.TypePiece.Vert;
                     break;
@@ -342,6 +414,23 @@ var PhaserCordovaGame;
             result.push(element);
             secondePart.forEach(function (e, i, arr) { return result.push(e); });
             return result;
+        };
+        ArrayUtil.contains = function (arrayToTest, elementToFind) {
+            return arrayToTest.indexOf(elementToFind) !== -1;
+        };
+        ArrayUtil.containsArray = function (arrayToTest, elementToFind) {
+            for (var i = 0; i < arrayToTest.length; i++) {
+                var elem = arrayToTest[i];
+                if (elem.length === elementToFind.length) {
+                    var allOk = true;
+                    for (var j = 0; j < elem.length; j++) {
+                        allOk = allOk && (elem[j] == elementToFind[j]);
+                    }
+                    if (allOk)
+                        return true;
+                }
+            }
+            return false;
         };
         return ArrayUtil;
     })();

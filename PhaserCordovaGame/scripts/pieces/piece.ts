@@ -8,6 +8,13 @@
             super(game, 0, 0, texture);
             this.scale = new Phaser.Point(0.4, 0.4);
             game.add.existing(this);
+        }
+
+        public canCombine(other: Piece) {
+            if (other == null || other == undefined) {
+                throw new ReferenceError("Impossible de comparer à null");
+            }
+            return this.type == other.type;
         }        
     }
 
