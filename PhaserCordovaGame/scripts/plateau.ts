@@ -62,7 +62,7 @@
         }
 
         public getZoneCombine(x: number, y: number): Array<Array<number>> {
-            var valid = [[x,y]];
+            var valid = [[x, y]];
             // valid change de taille en live
             for (var compteurDeTest = 0; compteurDeTest < valid.length; compteurDeTest++) {
                 var current = valid[compteurDeTest];
@@ -98,7 +98,7 @@
                 potentials.push([x, y + 1]);
             }
             if (x < this.taillePlateauX - 1) {
-                 potentials.push([x + 1, y]);
+                potentials.push([x + 1, y]);
             }
             return potentials;
         }
@@ -122,6 +122,34 @@
                 p.delete();
                 this.pieces[pos[0]][pos[1]] = null;
             });
+
+            this.fallingDown();
+            this.spawnNew();
+        }
+
+
+        private fallingDown() {
+            // pour chaque X : on regarde les Y  depuis la fin
+            // dès qu'on trouve un null, et qu'il n'y a pas que des null avant, on avance les precedents de 1
+            // jusqu'a ce que ça soit bon
+            // et on continue
+            for (var x = 0; x < this.taillePlateauX; x++) {
+                for (var y = this.taillePlateauY - 1; y > 0; y--) {
+                    var reste = this.pieces[x].slice(0, y);
+                    // tant que la piece est null ET qu'on a pas que des null
+                    while (this.pieces[x][y] == null && !reste.every((x, n, a) => x == null)) {
+                        ArrayUtil.decalePiece(this.pieces[x], y);
+                    }
+
+
+                }
+            }
+
+        }
+
+        private spawnNew() {
+            // Pour chaque null
+            // on generer un nouvel element.
         }
 
     }

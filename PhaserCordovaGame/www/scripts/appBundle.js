@@ -289,6 +289,27 @@ var PhaserCordovaGame;
                 p.delete();
                 _this.pieces[pos[0]][pos[1]] = null;
             });
+            this.fallingDown();
+            this.spawnNew();
+        };
+        Plateau.prototype.fallingDown = function () {
+            // pour chaque X : on regarde les Y  depuis la fin
+            // dès qu'on trouve un null, et qu'il n'y a pas que des null avant, on avance les precedents de 1
+            // jusqu'a ce que ça soit bon
+            // et on continue
+            for (var x = 0; x < this.taillePlateauX; x++) {
+                for (var y = this.taillePlateauY - 1; y > 0; y--) {
+                    var reste = this.pieces[x].slice(0, y);
+                    // tant que la piece est null ET qu'on a pas que des null
+                    while (this.pieces[x][y] == null && !reste.every(function (x, n, a) { return x == null; })) {
+                        PhaserCordovaGame.ArrayUtil.decalePiece(this.pieces[x], y);
+                    }
+                }
+            }
+        };
+        Plateau.prototype.spawnNew = function () {
+            // Pour chaque null
+            // on generer un nouvel element.
         };
         return Plateau;
     })(Phaser.Group);
@@ -466,6 +487,12 @@ var PhaserCordovaGame;
                 }
             }
             return false;
+        };
+        ArrayUtil.decalePiece = function (arrayOfPiece, indexMax) {
+            for (var pos = indexMax; pos > 0; pos--) {
+                arrayOfPiece[pos] = arrayOfPiece[pos - 1];
+            }
+            arrayOfPiece[0] = null;
         };
         return ArrayUtil;
     })();

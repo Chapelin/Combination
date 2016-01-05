@@ -39,5 +39,12 @@
             }
             return false;
         }
+
+        public static decalePiece(arrayOfPiece: Array<Piece>, indexMax: number) {
+            for (var pos = indexMax; pos > 0; pos--) {
+                arrayOfPiece[pos] = arrayOfPiece[pos - 1];
+            }
+            arrayOfPiece[0] = null;
+        }
     }
 }
