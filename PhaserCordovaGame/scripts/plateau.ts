@@ -42,7 +42,7 @@
                 for (var y = 0; y < this.taillePlateauY; y++) {
                     this.pieces[x][y] = PieceFactory.CreatePieceRandom(this.game);
                     this.pieces[x][y].inputEnabled = true; x
-                    this.pieces[x][y].events.onInputUp.add((dummy, dummy2, dummy3, posX, posY) => {
+                    this.pieces[x][y].events.onInputUp.addOnce((dummy, dummy2, dummy3, posX, posY) => {
                         this.combineZone(posX, posY);
                     }, this, 0, x, y);
                 }

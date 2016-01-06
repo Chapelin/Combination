@@ -215,7 +215,7 @@ var PhaserCordovaGame;
                     this.pieces[x][y] = PhaserCordovaGame.PieceFactory.CreatePieceRandom(this.game);
                     this.pieces[x][y].inputEnabled = true;
                     x;
-                    this.pieces[x][y].events.onInputUp.add(function (dummy, dummy2, dummy3, posX, posY) {
+                    this.pieces[x][y].events.onInputUp.addOnce(function (dummy, dummy2, dummy3, posX, posY) {
                         _this.combineZone(posX, posY);
                     }, this, 0, x, y);
                 }
