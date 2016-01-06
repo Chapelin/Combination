@@ -119,12 +119,14 @@
             // à optimiser : refresh que les modifiés)
             list.forEach((pos, i, arr) => {
                 var p = this.pieces[pos[0]][pos[1]];
+                console.log("Suppression de " + p.type + " en " + pos[0] + "," + pos[1]);
                 p.delete();
                 this.pieces[pos[0]][pos[1]] = null;
             });
 
             this.fallingDown();
             this.spawnNew();
+            this.refreshPosition();
         }
 
 
@@ -152,5 +154,22 @@
             // on generer un nouvel element.
         }
 
+
+        public printConsolePlateau() : string  {
+            var res = "";
+            for (var y = 0; y < this.taillePlateauY; y++) {
+                
+                for (var x = 0; x < this.taillePlateauX; x++) {
+                    
+                    if (this.pieces[x][y] != null) {
+                        res+=this.pieces[x][y].type;
+                    } else {
+                        res+="X";
+                    }
+                }
+                res+="\n";
+            }
+            return res;
+        }
     }
 }

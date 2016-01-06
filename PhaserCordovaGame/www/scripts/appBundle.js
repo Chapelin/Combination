@@ -286,11 +286,17 @@ var PhaserCordovaGame;
             // à optimiser : refresh que les modifiés)
             list.forEach(function (pos, i, arr) {
                 var p = _this.pieces[pos[0]][pos[1]];
+                console.log("Suppression de " + p.type + " en " + pos[0] + "," + pos[1]);
                 p.delete();
                 _this.pieces[pos[0]][pos[1]] = null;
             });
             this.fallingDown();
             this.spawnNew();
+            console.log("after spawn");
+            console.log(this.printConsolePlateau());
+            this.refreshPosition();
+            console.log("after refresh");
+            console.log(this.printConsolePlateau());
         };
         Plateau.prototype.fallingDown = function () {
             // pour chaque X : on regarde les Y  depuis la fin
@@ -310,6 +316,21 @@ var PhaserCordovaGame;
         Plateau.prototype.spawnNew = function () {
             // Pour chaque null
             // on generer un nouvel element.
+        };
+        Plateau.prototype.printConsolePlateau = function () {
+            var res = "";
+            for (var y = 0; y < this.taillePlateauY; y++) {
+                for (var x = 0; x < this.taillePlateauX; x++) {
+                    if (this.pieces[x][y] != null) {
+                        res += this.pieces[x][y].type;
+                    }
+                    else {
+                        res += "X";
+                    }
+                }
+                res += "\n";
+            }
+            return res;
         };
         return Plateau;
     })(Phaser.Group);
@@ -373,7 +394,7 @@ var PhaserCordovaGame;
         __extends(PieceBleu, _super);
         function PieceBleu(game) {
             _super.call(this, game, PhaserCordovaGame.AssetKeys.assetBillebleu);
-            this.type = PhaserCordovaGame.TypePiece.Vert;
+            this.type = PhaserCordovaGame.TypePiece.Bleu;
         }
         return PieceBleu;
     })(PhaserCordovaGame.Piece);
