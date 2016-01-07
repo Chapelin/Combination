@@ -283,19 +283,16 @@ var PhaserCordovaGame;
         Plateau.prototype.combineZone = function (x, y) {
             var _this = this;
             var list = this.getZoneCombine(x, y);
+            console.log("Suppression de " + list.length + " elements");
             // à optimiser : refresh que les modifiés)
             list.forEach(function (pos, i, arr) {
                 var p = _this.pieces[pos[0]][pos[1]];
-                console.log("Suppression de " + p.type + " en " + pos[0] + "," + pos[1]);
                 p.delete();
                 _this.pieces[pos[0]][pos[1]] = null;
             });
             this.fallingDown();
             this.spawnNew();
-            console.log("after spawn");
-            console.log(this.printConsolePlateau());
             this.refreshPosition();
-            console.log("after refresh");
             console.log(this.printConsolePlateau());
         };
         Plateau.prototype.fallingDown = function () {
@@ -314,8 +311,18 @@ var PhaserCordovaGame;
             }
         };
         Plateau.prototype.spawnNew = function () {
-            // Pour chaque null
-            // on generer un nouvel element.
+            var _this = this;
+            for (var x = 0; x < this.taillePlateauX; x++) {
+                for (var y = 0; y < this.taillePlateauY; y++) {
+                    if (this.pieces[x][y] == null) {
+                        this.pieces[x][y] = PhaserCordovaGame.PieceFactory.CreatePieceRandom(this.game);
+                        this.pieces[x][y].inputEnabled = true;
+                        this.pieces[x][y].events.onInputUp.addOnce(function (dummy, dummy2, dummy3, posX, posY) {
+                            _this.combineZone(posX, posY);
+                        }, this, 0, x, y);
+                    }
+                }
+            }
         };
         Plateau.prototype.printConsolePlateau = function () {
             var res = "";

@@ -116,10 +116,10 @@
 
         public combineZone(x: number, y: number) {
             var list = this.getZoneCombine(x, y);
+            console.log("Suppression de " + list.length + " elements");
             // à optimiser : refresh que les modifiés)
             list.forEach((pos, i, arr) => {
                 var p = this.pieces[pos[0]][pos[1]];
-                console.log("Suppression de " + p.type + " en " + pos[0] + "," + pos[1]);
                 p.delete();
                 this.pieces[pos[0]][pos[1]] = null;
             });
@@ -127,6 +127,7 @@
             this.fallingDown();
             this.spawnNew();
             this.refreshPosition();
+            console.log(this.printConsolePlateau());
         }
 
 
@@ -150,8 +151,19 @@
         }
 
         private spawnNew() {
-            // Pour chaque null
-            // on generer un nouvel element.
+            for (var x = 0; x < this.taillePlateauX; x++) {
+                for (var y = 0; y < this.taillePlateauY; y++) {
+                    if (this.pieces[x][y] == null) {
+                        this.pieces[x][y] = PieceFactory.CreatePieceRandom(this.game);
+                        this.pieces[x][y].inputEnabled = true;
+                        this.pieces[x][y].events.onInputUp.addOnce((dummy, dummy2, dummy3, posX, posY) => {
+                            this.combineZone(posX, posY);
+                        }, this, 0, x, y);
+
+                    }
+                }
+            }
+
         }
 
 
