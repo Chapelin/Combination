@@ -41,10 +41,6 @@
                 this.pieces[x] = [];
                 for (var y = 0; y < this.taillePlateauY; y++) {
                     this.pieces[x][y] = PieceFactory.CreatePieceRandom(this.game);
-                    this.pieces[x][y].inputEnabled = true; x
-                    this.pieces[x][y].events.onInputUp.addOnce((dummy, dummy2, dummy3, posX, posY) => {
-                        this.combineZone(posX, posY);
-                    }, this, 0, x, y);
                 }
             }
         }
@@ -55,11 +51,22 @@
             var debutY = (SimpleGame.realHeight - (this.taillePlateauY * this.pas)) / 2;
             for (var x = 0; x < this.taillePlateauX; x++) {
                 for (var y = 0; y < this.taillePlateauY; y++) {
-                    this.pieces[x][y].position = new Phaser.Point(debutX + this.pas * x, debutY + this.pas * y);
-                    this.pieces[x][y].scale = this.scale;
+                    var p = this.pieces[x][y];
+                    p.position = new Phaser.Point(debutX + this.pas * x, debutY + this.pas * y);
+                    p.scale = this.scale;
+                    // Si actif, on clean
+                    if (p.inputEnabled) {
+                        p.inputEnabled = false;
+                        p.events.onInputUp.removeAll();
+                    }
+                    p.inputEnabled = true;
+                    p.events.onInputUp.addOnce((dummy, dummy2, dummy3, posX, posY) => {
+                        this.combineZone(posX, posY);
+                    }, this, 0, x, y);
                 }
             }
         }
+
 
         public getZoneCombine(x: number, y: number): Array<Array<number>> {
             var valid = [[x, y]];
@@ -155,11 +162,6 @@
                 for (var y = 0; y < this.taillePlateauY; y++) {
                     if (this.pieces[x][y] == null) {
                         this.pieces[x][y] = PieceFactory.CreatePieceRandom(this.game);
-                        this.pieces[x][y].inputEnabled = true;
-                        this.pieces[x][y].events.onInputUp.addOnce((dummy, dummy2, dummy3, posX, posY) => {
-                            this.combineZone(posX, posY);
-                        }, this, 0, x, y);
-
                     }
                 }
             }
@@ -167,19 +169,19 @@
         }
 
 
-        public printConsolePlateau() : string  {
+        public printConsolePlateau(): string {
             var res = "";
             for (var y = 0; y < this.taillePlateauY; y++) {
-                
+
                 for (var x = 0; x < this.taillePlateauX; x++) {
-                    
+
                     if (this.pieces[x][y] != null) {
-                        res+=this.pieces[x][y].type;
+                        res += this.pieces[x][y].type;
                     } else {
-                        res+="X";
+                        res += "X";
                     }
                 }
-                res+="\n";
+                res += "\n";
             }
             return res;
         }

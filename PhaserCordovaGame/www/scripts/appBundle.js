@@ -207,27 +207,32 @@ var PhaserCordovaGame;
             throw new ReferenceError("Piece introuvable dans le plateau");
         };
         Plateau.prototype.initTableau = function () {
-            var _this = this;
             this.pieces = [];
             for (var x = 0; x < this.taillePlateauX; x++) {
                 this.pieces[x] = [];
                 for (var y = 0; y < this.taillePlateauY; y++) {
                     this.pieces[x][y] = PhaserCordovaGame.PieceFactory.CreatePieceRandom(this.game);
-                    this.pieces[x][y].inputEnabled = true;
-                    x;
-                    this.pieces[x][y].events.onInputUp.addOnce(function (dummy, dummy2, dummy3, posX, posY) {
-                        _this.combineZone(posX, posY);
-                    }, this, 0, x, y);
                 }
             }
         };
         Plateau.prototype.refreshPosition = function () {
+            var _this = this;
             var debutX = PhaserCordovaGame.SimpleGame.realWidth * 0.1 + this.pas / 2;
             var debutY = (PhaserCordovaGame.SimpleGame.realHeight - (this.taillePlateauY * this.pas)) / 2;
             for (var x = 0; x < this.taillePlateauX; x++) {
                 for (var y = 0; y < this.taillePlateauY; y++) {
-                    this.pieces[x][y].position = new Phaser.Point(debutX + this.pas * x, debutY + this.pas * y);
-                    this.pieces[x][y].scale = this.scale;
+                    var p = this.pieces[x][y];
+                    p.position = new Phaser.Point(debutX + this.pas * x, debutY + this.pas * y);
+                    p.scale = this.scale;
+                    // Si actif, on clean
+                    if (p.inputEnabled) {
+                        p.inputEnabled = false;
+                        p.events.onInputUp.removeAll();
+                    }
+                    p.inputEnabled = true;
+                    p.events.onInputUp.addOnce(function (dummy, dummy2, dummy3, posX, posY) {
+                        _this.combineZone(posX, posY);
+                    }, this, 0, x, y);
                 }
             }
         };
@@ -311,15 +316,10 @@ var PhaserCordovaGame;
             }
         };
         Plateau.prototype.spawnNew = function () {
-            var _this = this;
             for (var x = 0; x < this.taillePlateauX; x++) {
                 for (var y = 0; y < this.taillePlateauY; y++) {
                     if (this.pieces[x][y] == null) {
                         this.pieces[x][y] = PhaserCordovaGame.PieceFactory.CreatePieceRandom(this.game);
-                        this.pieces[x][y].inputEnabled = true;
-                        this.pieces[x][y].events.onInputUp.addOnce(function (dummy, dummy2, dummy3, posX, posY) {
-                            _this.combineZone(posX, posY);
-                        }, this, 0, x, y);
                     }
                 }
             }
