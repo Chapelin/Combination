@@ -387,6 +387,23 @@ var PhaserCordovaGame;
 })(PhaserCordovaGame || (PhaserCordovaGame = {}));
 var GoogleGameDev;
 (function (GoogleGameDev) {
+    var AchievementDefinitionsListResponse = (function () {
+        function AchievementDefinitionsListResponse() {
+            this.kind = "games#achievementDefinitionsListResponse";
+        }
+        return AchievementDefinitionsListResponse;
+    })();
+    GoogleGameDev.AchievementDefinitionsListResponse = AchievementDefinitionsListResponse;
+    var AchievementDefinitions = (function () {
+        function AchievementDefinitions() {
+            this.kind = "games#achievementDefinition";
+        }
+        return AchievementDefinitions;
+    })();
+    GoogleGameDev.AchievementDefinitions = AchievementDefinitions;
+})(GoogleGameDev || (GoogleGameDev = {}));
+var GoogleGameDev;
+(function (GoogleGameDev) {
     var Application = (function () {
         function Application() {
             this.kind = "games#application";
@@ -483,6 +500,58 @@ var GoogleGameDev;
         return Stats;
     })();
     GoogleGameDev.Stats = Stats;
+})(GoogleGameDev || (GoogleGameDev = {}));
+var GoogleGameDev;
+(function (GoogleGameDev) {
+    var TurnBasedMatch = (function () {
+        function TurnBasedMatch() {
+            this.kind = "games#turnBasedMatch";
+        }
+        return TurnBasedMatch;
+    })();
+    GoogleGameDev.TurnBasedMatch = TurnBasedMatch;
+    var TurnBasedMatchParticipant = (function () {
+        function TurnBasedMatchParticipant() {
+            this.kind = "games#turnBasedMatchParticipant";
+        }
+        return TurnBasedMatchParticipant;
+    })();
+    GoogleGameDev.TurnBasedMatchParticipant = TurnBasedMatchParticipant;
+    var TurnBasedMatchModification = (function () {
+        function TurnBasedMatchModification() {
+            this.kind = "games#turnBasedMatchModification";
+        }
+        return TurnBasedMatchModification;
+    })();
+    GoogleGameDev.TurnBasedMatchModification = TurnBasedMatchModification;
+    var TurnBasedAutoMatchingCriteria = (function () {
+        function TurnBasedAutoMatchingCriteria() {
+            this.kind = "games#turnBasedAutoMatchingCriteria";
+        }
+        return TurnBasedAutoMatchingCriteria;
+    })();
+    GoogleGameDev.TurnBasedAutoMatchingCriteria = TurnBasedAutoMatchingCriteria;
+    var TurnBasedMatchData = (function () {
+        function TurnBasedMatchData() {
+            this.kind = "games#turnBasedMatchData";
+        }
+        return TurnBasedMatchData;
+    })();
+    GoogleGameDev.TurnBasedMatchData = TurnBasedMatchData;
+    var ParticipantResult = (function () {
+        function ParticipantResult() {
+            this.kind = "games#participantResult";
+        }
+        return ParticipantResult;
+    })();
+    GoogleGameDev.ParticipantResult = ParticipantResult;
+    var AnonymousPlayer = (function () {
+        function AnonymousPlayer() {
+            this.kind = "games#anonymousPlayer";
+        }
+        return AnonymousPlayer;
+    })();
+    GoogleGameDev.AnonymousPlayer = AnonymousPlayer;
 })(GoogleGameDev || (GoogleGameDev = {}));
 var PhaserCordovaGame;
 (function (PhaserCordovaGame) {
