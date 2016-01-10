@@ -189,6 +189,7 @@ var PhaserCordovaGame;
             this.processScale();
             this.initTableau();
             this.refreshPosition();
+            this.acceptInput = true;
         }
         Plateau.prototype.processScale = function () {
             var p = PhaserCordovaGame.PieceFactory.CreatePiece(this.game, PhaserCordovaGame.TypePiece.Vert);
@@ -217,13 +218,20 @@ var PhaserCordovaGame;
         };
         Plateau.prototype.refreshPosition = function () {
             var _this = this;
+            this.listTween = new Array();
             var debutX = PhaserCordovaGame.SimpleGame.realWidth * 0.1 + this.pas / 2;
             var debutY = (PhaserCordovaGame.SimpleGame.realHeight - (this.taillePlateauY * this.pas)) / 2;
             for (var x = 0; x < this.taillePlateauX; x++) {
                 for (var y = 0; y < this.taillePlateauY; y++) {
                     var p = this.pieces[x][y];
-                    p.position = new Phaser.Point(debutX + this.pas * x, debutY + this.pas * y);
-                    p.scale = this.scale;
+                    var tween = this.game.add.tween(p);
+                    tween.to({
+                        x: debutX + this.pas * x,
+                        y: debutY + this.pas * y
+                    }, 1000, Phaser.Easing.Quartic.In, false),
+                        //p.position = new Phaser.Point(debutX + this.pas * x, debutY + this.pas * y);
+                        p.scale = this.scale;
+                    this.listTween.push(tween);
                     // Si actif, on clean
                     if (p.inputEnabled) {
                         p.inputEnabled = false;
@@ -231,10 +239,31 @@ var PhaserCordovaGame;
                     }
                     p.inputEnabled = true;
                     p.events.onInputUp.addOnce(function (dummy, dummy2, dummy3, posX, posY) {
-                        _this.combineZone(posX, posY);
+                        if (_this.acceptInput) {
+                            _this.acceptInput = false;
+                            _this.combineZone(posX, posY);
+                        }
                     }, this, 0, x, y);
                 }
             }
+            this.listTween.forEach(function (v, i, arr) {
+                v.onComplete.addOnce(function () {
+                    // si tous les tweens sont finis
+                    if (_this.tweensFinished()) {
+                        _this.acceptInput = true;
+                        console.log("tweens finished !");
+                    }
+                    else {
+                        console.log("Un tween finished, les autres pas encore finis");
+                    }
+                }, _this);
+                v.start();
+            });
+        };
+        Plateau.prototype.tweensFinished = function () {
+            return this.listTween.every(function (v) {
+                return !v.isRunning;
+            });
         };
         Plateau.prototype.getZoneCombine = function (x, y) {
             var valid = [[x, y]];

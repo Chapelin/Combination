@@ -5,6 +5,8 @@
         taillePlateauY: number;
         scale: Phaser.Point;
         pas: number;
+        acceptInput: boolean;
+        listTween: Phaser.Tween[];
 
         constructor(game: Phaser.Game, sizeX: number, sizeY: number) {
             super(game, null, "plateau", true);
@@ -15,6 +17,7 @@
             this.processScale();
             this.initTableau();
             this.refreshPosition();
+            this.acceptInput = true;
         }
 
         private processScale() {
@@ -47,13 +50,21 @@
 
 
         public refreshPosition() {
+            this.listTween = new Array<Phaser.Tween>();
             var debutX = SimpleGame.realWidth * 0.1 + this.pas / 2;
             var debutY = (SimpleGame.realHeight - (this.taillePlateauY * this.pas)) / 2;
             for (var x = 0; x < this.taillePlateauX; x++) {
                 for (var y = 0; y < this.taillePlateauY; y++) {
                     var p = this.pieces[x][y];
-                    p.position = new Phaser.Point(debutX + this.pas * x, debutY + this.pas * y);
-                    p.scale = this.scale;
+                    var tween = this.game.add.tween(p);
+                    tween.to(
+                        {
+                            x: debutX + this.pas * x,
+                            y: debutY + this.pas * y
+                        }, 1000, Phaser.Easing.Quartic.In, false),
+                    //p.position = new Phaser.Point(debutX + this.pas * x, debutY + this.pas * y);
+                        p.scale = this.scale;
+                    this.listTween.push(tween);
                     // Si actif, on clean
                     if (p.inputEnabled) {
                         p.inputEnabled = false;
@@ -61,12 +72,34 @@
                     }
                     p.inputEnabled = true;
                     p.events.onInputUp.addOnce((dummy, dummy2, dummy3, posX, posY) => {
-                        this.combineZone(posX, posY);
+                        if (this.acceptInput) {
+                            this.acceptInput = false;
+                            this.combineZone(posX, posY);
+                        }
                     }, this, 0, x, y);
                 }
             }
+
+            this.listTween.forEach((v: Phaser.Tween, i: number, arr: Phaser.Tween[]) => {
+                v.onComplete.addOnce(() => {
+                    // si tous les tweens sont finis
+                    if (this.tweensFinished()) {
+                        this.acceptInput = true;
+                        console.log("tweens finished !");
+                    } else {
+                        console.log("Un tween finished, les autres pas encore finis");
+                    }
+                }, this);
+                v.start();
+            });
+
         }
 
+        public tweensFinished(): boolean {
+            return this.listTween.every((v) => {
+                return !v.isRunning;
+            });
+        }
 
         public getZoneCombine(x: number, y: number): Array<Array<number>> {
             var valid = [[x, y]];
