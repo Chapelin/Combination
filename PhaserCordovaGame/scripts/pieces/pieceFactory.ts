@@ -14,6 +14,9 @@
                 case TypePiece.Bleu:
                     result = new PieceBleu(game);
                     break;
+                case TypePiece.Jaune:
+                    result = new PieceJaune(game);
+                    break;
                 default:
                     throw new TypeError("Type de piece non géré");
             }
@@ -22,19 +25,7 @@
         }
 
         public static CreatePieceRandom(game: Phaser.Game): Piece {
-            var typePiece;
-            switch (Math.floor(Math.random() * NombreTypePiece)) {
-                case 0:
-                    typePiece = TypePiece.Vert;
-                    break;
-                case 1:
-                    typePiece = TypePiece.Rouge;
-                    break;
-                case 2:
-                    typePiece = TypePiece.Bleu;
-                    break;
-            }
-            return PieceFactory.CreatePiece(game, typePiece);
+            return PieceFactory.CreatePiece(game, Math.floor(Math.random() * NombreTypePiece));
         }
     }
 }

@@ -1,15 +1,15 @@
 ﻿module PhaserCordovaGame {
-    export class PieceBleu extends Piece {
+    export class PieceJaune extends Piece {
         constructor(game: Phaser.Game) {
-            super(game, AssetKeys.assetBillebleu);
-            this.type = TypePiece.Bleu;
-        } 
+            super(game, AssetKeys.assetBilleJaune);
+            this.type = TypePiece.Jaune;
+        }
 
         public canCombine(other: Piece) {
             if (other == null || other == undefined) {
                 throw new ReferenceError("Impossible de comparer à null");
             }
-            return this.type == other.type || other.type == TypePiece.Jaune;
+            return this.type == other.type || other.type == TypePiece.Bleu;
         } 
     }
 }

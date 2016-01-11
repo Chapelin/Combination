@@ -48,7 +48,6 @@
             }
         }
 
-
         public refreshPosition() {
             this.listTeensBloquants = new Array<Phaser.Tween>();
             var debutX = SimpleGame.realWidth * 0.1 + this.pas / 2;
@@ -61,30 +60,19 @@
                         {
                             x: debutX + this.pas * x,
                             y: debutY + this.pas * y
-                        }, 1000, Phaser.Easing.Quartic.In, false);
+                        }, GameConfiguration.GAMEANIM_SPEED, Phaser.Easing.Quartic.In, false);
                     // si nouvellement créé
                     // on les place au dessus
                     if (p.x == 0 && p.y == 0) {
                         p.x = debutX + this.pas * x;
                         p.y = debutY - this.pas;
                     }
-                            
-                    
-                    //p.position = new Phaser.Point(debutX + this.pas * x, debutY + this.pas * y);
+
                     p.scale = this.scale;
                     this.listTeensBloquants.push(tween);
                     // Si actif, on clean
-                    if (p.inputEnabled) {
-                        p.inputEnabled = false;
-                        p.events.onInputUp.removeAll();
-                    }
-                    p.inputEnabled = true;
-                    p.events.onInputUp.addOnce((dummy, dummy2, dummy3, posX, posY) => {
-                        if (this.acceptInput) {
-                            this.acceptInput = false;
-                            this.combineZone(posX, posY);
-                        }
-                    }, this, 0, x, y);
+                    this.setupClickEventPiece(p, x, y);
+                   
                 }
             }
 
@@ -93,14 +81,25 @@
                     // si tous les tweens sont finis
                     if (this.tweensFinished()) {
                         this.acceptInput = true;
-                        console.log("tweens finished !");
-                    } else {
-                        console.log("Un tween finished, les autres pas encore finis");
                     }
                 }, this);
                 v.start();
             });
 
+        }
+
+        public setupClickEventPiece(p: Piece, x: number, y: number) {
+            if (p.inputEnabled) {
+                p.inputEnabled = false;
+                p.events.onInputUp.removeAll();
+            }
+            p.inputEnabled = true;
+            p.events.onInputUp.addOnce((dummy, dummy2, dummy3, posX, posY) => {
+                if (this.acceptInput) {
+                    this.acceptInput = false;
+                    this.combineZone(posX, posY);
+                }
+            }, this, 0, x, y);
         }
 
         public tweensFinished(): boolean {
@@ -152,7 +151,6 @@
         }
 
         public selectNeighborForCombine(origine: Piece, potentiels: Array<Array<number>>): Array<Array<number>> {
-
             var result = [];
             potentiels.forEach((pos, i, res) => {
                 if (origine.canCombine(this.pieces[pos[0]][pos[1]])) {
@@ -173,7 +171,7 @@
             });
 
             this.fallingDown();
-            this.spawnNew();
+            this.spawnNewPieces();
             this.refreshPosition();
             console.log(this.printConsolePlateau());
         }
@@ -191,14 +189,11 @@
                     while (this.pieces[x][y] == null && !reste.every((x, n, a) => x == null)) {
                         ArrayUtil.decalePiece(this.pieces[x], y);
                     }
-
-
                 }
             }
-
         }
 
-        private spawnNew() {
+        private spawnNewPieces() {
             for (var x = 0; x < this.taillePlateauX; x++) {
                 for (var y = 0; y < this.taillePlateauY; y++) {
                     if (this.pieces[x][y] == null) {

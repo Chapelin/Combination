@@ -6,7 +6,6 @@
 
         constructor(game: Phaser.Game, texture : string) {
             super(game, 0, 0, texture);
-            this.scale = new Phaser.Point(0.4, 0.4);
             game.add.existing(this);
         }
 
@@ -23,10 +22,11 @@
         }       
     }
 
-    export const NombreTypePiece = 3;
+    export const NombreTypePiece = 4;
     export enum TypePiece {
         Vert,
         Rouge,
-        Bleu
+        Bleu,
+        Jaune
     }
 }
