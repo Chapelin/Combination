@@ -188,16 +188,6 @@ var PhaserCordovaGame;
             this.scale = new Phaser.Point(this.pas / originalHeight, this.pas / originalHeight);
             p.kill();
         };
-        Plateau.prototype.getIndexForPiece = function (p) {
-            for (var x = 0; x < this.taillePlateauX; x++) {
-                for (var y = 0; y < this.taillePlateauY; y++) {
-                    if (this.pieces[x][y] == p) {
-                        return [x, y];
-                    }
-                }
-            }
-            throw new ReferenceError("Piece introuvable dans le plateau");
-        };
         Plateau.prototype.initTableau = function () {
             this.pieces = [];
             for (var x = 0; x < this.taillePlateauX; x++) {
@@ -321,7 +311,7 @@ var PhaserCordovaGame;
                 _this.pieces[pos[0]][pos[1]] = null;
             });
             this.fallingDown();
-            this.spawnNew();
+            this.spawnNewPieces();
             this.refreshPosition();
             console.log(this.printConsolePlateau());
         };
@@ -340,7 +330,7 @@ var PhaserCordovaGame;
                 }
             }
         };
-        Plateau.prototype.spawnNew = function () {
+        Plateau.prototype.spawnNewPieces = function () {
             for (var x = 0; x < this.taillePlateauX; x++) {
                 for (var y = 0; y < this.taillePlateauY; y++) {
                     if (this.pieces[x][y] == null) {

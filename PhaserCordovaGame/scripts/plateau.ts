@@ -27,17 +27,6 @@
             p.kill();
         }
 
-        public getIndexForPiece(p: Piece): Array<number> {
-            for (var x = 0; x < this.taillePlateauX; x++) {
-                for (var y = 0; y < this.taillePlateauY; y++) {
-                    if (this.pieces[x][y] == p) {
-                        return [x, y];
-                    }
-                }
-            }
-            throw new ReferenceError("Piece introuvable dans le plateau");
-        }
-
         private initTableau() {
             this.pieces = [];
             for (var x = 0; x < this.taillePlateauX; x++) {
