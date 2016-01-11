@@ -6,7 +6,7 @@
         scale: Phaser.Point;
         pas: number;
         acceptInput: boolean;
-        listTween: Phaser.Tween[];
+        listTeensBloquants: Phaser.Tween[];
 
         constructor(game: Phaser.Game, sizeX: number, sizeY: number) {
             super(game, null, "plateau", true);
@@ -50,7 +50,7 @@
 
 
         public refreshPosition() {
-            this.listTween = new Array<Phaser.Tween>();
+            this.listTeensBloquants = new Array<Phaser.Tween>();
             var debutX = SimpleGame.realWidth * 0.1 + this.pas / 2;
             var debutY = (SimpleGame.realHeight - (this.taillePlateauY * this.pas)) / 2;
             for (var x = 0; x < this.taillePlateauX; x++) {
@@ -61,10 +61,18 @@
                         {
                             x: debutX + this.pas * x,
                             y: debutY + this.pas * y
-                        }, 1000, Phaser.Easing.Quartic.In, false),
+                        }, 1000, Phaser.Easing.Quartic.In, false);
+                    // si nouvellement créé
+                    // on les place au dessus
+                    if (p.x == 0 && p.y == 0) {
+                        p.x = debutX + this.pas * x;
+                        p.y = debutY - this.pas;
+                    }
+                            
+                    
                     //p.position = new Phaser.Point(debutX + this.pas * x, debutY + this.pas * y);
-                        p.scale = this.scale;
-                    this.listTween.push(tween);
+                    p.scale = this.scale;
+                    this.listTeensBloquants.push(tween);
                     // Si actif, on clean
                     if (p.inputEnabled) {
                         p.inputEnabled = false;
@@ -80,7 +88,7 @@
                 }
             }
 
-            this.listTween.forEach((v: Phaser.Tween, i: number, arr: Phaser.Tween[]) => {
+            this.listTeensBloquants.forEach((v: Phaser.Tween, i: number, arr: Phaser.Tween[]) => {
                 v.onComplete.addOnce(() => {
                     // si tous les tweens sont finis
                     if (this.tweensFinished()) {
@@ -96,7 +104,7 @@
         }
 
         public tweensFinished(): boolean {
-            return this.listTween.every((v) => {
+            return this.listTeensBloquants.every((v) => {
                 return !v.isRunning;
             });
         }

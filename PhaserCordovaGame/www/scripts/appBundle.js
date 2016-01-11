@@ -218,7 +218,7 @@ var PhaserCordovaGame;
         };
         Plateau.prototype.refreshPosition = function () {
             var _this = this;
-            this.listTween = new Array();
+            this.listTeensBloquants = new Array();
             var debutX = PhaserCordovaGame.SimpleGame.realWidth * 0.1 + this.pas / 2;
             var debutY = (PhaserCordovaGame.SimpleGame.realHeight - (this.taillePlateauY * this.pas)) / 2;
             for (var x = 0; x < this.taillePlateauX; x++) {
@@ -228,10 +228,16 @@ var PhaserCordovaGame;
                     tween.to({
                         x: debutX + this.pas * x,
                         y: debutY + this.pas * y
-                    }, 1000, Phaser.Easing.Quartic.In, false),
-                        //p.position = new Phaser.Point(debutX + this.pas * x, debutY + this.pas * y);
-                        p.scale = this.scale;
-                    this.listTween.push(tween);
+                    }, 1000, Phaser.Easing.Quartic.In, false);
+                    // si nouvellement créé
+                    // on les place au dessus
+                    if (p.x == 0 && p.y == 0) {
+                        p.x = debutX + this.pas * x;
+                        p.y = debutY - this.pas;
+                    }
+                    //p.position = new Phaser.Point(debutX + this.pas * x, debutY + this.pas * y);
+                    p.scale = this.scale;
+                    this.listTeensBloquants.push(tween);
                     // Si actif, on clean
                     if (p.inputEnabled) {
                         p.inputEnabled = false;
@@ -246,7 +252,7 @@ var PhaserCordovaGame;
                     }, this, 0, x, y);
                 }
             }
-            this.listTween.forEach(function (v, i, arr) {
+            this.listTeensBloquants.forEach(function (v, i, arr) {
                 v.onComplete.addOnce(function () {
                     // si tous les tweens sont finis
                     if (_this.tweensFinished()) {
@@ -261,7 +267,7 @@ var PhaserCordovaGame;
             });
         };
         Plateau.prototype.tweensFinished = function () {
-            return this.listTween.every(function (v) {
+            return this.listTeensBloquants.every(function (v) {
                 return !v.isRunning;
             });
         };
