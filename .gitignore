@@ -212,4 +212,6 @@ _Pvt_Extensions/
 ModelManifest.xml
 
 # custom
-appBundle.*
+appBundle.js
+appBundle.js.map
+[kK]eys.ts
