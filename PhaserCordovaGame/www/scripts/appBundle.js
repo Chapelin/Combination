@@ -156,12 +156,19 @@ var PhaserCordovaGame;
             _super.call(this);
         }
         Main.prototype.create = function () {
+            gapi.auth.authorize({
+                client_id: '634302798162-n2vj530cdd378m4gjs8ukgtkb7jbelak.apps.googleusercontent.com',
+                scope: 'https://www.googleapis.com/auth/games'
+            }, this.callBackAuth.bind(this));
             this.plateauJoueur = new PhaserCordovaGame.Plateau(this.game, 10, 7);
         };
         Main.prototype.update = function () {
         };
         Main.prototype.gameOver = function () {
             this.game.state.start(PhaserCordovaGame.stateGameOver);
+        };
+        Main.prototype.callBackAuth = function (token) {
+            console.log(token);
         };
         return Main;
     })(Phaser.State);

@@ -8,9 +8,14 @@
         }
 
         create() {
+            gapi.auth.authorize({
+                client_id: '634302798162-n2vj530cdd378m4gjs8ukgtkb7jbelak.apps.googleusercontent.com',
+                scope:'https://www.googleapis.com/auth/games'
+            }, this.callBackAuth.bind(this)
+            );
+            this.plateauJoueur = new Plateau(this.game, 10, 7);
 
-            this.plateauJoueur = new Plateau(this.game, 10,7);
-          }
+        }
 
         update() {
 
@@ -20,23 +25,10 @@
             this.game.state.start(stateGameOver);
         }
 
-        ajout(t: TypePiece) {
-           
-            console.log("Appuyé");
+        callBackAuth(token: GoogleApiOAuth2TokenObject) {
+            console.log(token);
         }
 
-        ajout1() {
-            this.ajout(TypePiece.Vert);
-
-        }
-
-        ajout2() {
-            this.ajout(TypePiece.Rouge);
-
-        }
-
-        testCombinaison() {
-            //this.plateauJoueur.findCombinaison();
-        }
     }
+
 }
