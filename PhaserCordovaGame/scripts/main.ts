@@ -2,6 +2,8 @@
     export class Main extends Phaser.State {
         game: Phaser.Game;
         plateauJoueur: Plateau;
+        token: GoogleApiOAuth2TokenObject;
+        baseUrl: string = "https://www.googleapis.com/games/v1/"
         constructor() {
             super();
 
@@ -26,9 +28,20 @@
         }
 
         callBackAuth(token: GoogleApiOAuth2TokenObject) {
+            this.token = token
             console.log(token);
+            gapi.auth.setToken(token)
+            gapi.client.request({
+                path: this.baseUrl + "achievements",
+                method: "GET",
+                callback: this.test
+            }
+            );
         }
 
+        test(data?: GoogleGameDev.AchievementDefinitionsListResponse) {
+            console.log(data);
+        }
     }
 
 }

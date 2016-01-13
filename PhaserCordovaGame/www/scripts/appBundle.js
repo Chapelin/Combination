@@ -154,6 +154,7 @@ var PhaserCordovaGame;
         __extends(Main, _super);
         function Main() {
             _super.call(this);
+            this.baseUrl = "https://www.googleapis.com/games/v1/";
         }
         Main.prototype.create = function () {
             gapi.auth.authorize({
@@ -168,7 +169,17 @@ var PhaserCordovaGame;
             this.game.state.start(PhaserCordovaGame.stateGameOver);
         };
         Main.prototype.callBackAuth = function (token) {
+            this.token = token;
             console.log(token);
+            gapi.auth.setToken(token);
+            gapi.client.request({
+                path: this.baseUrl + "achievements",
+                method: "GET",
+                callback: this.test
+            });
+        };
+        Main.prototype.test = function (data) {
+            console.log(data);
         };
         return Main;
     })(Phaser.State);
