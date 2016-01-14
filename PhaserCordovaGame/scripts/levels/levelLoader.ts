@@ -12,7 +12,6 @@
         }
 
         public readResponse(ev: Event) {
-            console.log(ev);
             var result = ev.currentTarget as XMLHttpRequest;
             this.func(JSON.parse(result.responseText));
         }

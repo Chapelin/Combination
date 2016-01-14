@@ -15,7 +15,7 @@
             this.plateauJoueur = new Plateau(this.game, 10, 7);
             this.apiHelper.getListAchievements(this.logAchievements, this);
             var t = new LevelLoader();
-            t.readLevel(1, (d) => console.log);
+            t.readLevel(1, (d: LevelData) => { console.log("Fichier level lu"); this.plateauJoueur.loadPlateauFromLevelData(d); });
 
 
         }

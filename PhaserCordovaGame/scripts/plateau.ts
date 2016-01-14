@@ -13,14 +13,12 @@
             this.taillePlateauX = sizeX;
             this.taillePlateauY = sizeY;
             // X est plus petit que Y
-            this.pas = (SimpleGame.realWidth * 0.8) / this.taillePlateauX;
-            this.processScale();
-            this.initTableau();
-            this.refreshPosition();
-            this.acceptInput = true;
+           
+            
         }
 
         private processScale() {
+            this.pas = (SimpleGame.realWidth * 0.8) / this.taillePlateauX;
             var p = PieceFactory.CreatePiece(this.game, TypePiece.Vert);
             var originalHeight = p.texture.height
             this.scale = new Phaser.Point(this.pas / originalHeight, this.pas / originalHeight);
@@ -44,24 +42,26 @@
             for (var x = 0; x < this.taillePlateauX; x++) {
                 for (var y = 0; y < this.taillePlateauY; y++) {
                     var p = this.pieces[x][y];
-                    var tween = this.game.add.tween(p);
-                    tween.to(
-                        {
-                            x: debutX + this.pas * x,
-                            y: debutY + this.pas * y
-                        }, GameConfiguration.GAMEANIM_SPEED, Phaser.Easing.Quartic.In, false);
-                    // si nouvellement créé
-                    // on les place au dessus
-                    if (p.x == 0 && p.y == 0) {
-                        p.x = debutX + this.pas * x;
-                        p.y = debutY - this.pas;
+                    if (p !== null && p !== undefined) {
+                        var tween = this.game.add.tween(p);
+                        tween.to(
+                            {
+                                x: debutX + this.pas * x,
+                                y: debutY + this.pas * y
+                            }, GameConfiguration.GAMEANIM_SPEED, Phaser.Easing.Quartic.In, false);
+                        // si nouvellement créé
+                        // on les place au dessus
+                        if (p.x == 0 && p.y == 0) {
+                            p.x = debutX + this.pas * x;
+                            p.y = debutY - this.pas;
+                        }
+
+                        p.scale = this.scale;
+                        this.listTeensBloquants.push(tween);
+                        // Si actif, on clean
+                        this.setupClickEventPiece(p, x, y);
                     }
 
-                    p.scale = this.scale;
-                    this.listTeensBloquants.push(tween);
-                    // Si actif, on clean
-                    this.setupClickEventPiece(p, x, y);
-                   
                 }
             }
 
@@ -75,6 +75,23 @@
                 v.start();
             });
 
+        }
+
+        public loadPlateauFromLevelData(data: LevelData) {
+            this.taillePlateauX = data.tailleX;
+            this.taillePlateauY = data.tailleY;
+            this.pieces = [];
+            for (var x = 0; x < this.taillePlateauX; x++) {
+                this.pieces[x] = [];
+                for (var y = 0; y < this.taillePlateauY; y++) {
+                    var d: number = data.data[x][y];
+                    if (d !== null)
+                        this.pieces[x][y] = PieceFactory.CreatePiece(this.game, d);
+                }
+            }
+            this.processScale();
+            this.refreshPosition();
+            this.acceptInput = true;
         }
 
         public setupClickEventPiece(p: Piece, x: number, y: number) {
@@ -196,7 +213,7 @@
                 res += "\n";
             }
             return res;
-            
+
         }
     }
 }
