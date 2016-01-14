@@ -1,5 +1,15 @@
 var PhaserCordovaGame;
 (function (PhaserCordovaGame) {
+    var Keys = (function () {
+        function Keys() {
+        }
+        Keys.GoogleClientId = "634302798162-n2vj530cdd378m4gjs8ukgtkb7jbelak.apps.googleusercontent.com";
+        return Keys;
+    })();
+    PhaserCordovaGame.Keys = Keys;
+})(PhaserCordovaGame || (PhaserCordovaGame = {}));
+var PhaserCordovaGame;
+(function (PhaserCordovaGame) {
     var AssetKeys = (function () {
         function AssetKeys() {
         }
@@ -154,31 +164,18 @@ var PhaserCordovaGame;
         __extends(Main, _super);
         function Main() {
             _super.call(this);
-            this.baseUrl = "https://www.googleapis.com/games/v1/";
+            this.apiHelper = new GoogleGameDev.ApiHelper();
         }
         Main.prototype.create = function () {
-            gapi.auth.authorize({
-                client_id: '634302798162-n2vj530cdd378m4gjs8ukgtkb7jbelak.apps.googleusercontent.com',
-                scope: 'https://www.googleapis.com/auth/games'
-            }, this.callBackAuth.bind(this));
             this.plateauJoueur = new PhaserCordovaGame.Plateau(this.game, 10, 7);
+            this.apiHelper.getListAchievements(this.logAchievements, this);
         };
         Main.prototype.update = function () {
         };
         Main.prototype.gameOver = function () {
             this.game.state.start(PhaserCordovaGame.stateGameOver);
         };
-        Main.prototype.callBackAuth = function (token) {
-            this.token = token;
-            console.log(token);
-            gapi.auth.setToken(token);
-            gapi.client.request({
-                path: this.baseUrl + "achievements",
-                method: "GET",
-                callback: this.test
-            });
-        };
-        Main.prototype.test = function (data) {
+        Main.prototype.logAchievements = function (data) {
             console.log(data);
         };
         return Main;
@@ -329,7 +326,6 @@ var PhaserCordovaGame;
                 _this.pieces[pos[0]][pos[1]] = null;
             });
             this.fallingDown();
-            this.spawnNewPieces();
             this.refreshPosition();
             console.log(this.printConsolePlateau());
         };
@@ -344,15 +340,6 @@ var PhaserCordovaGame;
                     // tant que la piece est null ET qu'on a pas que des null
                     while (this.pieces[x][y] == null && !reste.every(function (x, n, a) { return x == null; })) {
                         PhaserCordovaGame.ArrayUtil.decalePiece(this.pieces[x], y);
-                    }
-                }
-            }
-        };
-        Plateau.prototype.spawnNewPieces = function () {
-            for (var x = 0; x < this.taillePlateauX; x++) {
-                for (var y = 0; y < this.taillePlateauY; y++) {
-                    if (this.pieces[x][y] == null) {
-                        this.pieces[x][y] = PhaserCordovaGame.PieceFactory.CreatePieceRandom(this.game);
                     }
                 }
             }
@@ -399,6 +386,31 @@ var PhaserCordovaGame;
     })(Phaser.State);
     PhaserCordovaGame.Preload = Preload;
 })(PhaserCordovaGame || (PhaserCordovaGame = {}));
+var GoogleGameDev;
+(function (GoogleGameDev) {
+    var ApiHelper = (function () {
+        function ApiHelper() {
+            this.baseUrl = "https://www.googleapis.com/games/v1/";
+            gapi.auth.authorize({
+                client_id: PhaserCordovaGame.Keys.GoogleClientId,
+                scope: 'https://www.googleapis.com/auth/games'
+            }, this.callBackAuth.bind(this));
+        }
+        ApiHelper.prototype.callBackAuth = function (token) {
+            this.token = token;
+        };
+        ApiHelper.prototype.getListAchievements = function (callback, context) {
+            gapi.auth.setToken(this.token);
+            gapi.client.request({
+                path: this.baseUrl + "achievements",
+                method: "GET",
+                callback: callback.bind(context)
+            });
+        };
+        return ApiHelper;
+    })();
+    GoogleGameDev.ApiHelper = ApiHelper;
+})(GoogleGameDev || (GoogleGameDev = {}));
 var GoogleGameDev;
 (function (GoogleGameDev) {
     var AchievementDefinitionsListResponse = (function () {
@@ -515,58 +527,6 @@ var GoogleGameDev;
     })();
     GoogleGameDev.Stats = Stats;
 })(GoogleGameDev || (GoogleGameDev = {}));
-var GoogleGameDev;
-(function (GoogleGameDev) {
-    var TurnBasedMatch = (function () {
-        function TurnBasedMatch() {
-            this.kind = "games#turnBasedMatch";
-        }
-        return TurnBasedMatch;
-    })();
-    GoogleGameDev.TurnBasedMatch = TurnBasedMatch;
-    var TurnBasedMatchParticipant = (function () {
-        function TurnBasedMatchParticipant() {
-            this.kind = "games#turnBasedMatchParticipant";
-        }
-        return TurnBasedMatchParticipant;
-    })();
-    GoogleGameDev.TurnBasedMatchParticipant = TurnBasedMatchParticipant;
-    var TurnBasedMatchModification = (function () {
-        function TurnBasedMatchModification() {
-            this.kind = "games#turnBasedMatchModification";
-        }
-        return TurnBasedMatchModification;
-    })();
-    GoogleGameDev.TurnBasedMatchModification = TurnBasedMatchModification;
-    var TurnBasedAutoMatchingCriteria = (function () {
-        function TurnBasedAutoMatchingCriteria() {
-            this.kind = "games#turnBasedAutoMatchingCriteria";
-        }
-        return TurnBasedAutoMatchingCriteria;
-    })();
-    GoogleGameDev.TurnBasedAutoMatchingCriteria = TurnBasedAutoMatchingCriteria;
-    var TurnBasedMatchData = (function () {
-        function TurnBasedMatchData() {
-            this.kind = "games#turnBasedMatchData";
-        }
-        return TurnBasedMatchData;
-    })();
-    GoogleGameDev.TurnBasedMatchData = TurnBasedMatchData;
-    var ParticipantResult = (function () {
-        function ParticipantResult() {
-            this.kind = "games#participantResult";
-        }
-        return ParticipantResult;
-    })();
-    GoogleGameDev.ParticipantResult = ParticipantResult;
-    var AnonymousPlayer = (function () {
-        function AnonymousPlayer() {
-            this.kind = "games#anonymousPlayer";
-        }
-        return AnonymousPlayer;
-    })();
-    GoogleGameDev.AnonymousPlayer = AnonymousPlayer;
-})(GoogleGameDev || (GoogleGameDev = {}));
 var PhaserCordovaGame;
 (function (PhaserCordovaGame) {
     var Piece = (function (_super) {
@@ -577,7 +537,7 @@ var PhaserCordovaGame;
         }
         Piece.prototype.canCombine = function (other) {
             if (other == null || other == undefined) {
-                throw new ReferenceError("Impossible de comparer à null");
+                return false;
             }
             return this.type == other.type;
         };

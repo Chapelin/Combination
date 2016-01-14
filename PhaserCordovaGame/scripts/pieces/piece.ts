@@ -11,7 +11,7 @@
 
         public canCombine(other: Piece) {
             if (other == null || other == undefined) {
-                throw new ReferenceError("Impossible de comparer à null");
+                return false;
             }
             return this.type == other.type;
         } 

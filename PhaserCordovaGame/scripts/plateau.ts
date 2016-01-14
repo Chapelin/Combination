@@ -160,7 +160,6 @@
             });
 
             this.fallingDown();
-            this.spawnNewPieces();
             this.refreshPosition();
             console.log(this.printConsolePlateau());
         }
@@ -182,18 +181,6 @@
             }
         }
 
-        private spawnNewPieces() {
-            for (var x = 0; x < this.taillePlateauX; x++) {
-                for (var y = 0; y < this.taillePlateauY; y++) {
-                    if (this.pieces[x][y] == null) {
-                        this.pieces[x][y] = PieceFactory.CreatePieceRandom(this.game);
-                    }
-                }
-            }
-
-        }
-
-
         public printConsolePlateau(): string {
             var res = "";
             for (var y = 0; y < this.taillePlateauY; y++) {
@@ -209,6 +196,7 @@
                 res += "\n";
             }
             return res;
+            
         }
     }
 }
