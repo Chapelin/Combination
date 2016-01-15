@@ -161,17 +161,41 @@
 
         public combineZone(x: number, y: number) {
             var list = this.getZoneCombine(x, y);
-            console.log("Suppression de " + list.length + " elements");
-            // à optimiser : refresh que les modifiés)
-            list.forEach((pos, i, arr) => {
-                var p = this.pieces[pos[0]][pos[1]];
-                p.delete();
-                this.pieces[pos[0]][pos[1]] = null;
-            });
-            this.afterPlateauModif();
+            if (list.length > 1) {
+                // à optimiser : refresh que les modifiés)
+                list.forEach((pos, i, arr) => {
+                    var p = this.pieces[pos[0]][pos[1]];
+                    p.delete();
+                    this.pieces[pos[0]][pos[1]] = null;
+                });
+
+                this.afterPlateauModif();
+                this.checkIfEnd();
+            }
        
         }
 
+        private checkIfEnd() {
+            if (this.taillePlateauX === 0 ) {
+                // gagné :)
+                console.log("Gagné");
+            } else {
+                var flagPasPerdu = false;
+                for (var x = 0; x < this.taillePlateauX; x++) {
+                    for (var y = 0; y < this.taillePlateauY; y++) {
+                        var p = this.pieces[x][y];
+                        if (p !== null && p !== undefined) {
+                            flagPasPerdu = flagPasPerdu || this.getZoneCombine(x, y).length > 1;                            
+                        }
+                    }
+                }
+                if (!flagPasPerdu) {
+                    console.log("perdu");
+                }
+
+                // si que des simples : Perdu
+            }
+        }
 
         private afterPlateauModif() {
             this.fallingDown();
