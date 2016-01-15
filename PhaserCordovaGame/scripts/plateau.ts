@@ -39,7 +39,7 @@
                             {
                                 x: debutX + this.pas * x,
                                 y: debutY + this.pas * y
-                            }, GameConfiguration.GAMEANIM_SPEED, Phaser.Easing.Quartic.In, false);
+                            }, GameConfiguration.GAMEANIM_SPEED, Phaser.Easing.Quartic.Out, false);
                         // si nouvellement créé
                         // on les place au dessus
                         if (p.x == 0 && p.y == 0) {
