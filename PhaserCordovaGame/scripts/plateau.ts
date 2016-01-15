@@ -18,7 +18,7 @@
         }
 
         private processScale() {
-            this.pas = (SimpleGame.realWidth * 0.8) / this.taillePlateauX;
+         
             var p = PieceFactory.CreatePiece(this.game, TypePiece.Vert);
             var originalHeight = p.texture.height
             this.scale = new Phaser.Point(this.pas / originalHeight, this.pas / originalHeight);
@@ -26,8 +26,9 @@
         }
 
         public refreshPosition() {
+          
             this.listTeensBloquants = new Array<Phaser.Tween>();
-            var debutX = SimpleGame.realWidth * 0.1 + this.pas / 2;
+            var debutX = (SimpleGame.realWidth - (this.pas * this.taillePlateauX) )/2
             var debutY = (SimpleGame.realHeight - (this.taillePlateauY * this.pas)) / 2;
             for (var x = 0; x < this.taillePlateauX; x++) {
                 for (var y = 0; y < this.taillePlateauY; y++) {
@@ -83,7 +84,13 @@
                     }
                 }
             }
-            this.afterPlateauModif();
+
+           
+            this.fallingDown();
+            this.reduceSize();
+            this.pas = (SimpleGame.realWidth * 0.8) / this.taillePlateauX;
+            this.processScale();
+            this.refreshPosition();
             this.acceptInput = true;
         }
 
@@ -169,7 +176,9 @@
                     this.pieces[pos[0]][pos[1]] = null;
                 });
 
-                this.afterPlateauModif();
+                this.fallingDown();
+                this.reduceSize();
+                this.refreshPosition();
                 this.checkIfEnd();
             }
        
@@ -198,10 +207,7 @@
         }
 
         private afterPlateauModif() {
-            this.fallingDown();
-            this.reduceSize();
-            this.processScale();
-            this.refreshPosition();
+        
         }
 
         private fallingDown() {
@@ -237,6 +243,7 @@
                 }
 
             } while (x < this.taillePlateauX);
+            console.log("New size : " + this.taillePlateauX);
             
         }
 
