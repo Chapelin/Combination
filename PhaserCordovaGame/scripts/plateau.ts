@@ -25,16 +25,6 @@
             p.kill();
         }
 
-        private initTableau() {
-            this.pieces = [];
-            for (var x = 0; x < this.taillePlateauX; x++) {
-                this.pieces[x] = [];
-                for (var y = 0; y < this.taillePlateauY; y++) {
-                    this.pieces[x][y] = PieceFactory.CreatePieceRandom(this.game);
-                }
-            }
-        }
-
         public refreshPosition() {
             this.listTeensBloquants = new Array<Phaser.Tween>();
             var debutX = SimpleGame.realWidth * 0.1 + this.pas / 2;
@@ -85,12 +75,15 @@
                 this.pieces[x] = [];
                 for (var y = 0; y < this.taillePlateauY; y++) {
                     var d: number = data.data[x][y];
-                    if (d !== null)
+                    if (d !== null) {
                         this.pieces[x][y] = PieceFactory.CreatePiece(this.game, d);
+                    }
+                    else {
+                        this.pieces[x][y] = null;
+                    }
                 }
             }
-            this.processScale();
-            this.refreshPosition();
+            this.afterPlateauModif();
             this.acceptInput = true;
         }
 
@@ -175,12 +168,17 @@
                 p.delete();
                 this.pieces[pos[0]][pos[1]] = null;
             });
-
-            this.fallingDown();
-            this.refreshPosition();
-            console.log(this.printConsolePlateau());
+            this.afterPlateauModif();
+       
         }
 
+
+        private afterPlateauModif() {
+            this.fallingDown();
+            this.reduceSize();
+            this.processScale();
+            this.refreshPosition();
+        }
 
         private fallingDown() {
             // pour chaque X : on regarde les Y  depuis la fin
@@ -196,6 +194,26 @@
                     }
                 }
             }
+        }
+
+        private reduceSize() {
+            // pour chaque ligne verticale, si elle est vide on reduit la taille du plateau en la virant
+            var x = 0;
+            do {
+                var xVide = this.pieces[x].every((p: Piece) => {
+                    return p === null || p === undefined;
+                });
+                if (xVide) {
+                    this.taillePlateauX--;
+                    // deplacer le tableau en virant la ligne vide
+                    this.pieces.splice(x, 1);
+                }
+                else {
+                    x++;
+                }
+
+            } while (x < this.taillePlateauX);
+            
         }
 
         public printConsolePlateau(): string {
