@@ -7,18 +7,17 @@
         pas: number;
         acceptInput: boolean;
         listTeensBloquants: Phaser.Tween[];
+        nombreCoups: number;
+        currentLevel: number;
 
         constructor(game: Phaser.Game, sizeX: number, sizeY: number) {
             super(game, null, "plateau", true);
             this.taillePlateauX = sizeX;
             this.taillePlateauY = sizeY;
             // X est plus petit que Y
-           
-            
         }
 
         private processScale() {
-         
             var p = PieceFactory.CreatePiece(this.game, TypePiece.Vert);
             var originalHeight = p.texture.height
             this.scale = new Phaser.Point(this.pas / originalHeight, this.pas / originalHeight);
@@ -52,7 +51,6 @@
                         // Si actif, on clean
                         this.setupClickEventPiece(p, x, y);
                     }
-
                 }
             }
 
@@ -68,9 +66,11 @@
 
         }
 
-        public loadPlateauFromLevelData(data: LevelData) {
+        public loadPlateauFromLevelData(data: LevelData, levelNumber : number) {
             this.taillePlateauX = data.tailleX;
             this.taillePlateauY = data.tailleY;
+            this.currentLevel = levelNumber;
+            this.nombreCoups = 0;
             this.pieces = [];
             for (var x = 0; x < this.taillePlateauX; x++) {
                 this.pieces[x] = [];
@@ -85,7 +85,6 @@
                 }
             }
 
-           
             this.fallingDown();
             this.reduceSize();
             this.pas = (SimpleGame.realWidth * 0.8) / this.taillePlateauX;
@@ -169,6 +168,7 @@
         public combineZone(x: number, y: number) {
             var list = this.getZoneCombine(x, y);
             if (list.length > 1) {
+                this.nombreCoups++;
                 // à optimiser : refresh que les modifiés)
                 list.forEach((pos, i, arr) => {
                     var p = this.pieces[pos[0]][pos[1]];
@@ -187,7 +187,8 @@
         private checkIfEnd() {
             if (this.taillePlateauX === 0 ) {
                 // gagné :)
-                console.log("Gagné");
+                this.game.state.start(stateLevelWon, true, false, this.currentLevel,this.nombreCoups);
+                
             } else {
                 var flagPasPerdu = false;
                 for (var x = 0; x < this.taillePlateauX; x++) {
@@ -199,15 +200,10 @@
                     }
                 }
                 if (!flagPasPerdu) {
-                    console.log("perdu");
+                    this.game.state.start(stateGameOver, true, false, this.currentLevel);
                 }
-
                 // si que des simples : Perdu
             }
-        }
-
-        private afterPlateauModif() {
-        
         }
 
         private fallingDown() {
@@ -244,25 +240,7 @@
 
             } while (x < this.taillePlateauX);
             console.log("New size : " + this.taillePlateauX);
-            
         }
 
-        public printConsolePlateau(): string {
-            var res = "";
-            for (var y = 0; y < this.taillePlateauY; y++) {
-
-                for (var x = 0; x < this.taillePlateauX; x++) {
-
-                    if (this.pieces[x][y] != null) {
-                        res += this.pieces[x][y].type;
-                    } else {
-                        res += "X";
-                    }
-                }
-                res += "\n";
-            }
-            return res;
-
-        }
     }
 }

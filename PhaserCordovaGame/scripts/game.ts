@@ -10,6 +10,7 @@ module PhaserCordovaGame {
     export var stateBoot = "Boot";
     export var statePreload = "Preload";
     export var stateGameTitle = "GameTitle";
+    export var stateLevelWon = "LevelWon";
     export var stateMain = "Main";
     export var stateGameOver = "GameOver";
 
@@ -27,6 +28,7 @@ module PhaserCordovaGame {
             this.game.state.add(stateGameTitle, GameTitle);
             this.game.state.add(stateMain, Main);
             this.game.state.add(stateGameOver, GameOver);
+            this.game.state.add(stateLevelWon, LevelWon);
 
             //Start the first state
             this.game.state.start(stateBoot);

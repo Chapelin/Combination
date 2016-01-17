@@ -6,20 +6,16 @@
 
         constructor() {
             super();
-
         }
 
         create() {
-          
             this.plateauJoueur = new Plateau(this.game, 10, 7);
             var t = new LevelLoader();
-            t.readLevel(1, (d: LevelData) => { console.log("Fichier level lu"); this.plateauJoueur.loadPlateauFromLevelData(d); });
-
-
+            var levelToLoad: number = 1;
+            t.readLevel(levelToLoad, (d: LevelData) => { console.log("Fichier level lu"); this.plateauJoueur.loadPlateauFromLevelData(d, levelToLoad); });
         }
 
         update() {
-
         }
 
         gameOver() {
@@ -29,8 +25,5 @@
         logAchievements(data?: GoogleGameDev.AchievementDefinitionsListResponse) {
             console.log(data);
         }
-
-        
     }
-
 }
