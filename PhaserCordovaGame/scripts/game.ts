@@ -2,11 +2,6 @@
 
 module PhaserCordovaGame {
 
-    //enum States { Boot, Preload, GameTitle, Main, GameOver };
-    //function getStateName(state: States) : string {
-    //    var stateName: string = States[state];
-    //    return stateName;
-    //}
     export var stateBoot = "Boot";
     export var statePreload = "Preload";
     export var stateGameTitle = "GameTitle";

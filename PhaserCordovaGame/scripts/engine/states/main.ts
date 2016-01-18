@@ -6,13 +6,24 @@
 
         constructor() {
             super();
+            
         }
 
-        create() {
-            this.plateauJoueur = new Plateau(this.game, 10, 7);
+        
+        init(levelToStart?: number) {
+            if (levelToStart) {
+                this.startLevel(levelToStart);
+            }
+            else {
+                // display choose level
+                this.startLevel(1);
+            }
+        }
+
+        startLevel(targetLevel: number) {
+            this.plateauJoueur = new Plateau(this.game,5, 5);
             var t = new LevelLoader();
-            var levelToLoad: number = 1;
-            t.readLevel(levelToLoad, (d: LevelData) => { console.log("Fichier level lu"); this.plateauJoueur.loadPlateauFromLevelData(d, levelToLoad); });
+            t.readLevel(targetLevel, (d: LevelData) => { console.log("Fichier level lu"); this.plateauJoueur.loadPlateauFromLevelData(d, targetLevel); });
         }
 
         update() {
