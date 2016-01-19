@@ -14,12 +14,34 @@ module PhaserCordovaGame {
 
         function onDeviceReady() {
             // Handle the Cordova pause and resume events
+            
             document.addEventListener("pause", onPause, false);
             document.addEventListener("resume", onResume, false);
-
+            var url = "https://accounts.google.com/o/oauth2/auth?client_id=" + Keys.GoogleClientId + "&scope=https://www.googleapis.com/auth/games&response_type=token&redirect_uri=http://localhost";
             // TODO: Cordova has been loaded. Perform any initialization that requires Cordova here.
-            var game = new SimpleGame();
+           
+            var authWindows = window.open(url, '_blank', 'location=no,toolbar=no');
+
+            authWindows.addEventListener('loadstart', started);
+
+          
+            //var game = new SimpleGame();
+            
         }
+
+        function started(data: InAppBrowserEvent) {
+
+            alert(data);
+            var url = data.url;
+            
+            if (url.indexOf("#access_token") > -1) {
+                var reg = new RegExp("access_token=(.+?)&");
+                var res = reg.exec(url);
+                var token = res[1];
+            }
+        }
+
+   
 
         function onPause() {
             // TODO: This application has been suspended. Save application state here.
