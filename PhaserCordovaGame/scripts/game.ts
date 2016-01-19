@@ -12,9 +12,11 @@ module PhaserCordovaGame {
     export class SimpleGame {
         public static realWidth: number;
         public static realHeight: number;
-        constructor() {
+        public static apiHelper: GoogleGameDev.ApiHelper;
+        constructor(apiHelper: GoogleGameDev.ApiHelper) {
             SimpleGame.realHeight = window.innerHeight * window.devicePixelRatio;
             SimpleGame.realWidth = window.innerWidth * window.devicePixelRatio;
+            SimpleGame.apiHelper = apiHelper;
             this.game = new Phaser.Game(SimpleGame.realWidth, SimpleGame.realHeight, Phaser.AUTO, 'content');
 
             //Add all states

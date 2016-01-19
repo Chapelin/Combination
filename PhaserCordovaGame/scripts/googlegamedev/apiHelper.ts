@@ -4,11 +4,15 @@
         baseUrl: string = "https://www.googleapis.com/games/v1/";
 
         constructor() {
-            gapi.auth.authorize({
-                client_id: PhaserCordovaGame.Keys.GoogleClientId,
-                scope: 'https://www.googleapis.com/auth/games'
-            }, this.callBackAuth.bind(this)
-            );
+           
+        }
+
+        launchAuth(callback: () => void) {
+
+        }
+
+        initToken(tok: GoogleApiOAuth2TokenObject) {
+            this.token = tok;
         }
 
         callBackAuth(token: GoogleApiOAuth2TokenObject) {

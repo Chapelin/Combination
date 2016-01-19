@@ -6,7 +6,7 @@
 
         constructor() {
             super();
-            
+            SimpleGame.apiHelper.getListAchievements(this.logAchievements);
         }
 
         
@@ -34,6 +34,7 @@
         }
 
         logAchievements(data?: GoogleGameDev.AchievementDefinitionsListResponse) {
+            alert(data.items.length + " achievements");
             console.log(data);
         }
     }
