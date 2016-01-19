@@ -6,11 +6,11 @@
 
         constructor() {
             super();
-            SimpleGame.apiHelper.getListAchievements(this.logAchievements);
         }
 
         
         init(levelToStart?: number) {
+            SimpleGame.apiHelper.getListAchievements(this.logAchievements);
             if (levelToStart) {
                 this.startLevel(levelToStart);
             }
