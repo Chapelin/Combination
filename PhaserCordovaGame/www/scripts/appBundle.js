@@ -24,45 +24,21 @@ var PhaserCordovaGame;
     })();
     PhaserCordovaGame.AssetKeys = AssetKeys;
 })(PhaserCordovaGame || (PhaserCordovaGame = {}));
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var PhaserCordovaGame;
-(function (PhaserCordovaGame) {
-    var Boot = (function (_super) {
-        __extends(Boot, _super);
-        function Boot() {
-            _super.call(this);
-        }
-        Boot.prototype.preload = function () {
-        };
-        Boot.prototype.create = function () {
-            this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-            this.game.state.start(PhaserCordovaGame.statePreload);
-        };
-        return Boot;
-    })(Phaser.State);
-    PhaserCordovaGame.Boot = Boot;
-})(PhaserCordovaGame || (PhaserCordovaGame = {}));
 /// <reference path="../bower_components/phaser/typescript/phaser.d.ts" />
 var PhaserCordovaGame;
 (function (PhaserCordovaGame) {
-    //enum States { Boot, Preload, GameTitle, Main, GameOver };
-    //function getStateName(state: States) : string {
-    //    var stateName: string = States[state];
-    //    return stateName;
-    //}
     PhaserCordovaGame.stateBoot = "Boot";
     PhaserCordovaGame.statePreload = "Preload";
     PhaserCordovaGame.stateGameTitle = "GameTitle";
+    PhaserCordovaGame.stateLevelWon = "LevelWon";
     PhaserCordovaGame.stateMain = "Main";
     PhaserCordovaGame.stateGameOver = "GameOver";
     var SimpleGame = (function () {
         function SimpleGame() {
             SimpleGame.realHeight = window.innerHeight * window.devicePixelRatio;
             SimpleGame.realWidth = window.innerWidth * window.devicePixelRatio;
+            SimpleGame.apiHelper = new GoogleGameDev.ApiHelper();
+            SimpleGame.apiHelper.launchAuth(PhaserCordovaGame.Keys.GoogleClientId);
             this.game = new Phaser.Game(SimpleGame.realWidth, SimpleGame.realHeight, Phaser.AUTO, 'content');
             //Add all states
             this.game.state.add(PhaserCordovaGame.stateBoot, PhaserCordovaGame.Boot);
@@ -70,6 +46,7 @@ var PhaserCordovaGame;
             this.game.state.add(PhaserCordovaGame.stateGameTitle, PhaserCordovaGame.GameTitle);
             this.game.state.add(PhaserCordovaGame.stateMain, PhaserCordovaGame.Main);
             this.game.state.add(PhaserCordovaGame.stateGameOver, PhaserCordovaGame.GameOver);
+            this.game.state.add(PhaserCordovaGame.stateLevelWon, PhaserCordovaGame.LevelWon);
             //Start the first state
             this.game.state.start(PhaserCordovaGame.stateBoot);
         }
@@ -82,49 +59,10 @@ var PhaserCordovaGame;
     var GameConfiguration = (function () {
         function GameConfiguration() {
         }
-        GameConfiguration.GAPIKey = '';
-        GameConfiguration.GAMEANIM_SPEED = 1000;
+        GameConfiguration.GAMEANIM_SPEED = 650;
         return GameConfiguration;
     })();
     PhaserCordovaGame.GameConfiguration = GameConfiguration;
-})(PhaserCordovaGame || (PhaserCordovaGame = {}));
-var PhaserCordovaGame;
-(function (PhaserCordovaGame) {
-    var GameOver = (function (_super) {
-        __extends(GameOver, _super);
-        function GameOver() {
-            _super.call(this);
-        }
-        GameOver.prototype.create = function () {
-        };
-        GameOver.prototype.restartGame = function () {
-            this.game.state.start(PhaserCordovaGame.stateGameTitle);
-        };
-        return GameOver;
-    })(Phaser.State);
-    PhaserCordovaGame.GameOver = GameOver;
-})(PhaserCordovaGame || (PhaserCordovaGame = {}));
-var PhaserCordovaGame;
-(function (PhaserCordovaGame) {
-    var GameTitle = (function (_super) {
-        __extends(GameTitle, _super);
-        function GameTitle() {
-            _super.call(this);
-        }
-        GameTitle.prototype.create = function () {
-            var logo = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, PhaserCordovaGame.AssetKeys.assetLogo);
-            logo.anchor.setTo(0.5, 0.5);
-            logo.scale.setTo(0.2, 0.2);
-            logo.inputEnabled = true;
-            logo.events.onInputDown.add(this.startGame, this);
-            this.game.add.tween(logo.scale).to({ x: 1, y: 1 }, 2000, Phaser.Easing.Bounce.Out, true);
-        };
-        GameTitle.prototype.startGame = function () {
-            this.game.state.start(PhaserCordovaGame.stateMain);
-        };
-        return GameTitle;
-    })(Phaser.State);
-    PhaserCordovaGame.GameTitle = GameTitle;
 })(PhaserCordovaGame || (PhaserCordovaGame = {}));
 /// <reference path="game.ts" />
 // For an introduction to the Blank template, see the following documentation:
@@ -140,6 +78,7 @@ var PhaserCordovaGame;
             document.addEventListener("deviceready", onDeviceReady, false);
         }
         Application.initialize = initialize;
+        var authWindows;
         function onDeviceReady() {
             // Handle the Cordova pause and resume events
             document.addEventListener("pause", onPause, false);
@@ -158,30 +97,11 @@ var PhaserCordovaGame;
         Application.initialize();
     };
 })(PhaserCordovaGame || (PhaserCordovaGame = {}));
-var PhaserCordovaGame;
-(function (PhaserCordovaGame) {
-    var Main = (function (_super) {
-        __extends(Main, _super);
-        function Main() {
-            _super.call(this);
-            this.apiHelper = new GoogleGameDev.ApiHelper();
-        }
-        Main.prototype.create = function () {
-            this.plateauJoueur = new PhaserCordovaGame.Plateau(this.game, 10, 7);
-            this.apiHelper.getListAchievements(this.logAchievements, this);
-        };
-        Main.prototype.update = function () {
-        };
-        Main.prototype.gameOver = function () {
-            this.game.state.start(PhaserCordovaGame.stateGameOver);
-        };
-        Main.prototype.logAchievements = function (data) {
-            console.log(data);
-        };
-        return Main;
-    })(Phaser.State);
-    PhaserCordovaGame.Main = Main;
-})(PhaserCordovaGame || (PhaserCordovaGame = {}));
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var PhaserCordovaGame;
 (function (PhaserCordovaGame) {
     var Plateau = (function (_super) {
@@ -191,11 +111,6 @@ var PhaserCordovaGame;
             this.taillePlateauX = sizeX;
             this.taillePlateauY = sizeY;
             // X est plus petit que Y
-            this.pas = (PhaserCordovaGame.SimpleGame.realWidth * 0.8) / this.taillePlateauX;
-            this.processScale();
-            this.initTableau();
-            this.refreshPosition();
-            this.acceptInput = true;
         }
         Plateau.prototype.processScale = function () {
             var p = PhaserCordovaGame.PieceFactory.CreatePiece(this.game, PhaserCordovaGame.TypePiece.Vert);
@@ -203,38 +118,31 @@ var PhaserCordovaGame;
             this.scale = new Phaser.Point(this.pas / originalHeight, this.pas / originalHeight);
             p.kill();
         };
-        Plateau.prototype.initTableau = function () {
-            this.pieces = [];
-            for (var x = 0; x < this.taillePlateauX; x++) {
-                this.pieces[x] = [];
-                for (var y = 0; y < this.taillePlateauY; y++) {
-                    this.pieces[x][y] = PhaserCordovaGame.PieceFactory.CreatePieceRandom(this.game);
-                }
-            }
-        };
         Plateau.prototype.refreshPosition = function () {
             var _this = this;
             this.listTeensBloquants = new Array();
-            var debutX = PhaserCordovaGame.SimpleGame.realWidth * 0.1 + this.pas / 2;
+            var debutX = (PhaserCordovaGame.SimpleGame.realWidth - (this.pas * this.taillePlateauX)) / 2;
             var debutY = (PhaserCordovaGame.SimpleGame.realHeight - (this.taillePlateauY * this.pas)) / 2;
             for (var x = 0; x < this.taillePlateauX; x++) {
                 for (var y = 0; y < this.taillePlateauY; y++) {
                     var p = this.pieces[x][y];
-                    var tween = this.game.add.tween(p);
-                    tween.to({
-                        x: debutX + this.pas * x,
-                        y: debutY + this.pas * y
-                    }, PhaserCordovaGame.GameConfiguration.GAMEANIM_SPEED, Phaser.Easing.Quartic.In, false);
-                    // si nouvellement créé
-                    // on les place au dessus
-                    if (p.x == 0 && p.y == 0) {
-                        p.x = debutX + this.pas * x;
-                        p.y = debutY - this.pas;
+                    if (p !== null && p !== undefined) {
+                        var tween = this.game.add.tween(p);
+                        tween.to({
+                            x: debutX + this.pas * x,
+                            y: debutY + this.pas * y
+                        }, PhaserCordovaGame.GameConfiguration.GAMEANIM_SPEED, Phaser.Easing.Quartic.Out, false);
+                        // si nouvellement créé
+                        // on les place au dessus
+                        if (p.x == 0 && p.y == 0) {
+                            p.x = debutX + this.pas * x;
+                            p.y = debutY - this.pas;
+                        }
+                        p.scale = this.scale;
+                        this.listTeensBloquants.push(tween);
+                        // Si actif, on clean
+                        this.setupClickEventPiece(p, x, y);
                     }
-                    p.scale = this.scale;
-                    this.listTeensBloquants.push(tween);
-                    // Si actif, on clean
-                    this.setupClickEventPiece(p, x, y);
                 }
             }
             this.listTeensBloquants.forEach(function (v, i, arr) {
@@ -246,6 +154,31 @@ var PhaserCordovaGame;
                 }, _this);
                 v.start();
             });
+        };
+        Plateau.prototype.loadPlateauFromLevelData = function (data) {
+            this.taillePlateauX = data.sizeX;
+            this.taillePlateauY = data.sizeY;
+            this.currentLevel = data.level;
+            this.nombreCoups = 0;
+            this.pieces = [];
+            for (var x = 0; x < this.taillePlateauX; x++) {
+                this.pieces[x] = [];
+                for (var y = 0; y < this.taillePlateauY; y++) {
+                    var d = data.data[x + y * this.taillePlateauX];
+                    if (d !== null) {
+                        this.pieces[x][y] = PhaserCordovaGame.PieceFactory.CreatePiece(this.game, d);
+                    }
+                    else {
+                        this.pieces[x][y] = null;
+                    }
+                }
+            }
+            this.fallingDown();
+            this.reduceSize();
+            this.pas = (PhaserCordovaGame.SimpleGame.realWidth * 0.8) / this.taillePlateauX;
+            this.processScale();
+            this.refreshPosition();
+            this.acceptInput = true;
         };
         Plateau.prototype.setupClickEventPiece = function (p, x, y) {
             var _this = this;
@@ -318,16 +251,39 @@ var PhaserCordovaGame;
         Plateau.prototype.combineZone = function (x, y) {
             var _this = this;
             var list = this.getZoneCombine(x, y);
-            console.log("Suppression de " + list.length + " elements");
-            // à optimiser : refresh que les modifiés)
-            list.forEach(function (pos, i, arr) {
-                var p = _this.pieces[pos[0]][pos[1]];
-                p.delete();
-                _this.pieces[pos[0]][pos[1]] = null;
-            });
-            this.fallingDown();
-            this.refreshPosition();
-            console.log(this.printConsolePlateau());
+            if (list.length > 1) {
+                this.nombreCoups++;
+                // à optimiser : refresh que les modifiés)
+                list.forEach(function (pos, i, arr) {
+                    var p = _this.pieces[pos[0]][pos[1]];
+                    p.delete();
+                    _this.pieces[pos[0]][pos[1]] = null;
+                });
+                this.fallingDown();
+                this.reduceSize();
+                this.refreshPosition();
+                this.checkIfEnd();
+            }
+        };
+        Plateau.prototype.checkIfEnd = function () {
+            if (this.taillePlateauX === 0) {
+                // gagné :)
+                this.game.state.start(PhaserCordovaGame.stateLevelWon, true, false, this.currentLevel, this.nombreCoups);
+            }
+            else {
+                var flagPasPerdu = false;
+                for (var x = 0; x < this.taillePlateauX; x++) {
+                    for (var y = 0; y < this.taillePlateauY; y++) {
+                        var p = this.pieces[x][y];
+                        if (p !== null && p !== undefined) {
+                            flagPasPerdu = flagPasPerdu || this.getZoneCombine(x, y).length > 1;
+                        }
+                    }
+                }
+                if (!flagPasPerdu) {
+                    this.game.state.start(PhaserCordovaGame.stateGameOver, true, false, this.currentLevel);
+                }
+            }
         };
         Plateau.prototype.fallingDown = function () {
             // pour chaque X : on regarde les Y  depuis la fin
@@ -344,24 +300,329 @@ var PhaserCordovaGame;
                 }
             }
         };
-        Plateau.prototype.printConsolePlateau = function () {
-            var res = "";
-            for (var y = 0; y < this.taillePlateauY; y++) {
-                for (var x = 0; x < this.taillePlateauX; x++) {
-                    if (this.pieces[x][y] != null) {
-                        res += this.pieces[x][y].type;
-                    }
-                    else {
-                        res += "X";
-                    }
+        Plateau.prototype.reduceSize = function () {
+            // pour chaque ligne verticale, si elle est vide on reduit la taille du plateau en la virant
+            var x = 0;
+            do {
+                var xVide = this.pieces[x].every(function (p) {
+                    return p === null || p === undefined;
+                });
+                if (xVide) {
+                    this.taillePlateauX--;
+                    // deplacer le tableau en virant la ligne vide
+                    this.pieces.splice(x, 1);
                 }
-                res += "\n";
-            }
-            return res;
+                else {
+                    x++;
+                }
+            } while (x < this.taillePlateauX);
+            console.log("New size : " + this.taillePlateauX);
         };
         return Plateau;
     })(Phaser.Group);
     PhaserCordovaGame.Plateau = Plateau;
+})(PhaserCordovaGame || (PhaserCordovaGame = {}));
+var PhaserCordovaGame;
+(function (PhaserCordovaGame) {
+    var LevelLoader = (function () {
+        function LevelLoader() {
+        }
+        LevelLoader.prototype.storeLevelData = function () {
+            var request = new XMLHttpRequest();
+            request.onload = this.storeLevelDataresponse.bind(this);
+            request.open("get", "levels/levels.json", true);
+            request.send();
+        };
+        LevelLoader.prototype.storeLevelDataresponse = function (ev) {
+            var result = ev.currentTarget;
+            this.levelFileContent = JSON.parse(result.responseText);
+        };
+        LevelLoader.prototype.readLevel = function (levelNumber) {
+            if (this.levelFileContent.levelBegin <= levelNumber && this.levelFileContent.levelEnd >= levelNumber) {
+                return this.levelFileContent.levels[levelNumber];
+            }
+            else {
+                alert("Level " + levelNumber + " invalid");
+            }
+            return null;
+        };
+        return LevelLoader;
+    })();
+    PhaserCordovaGame.LevelLoader = LevelLoader;
+    var LevelsFileData = (function () {
+        function LevelsFileData() {
+        }
+        return LevelsFileData;
+    })();
+    PhaserCordovaGame.LevelsFileData = LevelsFileData;
+    var LevelFileData = (function () {
+        function LevelFileData() {
+        }
+        return LevelFileData;
+    })();
+    PhaserCordovaGame.LevelFileData = LevelFileData;
+})(PhaserCordovaGame || (PhaserCordovaGame = {}));
+var PhaserCordovaGame;
+(function (PhaserCordovaGame) {
+    var Piece = (function (_super) {
+        __extends(Piece, _super);
+        function Piece(game, texture) {
+            _super.call(this, game, 0, 0, texture);
+            game.add.existing(this);
+        }
+        Piece.prototype.canCombine = function (other) {
+            if (other == null || other == undefined) {
+                return false;
+            }
+            return this.type == other.type;
+        };
+        Piece.prototype.delete = function () {
+            console.log("Deleté");
+            this.kill();
+        };
+        return Piece;
+    })(Phaser.Sprite);
+    PhaserCordovaGame.Piece = Piece;
+    PhaserCordovaGame.NombreTypePiece = 4;
+    (function (TypePiece) {
+        TypePiece[TypePiece["Vert"] = 0] = "Vert";
+        TypePiece[TypePiece["Rouge"] = 1] = "Rouge";
+        TypePiece[TypePiece["Bleu"] = 2] = "Bleu";
+        TypePiece[TypePiece["Jaune"] = 3] = "Jaune";
+    })(PhaserCordovaGame.TypePiece || (PhaserCordovaGame.TypePiece = {}));
+    var TypePiece = PhaserCordovaGame.TypePiece;
+})(PhaserCordovaGame || (PhaserCordovaGame = {}));
+var PhaserCordovaGame;
+(function (PhaserCordovaGame) {
+    var PieceBleu = (function (_super) {
+        __extends(PieceBleu, _super);
+        function PieceBleu(game) {
+            _super.call(this, game, PhaserCordovaGame.AssetKeys.assetBillebleu);
+            this.type = PhaserCordovaGame.TypePiece.Bleu;
+        }
+        return PieceBleu;
+    })(PhaserCordovaGame.Piece);
+    PhaserCordovaGame.PieceBleu = PieceBleu;
+})(PhaserCordovaGame || (PhaserCordovaGame = {}));
+var PhaserCordovaGame;
+(function (PhaserCordovaGame) {
+    var PieceFactory = (function () {
+        function PieceFactory() {
+        }
+        PieceFactory.CreatePiece = function (game, typeP) {
+            var result;
+            switch (typeP) {
+                case PhaserCordovaGame.TypePiece.Vert:
+                    result = new PhaserCordovaGame.PieceVerte(game);
+                    break;
+                case PhaserCordovaGame.TypePiece.Rouge:
+                    result = new PhaserCordovaGame.PieceRouge(game);
+                    break;
+                case PhaserCordovaGame.TypePiece.Bleu:
+                    result = new PhaserCordovaGame.PieceBleu(game);
+                    break;
+                case PhaserCordovaGame.TypePiece.Jaune:
+                    result = new PhaserCordovaGame.PieceJaune(game);
+                    break;
+                default:
+                    throw new TypeError("Type de piece non géré");
+            }
+            result.anchor = new Phaser.Point(0.5, 0.5);
+            return result;
+        };
+        PieceFactory.CreatePieceRandom = function (game) {
+            return PieceFactory.CreatePiece(game, Math.floor(Math.random() * PhaserCordovaGame.NombreTypePiece));
+        };
+        return PieceFactory;
+    })();
+    PhaserCordovaGame.PieceFactory = PieceFactory;
+})(PhaserCordovaGame || (PhaserCordovaGame = {}));
+var PhaserCordovaGame;
+(function (PhaserCordovaGame) {
+    var PieceJaune = (function (_super) {
+        __extends(PieceJaune, _super);
+        function PieceJaune(game) {
+            _super.call(this, game, PhaserCordovaGame.AssetKeys.assetBilleJaune);
+            this.type = PhaserCordovaGame.TypePiece.Jaune;
+        }
+        return PieceJaune;
+    })(PhaserCordovaGame.Piece);
+    PhaserCordovaGame.PieceJaune = PieceJaune;
+})(PhaserCordovaGame || (PhaserCordovaGame = {}));
+var PhaserCordovaGame;
+(function (PhaserCordovaGame) {
+    var PieceRouge = (function (_super) {
+        __extends(PieceRouge, _super);
+        function PieceRouge(game) {
+            _super.call(this, game, PhaserCordovaGame.AssetKeys.assetBillerouge);
+            this.type = PhaserCordovaGame.TypePiece.Rouge;
+        }
+        return PieceRouge;
+    })(PhaserCordovaGame.Piece);
+    PhaserCordovaGame.PieceRouge = PieceRouge;
+})(PhaserCordovaGame || (PhaserCordovaGame = {}));
+var PhaserCordovaGame;
+(function (PhaserCordovaGame) {
+    var PieceVerte = (function (_super) {
+        __extends(PieceVerte, _super);
+        function PieceVerte(game) {
+            _super.call(this, game, PhaserCordovaGame.AssetKeys.assetBilleVert);
+            this.type = PhaserCordovaGame.TypePiece.Vert;
+        }
+        return PieceVerte;
+    })(PhaserCordovaGame.Piece);
+    PhaserCordovaGame.PieceVerte = PieceVerte;
+})(PhaserCordovaGame || (PhaserCordovaGame = {}));
+var PhaserCordovaGame;
+(function (PhaserCordovaGame) {
+    var Boot = (function (_super) {
+        __extends(Boot, _super);
+        function Boot() {
+            _super.call(this);
+        }
+        Boot.prototype.preload = function () {
+        };
+        Boot.prototype.create = function () {
+            this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+            this.game.state.start(PhaserCordovaGame.statePreload);
+        };
+        return Boot;
+    })(Phaser.State);
+    PhaserCordovaGame.Boot = Boot;
+})(PhaserCordovaGame || (PhaserCordovaGame = {}));
+var PhaserCordovaGame;
+(function (PhaserCordovaGame) {
+    var GameOver = (function (_super) {
+        __extends(GameOver, _super);
+        function GameOver() {
+            _super.call(this);
+            var fontName = "Arial";
+            if (window.cordova.platformId === "android") {
+                fontName = "Droid Sans";
+            }
+            this.defaultStyle = {
+                font: fontName,
+                fill: "#ff0044",
+                fontSize: 35
+            };
+        }
+        GameOver.prototype.init = function (currentLevel) {
+            this.levelNumber = currentLevel;
+            this.textPerdu = new Phaser.Text(this.game, 50, 50, "Dommage.", this.defaultStyle);
+            this.buttonMain = new Phaser.Button(this.game, 50, 300, PhaserCordovaGame.AssetKeys.assetBoutonRouge, this.startMain, this);
+            this.buttonMain.width = 150;
+            this.buttonTry = new Phaser.Button(this.game, 50, 450, PhaserCordovaGame.AssetKeys.assetBoutonVert, this.restart, this);
+            this.buttonTry.width = 150;
+            this.game.add.existing(this.textPerdu);
+            this.game.add.existing(this.buttonTry);
+            this.game.add.existing(this.buttonMain);
+        };
+        GameOver.prototype.restart = function () {
+            this.game.state.start(PhaserCordovaGame.stateMain, true, false, this.levelNumber);
+        };
+        GameOver.prototype.startMain = function () {
+            this.game.state.start(PhaserCordovaGame.stateMain);
+        };
+        return GameOver;
+    })(Phaser.State);
+    PhaserCordovaGame.GameOver = GameOver;
+})(PhaserCordovaGame || (PhaserCordovaGame = {}));
+var PhaserCordovaGame;
+(function (PhaserCordovaGame) {
+    var GameTitle = (function (_super) {
+        __extends(GameTitle, _super);
+        function GameTitle() {
+            _super.call(this);
+        }
+        GameTitle.prototype.create = function () {
+            var logo = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, PhaserCordovaGame.AssetKeys.assetLogo);
+            logo.anchor.setTo(0.5, 0.5);
+            logo.scale.setTo(0.2, 0.2);
+            logo.inputEnabled = true;
+            logo.events.onInputDown.add(this.startGame, this);
+            this.game.add.tween(logo.scale).to({ x: 1, y: 1 }, 2000, Phaser.Easing.Bounce.Out, true);
+        };
+        GameTitle.prototype.startGame = function () {
+            this.game.state.start(PhaserCordovaGame.stateMain);
+        };
+        return GameTitle;
+    })(Phaser.State);
+    PhaserCordovaGame.GameTitle = GameTitle;
+})(PhaserCordovaGame || (PhaserCordovaGame = {}));
+var PhaserCordovaGame;
+(function (PhaserCordovaGame) {
+    var LevelWon = (function (_super) {
+        __extends(LevelWon, _super);
+        function LevelWon() {
+            _super.call(this);
+            var fontName = "Arial";
+            if (window.cordova.platformId === "android") {
+                fontName = "Droid Sans";
+            }
+            this.defaultStyle = {
+                font: fontName,
+                fill: "#ff0044",
+                fontSize: 35
+            };
+        }
+        LevelWon.prototype.init = function (currentLevel, score) {
+            this.levelNumber = currentLevel;
+            this.nombreCoup = score;
+            this.textGain = new Phaser.Text(this.game, 50, 50, "Bravo !", this.defaultStyle);
+            this.textScore = new Phaser.Text(this.game, 50, 150, "Vous avez fini  le niveau " + this.levelNumber + " en  " + this.nombreCoup + " coups.", this.defaultStyle);
+            this.buttonMain = new Phaser.Button(this.game, 50, 300, PhaserCordovaGame.AssetKeys.assetBoutonRouge, this.startMain, this);
+            this.buttonMain.width = 150;
+            this.buttonNextLevel = new Phaser.Button(this.game, 50, 450, PhaserCordovaGame.AssetKeys.assetBoutonVert, this.startNextLevel, this);
+            this.buttonNextLevel.width = 150;
+            this.game.add.existing(this.textGain);
+            this.game.add.existing(this.textScore);
+            this.game.add.existing(this.buttonNextLevel);
+            this.game.add.existing(this.buttonMain);
+        };
+        LevelWon.prototype.startNextLevel = function () {
+            this.game.state.start(PhaserCordovaGame.stateMain, true, false, this.levelNumber++);
+        };
+        LevelWon.prototype.startMain = function () {
+            this.game.state.start(PhaserCordovaGame.stateMain);
+        };
+        return LevelWon;
+    })(Phaser.State);
+    PhaserCordovaGame.LevelWon = LevelWon;
+})(PhaserCordovaGame || (PhaserCordovaGame = {}));
+var PhaserCordovaGame;
+(function (PhaserCordovaGame) {
+    var Main = (function (_super) {
+        __extends(Main, _super);
+        function Main() {
+            _super.call(this);
+            this.levelLoader = new PhaserCordovaGame.LevelLoader();
+            this.levelLoader.storeLevelData();
+        }
+        Main.prototype.init = function (levelToStart) {
+            if (levelToStart) {
+                this.startLevel(levelToStart);
+            }
+            else {
+                // display choose level
+                this.startLevel(1);
+            }
+        };
+        Main.prototype.startLevel = function (targetLevel) {
+            this.plateauJoueur = new PhaserCordovaGame.Plateau(this.game, 5, 5);
+            this.plateauJoueur.loadPlateauFromLevelData(this.levelLoader.readLevel(targetLevel));
+        };
+        Main.prototype.update = function () {
+        };
+        Main.prototype.gameOver = function () {
+            this.game.state.start(PhaserCordovaGame.stateGameOver);
+        };
+        Main.prototype.logAchievements = function (data) {
+            alert(data.items.length + " achievements");
+            console.log(data);
+        };
+        return Main;
+    })(Phaser.State);
+    PhaserCordovaGame.Main = Main;
 })(PhaserCordovaGame || (PhaserCordovaGame = {}));
 var PhaserCordovaGame;
 (function (PhaserCordovaGame) {
@@ -391,11 +652,33 @@ var GoogleGameDev;
     var ApiHelper = (function () {
         function ApiHelper() {
             this.baseUrl = "https://www.googleapis.com/games/v1/";
-            gapi.auth.authorize({
-                client_id: PhaserCordovaGame.Keys.GoogleClientId,
-                scope: 'https://www.googleapis.com/auth/games'
-            }, this.callBackAuth.bind(this));
         }
+        ApiHelper.prototype.launchAuth = function (key) {
+            var url = "https://accounts.google.com/o/oauth2/auth?client_id=" + key + "&scope=https://www.googleapis.com/auth/games&response_type=token&redirect_uri=http://localhost";
+            this.authWindows = window.open(url, '_blank', 'location=no,toolbar=no');
+            this.authWindows.addEventListener('loadstart', this.started.bind(this));
+        };
+        ApiHelper.prototype.started = function (data) {
+            var url = data.url;
+            if (url.indexOf("#access_token") > -1) {
+                this.authWindows.close();
+                var reg = new RegExp("access_token=(.+?)&.*&expires_in=(\\d*)");
+                var res = reg.exec(url);
+                var token = res[1];
+                var expires = res[2];
+                var dataToken;
+                dataToken = {
+                    access_token: token,
+                    error: null,
+                    expires_in: expires,
+                    state: null
+                };
+                this.token = dataToken;
+            }
+        };
+        ApiHelper.prototype.initToken = function (tok) {
+            this.token = tok;
+        };
         ApiHelper.prototype.callBackAuth = function (token) {
             this.token = token;
         };
@@ -527,129 +810,6 @@ var GoogleGameDev;
     })();
     GoogleGameDev.Stats = Stats;
 })(GoogleGameDev || (GoogleGameDev = {}));
-var PhaserCordovaGame;
-(function (PhaserCordovaGame) {
-    var Piece = (function (_super) {
-        __extends(Piece, _super);
-        function Piece(game, texture) {
-            _super.call(this, game, 0, 0, texture);
-            game.add.existing(this);
-        }
-        Piece.prototype.canCombine = function (other) {
-            if (other == null || other == undefined) {
-                return false;
-            }
-            return this.type == other.type;
-        };
-        Piece.prototype.delete = function () {
-            console.log("Deleté");
-            this.kill();
-        };
-        return Piece;
-    })(Phaser.Sprite);
-    PhaserCordovaGame.Piece = Piece;
-    PhaserCordovaGame.NombreTypePiece = 4;
-    (function (TypePiece) {
-        TypePiece[TypePiece["Vert"] = 0] = "Vert";
-        TypePiece[TypePiece["Rouge"] = 1] = "Rouge";
-        TypePiece[TypePiece["Bleu"] = 2] = "Bleu";
-        TypePiece[TypePiece["Jaune"] = 3] = "Jaune";
-    })(PhaserCordovaGame.TypePiece || (PhaserCordovaGame.TypePiece = {}));
-    var TypePiece = PhaserCordovaGame.TypePiece;
-})(PhaserCordovaGame || (PhaserCordovaGame = {}));
-var PhaserCordovaGame;
-(function (PhaserCordovaGame) {
-    var PieceBleu = (function (_super) {
-        __extends(PieceBleu, _super);
-        function PieceBleu(game) {
-            _super.call(this, game, PhaserCordovaGame.AssetKeys.assetBillebleu);
-            this.type = PhaserCordovaGame.TypePiece.Bleu;
-        }
-        PieceBleu.prototype.canCombine = function (other) {
-            if (other == null || other == undefined) {
-                throw new ReferenceError("Impossible de comparer à null");
-            }
-            return this.type == other.type || other.type == PhaserCordovaGame.TypePiece.Jaune;
-        };
-        return PieceBleu;
-    })(PhaserCordovaGame.Piece);
-    PhaserCordovaGame.PieceBleu = PieceBleu;
-})(PhaserCordovaGame || (PhaserCordovaGame = {}));
-var PhaserCordovaGame;
-(function (PhaserCordovaGame) {
-    var PieceFactory = (function () {
-        function PieceFactory() {
-        }
-        PieceFactory.CreatePiece = function (game, typeP) {
-            var result;
-            switch (typeP) {
-                case PhaserCordovaGame.TypePiece.Vert:
-                    result = new PhaserCordovaGame.PieceVerte(game);
-                    break;
-                case PhaserCordovaGame.TypePiece.Rouge:
-                    result = new PhaserCordovaGame.PieceRouge(game);
-                    break;
-                case PhaserCordovaGame.TypePiece.Bleu:
-                    result = new PhaserCordovaGame.PieceBleu(game);
-                    break;
-                case PhaserCordovaGame.TypePiece.Jaune:
-                    result = new PhaserCordovaGame.PieceJaune(game);
-                    break;
-                default:
-                    throw new TypeError("Type de piece non géré");
-            }
-            result.anchor = new Phaser.Point(0.5, 0.5);
-            return result;
-        };
-        PieceFactory.CreatePieceRandom = function (game) {
-            return PieceFactory.CreatePiece(game, Math.floor(Math.random() * PhaserCordovaGame.NombreTypePiece));
-        };
-        return PieceFactory;
-    })();
-    PhaserCordovaGame.PieceFactory = PieceFactory;
-})(PhaserCordovaGame || (PhaserCordovaGame = {}));
-var PhaserCordovaGame;
-(function (PhaserCordovaGame) {
-    var PieceJaune = (function (_super) {
-        __extends(PieceJaune, _super);
-        function PieceJaune(game) {
-            _super.call(this, game, PhaserCordovaGame.AssetKeys.assetBilleJaune);
-            this.type = PhaserCordovaGame.TypePiece.Jaune;
-        }
-        PieceJaune.prototype.canCombine = function (other) {
-            if (other == null || other == undefined) {
-                throw new ReferenceError("Impossible de comparer à null");
-            }
-            return this.type == other.type || other.type == PhaserCordovaGame.TypePiece.Bleu;
-        };
-        return PieceJaune;
-    })(PhaserCordovaGame.Piece);
-    PhaserCordovaGame.PieceJaune = PieceJaune;
-})(PhaserCordovaGame || (PhaserCordovaGame = {}));
-var PhaserCordovaGame;
-(function (PhaserCordovaGame) {
-    var PieceRouge = (function (_super) {
-        __extends(PieceRouge, _super);
-        function PieceRouge(game) {
-            _super.call(this, game, PhaserCordovaGame.AssetKeys.assetBillerouge);
-            this.type = PhaserCordovaGame.TypePiece.Rouge;
-        }
-        return PieceRouge;
-    })(PhaserCordovaGame.Piece);
-    PhaserCordovaGame.PieceRouge = PieceRouge;
-})(PhaserCordovaGame || (PhaserCordovaGame = {}));
-var PhaserCordovaGame;
-(function (PhaserCordovaGame) {
-    var PieceVerte = (function (_super) {
-        __extends(PieceVerte, _super);
-        function PieceVerte(game) {
-            _super.call(this, game, PhaserCordovaGame.AssetKeys.assetBilleVert);
-            this.type = PhaserCordovaGame.TypePiece.Vert;
-        }
-        return PieceVerte;
-    })(PhaserCordovaGame.Piece);
-    PhaserCordovaGame.PieceVerte = PieceVerte;
-})(PhaserCordovaGame || (PhaserCordovaGame = {}));
 var PhaserCordovaGame;
 (function (PhaserCordovaGame) {
     var Assert = (function () {

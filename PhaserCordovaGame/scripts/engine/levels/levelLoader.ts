@@ -1,30 +1,49 @@
 ﻿module PhaserCordovaGame {
     export class LevelLoader {
 
-        func: (data: LevelData) => any;
+        levelFileContent : LevelsFileData;
 
-        public readLevel(levelNumber: number, func: (data: LevelData) => any) {
+        constructor() {
+          
+        }
+
+        public storeLevelData() {
+
             var request = new XMLHttpRequest();
-            this.func = func;
-            request.onload = this.readResponse.bind(this);
-            request.open("get", "levels/level" + levelNumber + ".json", true);
+            request.onload = this.storeLevelDataresponse.bind(this);
+            request.open("get", "levels/levels.json", true);
             request.send();
         }
 
-        public readResponse(ev: Event) {
+        private storeLevelDataresponse(ev: Event) {
             var result = ev.currentTarget as XMLHttpRequest;
-            this.func(JSON.parse(result.responseText));
+            this.levelFileContent = JSON.parse(result.responseText);
+        }
+
+        public readLevel(levelNumber: number): LevelFileData {
+            if (this.levelFileContent.levelBegin <= levelNumber && this.levelFileContent.levelEnd >= levelNumber) {
+
+                return this.levelFileContent.levels[levelNumber];
+            }
+            else {
+                alert("Level " + levelNumber + " invalid");
+            }
+            return null
         }
     }
 
-
-    export class LevelData {
-        tailleX: number;
-        tailleY: number;
-        data: Array<Array<number>>;
-
-        constructor() {
-            this.data = new Array<Array<number>>();
-        }
+    export class LevelsFileData {
+        public levelBegin: number;
+        public levelEnd: number;
+        public levels: { [k: number]: LevelFileData };
     }
+
+    export class LevelFileData {
+        level: number;
+        sizeX: number;
+        sizeY: number;
+        data: number[];
+    }
+
+
 }

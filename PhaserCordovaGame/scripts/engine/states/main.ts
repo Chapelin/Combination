@@ -2,15 +2,15 @@
     export class Main extends Phaser.State {
         game: Phaser.Game;
         plateauJoueur: Plateau;
-        apiHelper: GoogleGameDev.ApiHelper
-
+        levelLoader: LevelLoader
         constructor() {
             super();
+            this.levelLoader = new LevelLoader();
+            this.levelLoader.storeLevelData();
         }
 
-        
+
         init(levelToStart?: number) {
-            SimpleGame.apiHelper.getListAchievements(this.logAchievements);
             if (levelToStart) {
                 this.startLevel(levelToStart);
             }
@@ -21,9 +21,8 @@
         }
 
         startLevel(targetLevel: number) {
-            this.plateauJoueur = new Plateau(this.game,5, 5);
-            var t = new LevelLoader();
-            t.readLevel(targetLevel, (d: LevelData) => { console.log("Fichier level lu"); this.plateauJoueur.loadPlateauFromLevelData(d, targetLevel); });
+            this.plateauJoueur = new Plateau(this.game, 5, 5);
+            this.plateauJoueur.loadPlateauFromLevelData(this.levelLoader.readLevel(targetLevel));
         }
 
         update() {

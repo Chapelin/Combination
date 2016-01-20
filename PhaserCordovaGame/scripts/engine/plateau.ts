@@ -66,16 +66,16 @@
 
         }
 
-        public loadPlateauFromLevelData(data: LevelData, levelNumber : number) {
-            this.taillePlateauX = data.tailleX;
-            this.taillePlateauY = data.tailleY;
-            this.currentLevel = levelNumber;
+        public loadPlateauFromLevelData(data: LevelFileData) {
+            this.taillePlateauX = data.sizeX;
+            this.taillePlateauY = data.sizeY;
+            this.currentLevel = data.level;
             this.nombreCoups = 0;
             this.pieces = [];
             for (var x = 0; x < this.taillePlateauX; x++) {
                 this.pieces[x] = [];
                 for (var y = 0; y < this.taillePlateauY; y++) {
-                    var d: number = data.data[x][y];
+                    var d: number = data.data[x + y * this.taillePlateauX];
                     if (d !== null) {
                         this.pieces[x][y] = PieceFactory.CreatePiece(this.game, d);
                     }
