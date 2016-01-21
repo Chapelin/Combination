@@ -2,7 +2,7 @@
 
     export class PieceFactory {
 
-        public static CreatePiece(game: Phaser.Game, typeP: TypePiece): Piece {
+        public static CreatePiece(game: Phaser.Game, typeP: TypePiece, scalePiece? : Phaser.Point ): Piece {
             var result: Piece;
             switch (typeP) {
                 case TypePiece.Vert:
@@ -21,6 +21,9 @@
                     throw new TypeError("Type de piece non géré");
             }
             result.anchor = new Phaser.Point(0.5, 0.5);
+            if (scalePiece) {
+                result.scale = new Phaser.Point(scalePiece.x, scalePiece.y);
+            }
             return result;
         }
 

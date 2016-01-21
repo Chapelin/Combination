@@ -3,10 +3,10 @@
         pieces: Array<Array<Piece>>;
         taillePlateauX: number;
         taillePlateauY: number;
-        scale: Phaser.Point;
+        scaleDefaultPiece: Phaser.Point;
         pas: number;
         acceptInput: boolean;
-        listTeensBloquants: Phaser.Tween[];
+        listTweenBloquant: Phaser.Tween[];
         nombreCoups: number;
         currentLevel: number;
 
@@ -20,14 +20,14 @@
         private processScale() {
             var p = PieceFactory.CreatePiece(this.game, TypePiece.Vert);
             var originalHeight = p.texture.height
-            this.scale = new Phaser.Point(this.pas / originalHeight, this.pas / originalHeight);
+            this.scaleDefaultPiece = new Phaser.Point(this.pas / originalHeight, this.pas / originalHeight);
             p.kill();
         }
 
         public refreshPosition() {
-          
-            this.listTeensBloquants = new Array<Phaser.Tween>();
-            var debutX = (SimpleGame.realWidth - (this.pas * this.taillePlateauX) )/2
+
+            this.listTweenBloquant = new Array<Phaser.Tween>();
+            var debutX = (SimpleGame.realWidth - (this.pas * this.taillePlateauX)) / 2
             var debutY = (SimpleGame.realHeight - (this.taillePlateauY * this.pas)) / 2;
             for (var x = 0; x < this.taillePlateauX; x++) {
                 for (var y = 0; y < this.taillePlateauY; y++) {
@@ -38,7 +38,7 @@
                             {
                                 x: debutX + this.pas * x,
                                 y: debutY + this.pas * y
-                            }, GameConfiguration.GAMEANIM_SPEED, Phaser.Easing.Quartic.Out, false);
+                            }, GameConfiguration.GAMEANIM_SPEED_FALL, Phaser.Easing.Quartic.Out, false);
                         // si nouvellement créé
                         // on les place au dessus
                         if (p.x == 0 && p.y == 0) {
@@ -46,15 +46,14 @@
                             p.y = debutY - this.pas;
                         }
 
-                        p.scale = this.scale;
-                        this.listTeensBloquants.push(tween);
+                       this.listTweenBloquant.push(tween);
                         // Si actif, on clean
                         this.setupClickEventPiece(p, x, y);
                     }
                 }
             }
 
-            this.listTeensBloquants.forEach((v: Phaser.Tween, i: number, arr: Phaser.Tween[]) => {
+            this.listTweenBloquant.forEach((v: Phaser.Tween, i: number, arr: Phaser.Tween[]) => {
                 v.onComplete.addOnce(() => {
                     // si tous les tweens sont finis
                     if (this.tweensFinished()) {
@@ -69,6 +68,8 @@
         public loadPlateauFromLevelData(data: LevelFileData) {
             this.taillePlateauX = data.sizeX;
             this.taillePlateauY = data.sizeY;
+            this.pas = (SimpleGame.realWidth * 0.8) / this.taillePlateauX;
+            this.processScale();
             this.currentLevel = data.level;
             this.nombreCoups = 0;
             this.pieces = [];
@@ -77,7 +78,7 @@
                 for (var y = 0; y < this.taillePlateauY; y++) {
                     var d: number = data.data[x + y * this.taillePlateauX];
                     if (d !== null) {
-                        this.pieces[x][y] = PieceFactory.CreatePiece(this.game, d);
+                        this.pieces[x][y] = PieceFactory.CreatePiece(this.game, d, this.scaleDefaultPiece);
                     }
                     else {
                         this.pieces[x][y] = null;
@@ -87,8 +88,8 @@
 
             this.fallingDown();
             this.reduceSize();
-            this.pas = (SimpleGame.realWidth * 0.8) / this.taillePlateauX;
-            this.processScale();
+
+
             this.refreshPosition();
             this.acceptInput = true;
         }
@@ -108,7 +109,7 @@
         }
 
         public tweensFinished(): boolean {
-            return this.listTeensBloquants.every((v) => {
+            return this.listTweenBloquant.every((v) => {
                 return !v.isRunning;
             });
         }
@@ -166,39 +167,60 @@
         }
 
         public combineZone(x: number, y: number) {
+            this.listTweenBloquant = new Array<Phaser.Tween>();
             var list = this.getZoneCombine(x, y);
             if (list.length > 1) {
                 this.nombreCoups++;
-                // à optimiser : refresh que les modifiés)
+                
+                var listToDelete = new Array<Piece>();
                 list.forEach((pos, i, arr) => {
                     var p = this.pieces[pos[0]][pos[1]];
-                    p.delete();
+                    listToDelete.push(p);
                     this.pieces[pos[0]][pos[1]] = null;
                 });
 
-                this.fallingDown();
-                this.reduceSize();
-                this.refreshPosition();
-                this.checkIfEnd();
+                listToDelete.forEach((p: Piece) => {
+                    var tween = this.game.add.tween(p.scale);
+                    tween.to(
+                        {
+                            x: 0.01,
+                            y: 0.01
+                        }, GameConfiguration.GAMEANIM_SPEED_FADE, Phaser.Easing.Exponential.Out, false);
+                    this.listTweenBloquant.push(tween);
+                });
+
+                this.listTweenBloquant.forEach((v: Phaser.Tween, i: number, arr: Phaser.Tween[]) => {
+                    v.onComplete.addOnce(() => {
+                        // si tous les tweens sont finis
+                        if (this.tweensFinished()) {
+                            this.fallingDown();
+                            this.reduceSize();
+                            this.refreshPosition();
+                            this.checkEndCondition();
+                        }
+                    }, this);
+                    v.start();
+                });
             }
-       
         }
 
-        private checkIfEnd() {
-            if (this.taillePlateauX === 0 ) {
+        private checkEndCondition() {
+            if (this.taillePlateauX === 0) {
                 // gagné :)
-                this.game.state.start(stateLevelWon, true, false, this.currentLevel,this.nombreCoups);
-                
+                this.game.state.start(stateLevelWon, true, false, this.currentLevel, this.nombreCoups);
+
             } else {
                 var flagPasPerdu = false;
+                // parcours ud tableau, s'il y a au moins une combinaison,flagPasPerdu est à True
                 for (var x = 0; x < this.taillePlateauX; x++) {
                     for (var y = 0; y < this.taillePlateauY; y++) {
                         var p = this.pieces[x][y];
                         if (p !== null && p !== undefined) {
-                            flagPasPerdu = flagPasPerdu || this.getZoneCombine(x, y).length > 1;                            
+                            flagPasPerdu = flagPasPerdu || this.getZoneCombine(x, y).length > 1;
                         }
                     }
                 }
+                // si pas de combinason possible
                 if (!flagPasPerdu) {
                     this.game.state.start(stateGameOver, true, false, this.currentLevel);
                 }
@@ -239,7 +261,6 @@
                 }
 
             } while (x < this.taillePlateauX);
-            console.log("New size : " + this.taillePlateauX);
         }
 
     }

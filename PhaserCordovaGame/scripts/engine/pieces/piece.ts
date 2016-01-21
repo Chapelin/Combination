@@ -3,7 +3,7 @@
     export abstract class Piece extends Phaser.Sprite {
 
         type: TypePiece;
-
+        
         constructor(game: Phaser.Game, texture : string) {
             super(game, 0, 0, texture);
             game.add.existing(this);

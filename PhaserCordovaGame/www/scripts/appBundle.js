@@ -59,7 +59,8 @@ var PhaserCordovaGame;
     var GameConfiguration = (function () {
         function GameConfiguration() {
         }
-        GameConfiguration.GAMEANIM_SPEED = 650;
+        GameConfiguration.GAMEANIM_SPEED_FALL = 650;
+        GameConfiguration.GAMEANIM_SPEED_FADE = 400;
         return GameConfiguration;
     })();
     PhaserCordovaGame.GameConfiguration = GameConfiguration;
@@ -115,12 +116,12 @@ var PhaserCordovaGame;
         Plateau.prototype.processScale = function () {
             var p = PhaserCordovaGame.PieceFactory.CreatePiece(this.game, PhaserCordovaGame.TypePiece.Vert);
             var originalHeight = p.texture.height;
-            this.scale = new Phaser.Point(this.pas / originalHeight, this.pas / originalHeight);
+            this.scaleDefaultPiece = new Phaser.Point(this.pas / originalHeight, this.pas / originalHeight);
             p.kill();
         };
         Plateau.prototype.refreshPosition = function () {
             var _this = this;
-            this.listTeensBloquants = new Array();
+            this.listTweenBloquant = new Array();
             var debutX = (PhaserCordovaGame.SimpleGame.realWidth - (this.pas * this.taillePlateauX)) / 2;
             var debutY = (PhaserCordovaGame.SimpleGame.realHeight - (this.taillePlateauY * this.pas)) / 2;
             for (var x = 0; x < this.taillePlateauX; x++) {
@@ -131,21 +132,20 @@ var PhaserCordovaGame;
                         tween.to({
                             x: debutX + this.pas * x,
                             y: debutY + this.pas * y
-                        }, PhaserCordovaGame.GameConfiguration.GAMEANIM_SPEED, Phaser.Easing.Quartic.Out, false);
+                        }, PhaserCordovaGame.GameConfiguration.GAMEANIM_SPEED_FALL, Phaser.Easing.Quartic.Out, false);
                         // si nouvellement créé
                         // on les place au dessus
                         if (p.x == 0 && p.y == 0) {
                             p.x = debutX + this.pas * x;
                             p.y = debutY - this.pas;
                         }
-                        p.scale = this.scale;
-                        this.listTeensBloquants.push(tween);
+                        this.listTweenBloquant.push(tween);
                         // Si actif, on clean
                         this.setupClickEventPiece(p, x, y);
                     }
                 }
             }
-            this.listTeensBloquants.forEach(function (v, i, arr) {
+            this.listTweenBloquant.forEach(function (v, i, arr) {
                 v.onComplete.addOnce(function () {
                     // si tous les tweens sont finis
                     if (_this.tweensFinished()) {
@@ -158,6 +158,8 @@ var PhaserCordovaGame;
         Plateau.prototype.loadPlateauFromLevelData = function (data) {
             this.taillePlateauX = data.sizeX;
             this.taillePlateauY = data.sizeY;
+            this.pas = (PhaserCordovaGame.SimpleGame.realWidth * 0.8) / this.taillePlateauX;
+            this.processScale();
             this.currentLevel = data.level;
             this.nombreCoups = 0;
             this.pieces = [];
@@ -166,7 +168,7 @@ var PhaserCordovaGame;
                 for (var y = 0; y < this.taillePlateauY; y++) {
                     var d = data.data[x + y * this.taillePlateauX];
                     if (d !== null) {
-                        this.pieces[x][y] = PhaserCordovaGame.PieceFactory.CreatePiece(this.game, d);
+                        this.pieces[x][y] = PhaserCordovaGame.PieceFactory.CreatePiece(this.game, d, this.scaleDefaultPiece);
                     }
                     else {
                         this.pieces[x][y] = null;
@@ -175,8 +177,6 @@ var PhaserCordovaGame;
             }
             this.fallingDown();
             this.reduceSize();
-            this.pas = (PhaserCordovaGame.SimpleGame.realWidth * 0.8) / this.taillePlateauX;
-            this.processScale();
             this.refreshPosition();
             this.acceptInput = true;
         };
@@ -195,7 +195,7 @@ var PhaserCordovaGame;
             }, this, 0, x, y);
         };
         Plateau.prototype.tweensFinished = function () {
-            return this.listTeensBloquants.every(function (v) {
+            return this.listTweenBloquant.every(function (v) {
                 return !v.isRunning;
             });
         };
@@ -250,28 +250,46 @@ var PhaserCordovaGame;
         };
         Plateau.prototype.combineZone = function (x, y) {
             var _this = this;
+            this.listTweenBloquant = new Array();
             var list = this.getZoneCombine(x, y);
             if (list.length > 1) {
                 this.nombreCoups++;
-                // à optimiser : refresh que les modifiés)
+                var listToDelete = new Array();
                 list.forEach(function (pos, i, arr) {
                     var p = _this.pieces[pos[0]][pos[1]];
-                    p.delete();
+                    listToDelete.push(p);
                     _this.pieces[pos[0]][pos[1]] = null;
                 });
-                this.fallingDown();
-                this.reduceSize();
-                this.refreshPosition();
-                this.checkIfEnd();
+                listToDelete.forEach(function (p) {
+                    var tween = _this.game.add.tween(p.scale);
+                    tween.to({
+                        x: 0.01,
+                        y: 0.01
+                    }, PhaserCordovaGame.GameConfiguration.GAMEANIM_SPEED_FADE, Phaser.Easing.Exponential.Out, false);
+                    _this.listTweenBloquant.push(tween);
+                });
+                this.listTweenBloquant.forEach(function (v, i, arr) {
+                    v.onComplete.addOnce(function () {
+                        // si tous les tweens sont finis
+                        if (_this.tweensFinished()) {
+                            _this.fallingDown();
+                            _this.reduceSize();
+                            _this.refreshPosition();
+                            _this.checkEndCondition();
+                        }
+                    }, _this);
+                    v.start();
+                });
             }
         };
-        Plateau.prototype.checkIfEnd = function () {
+        Plateau.prototype.checkEndCondition = function () {
             if (this.taillePlateauX === 0) {
                 // gagné :)
                 this.game.state.start(PhaserCordovaGame.stateLevelWon, true, false, this.currentLevel, this.nombreCoups);
             }
             else {
                 var flagPasPerdu = false;
+                // parcours ud tableau, s'il y a au moins une combinaison,flagPasPerdu est à True
                 for (var x = 0; x < this.taillePlateauX; x++) {
                     for (var y = 0; y < this.taillePlateauY; y++) {
                         var p = this.pieces[x][y];
@@ -280,6 +298,7 @@ var PhaserCordovaGame;
                         }
                     }
                 }
+                // si pas de combinason possible
                 if (!flagPasPerdu) {
                     this.game.state.start(PhaserCordovaGame.stateGameOver, true, false, this.currentLevel);
                 }
@@ -316,7 +335,6 @@ var PhaserCordovaGame;
                     x++;
                 }
             } while (x < this.taillePlateauX);
-            console.log("New size : " + this.taillePlateauX);
         };
         return Plateau;
     })(Phaser.Group);
@@ -409,7 +427,7 @@ var PhaserCordovaGame;
     var PieceFactory = (function () {
         function PieceFactory() {
         }
-        PieceFactory.CreatePiece = function (game, typeP) {
+        PieceFactory.CreatePiece = function (game, typeP, scalePiece) {
             var result;
             switch (typeP) {
                 case PhaserCordovaGame.TypePiece.Vert:
@@ -428,6 +446,9 @@ var PhaserCordovaGame;
                     throw new TypeError("Type de piece non géré");
             }
             result.anchor = new Phaser.Point(0.5, 0.5);
+            if (scalePiece) {
+                result.scale = new Phaser.Point(scalePiece.x, scalePiece.y);
+            }
             return result;
         };
         PieceFactory.CreatePieceRandom = function (game) {
