@@ -32,9 +32,5 @@
             this.game.state.start(stateGameOver);
         }
 
-        logAchievements(data?: GoogleGameDev.AchievementDefinitionsListResponse) {
-            alert(data.items.length + " achievements");
-            console.log(data);
-        }
     }
 }
