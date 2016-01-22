@@ -17,6 +17,9 @@
                 case TypePiece.Jaune:
                     result = new PieceJaune(game);
                     break;
+                case TypePiece.Bombe:
+                    result = new PieceBombe(game);
+                    break;
                 default:
                     throw new TypeError("Type de piece non géré");
             }

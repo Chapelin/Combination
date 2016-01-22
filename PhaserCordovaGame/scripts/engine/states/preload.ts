@@ -16,6 +16,7 @@ module PhaserCordovaGame {
             this.game.load.image(AssetKeys.assetBilleJaune, "images/billeJaune.png");
             this.game.load.image(AssetKeys.assetBoutonVert, "images/boutonVert.png");
             this.game.load.image(AssetKeys.assetBoutonRouge, "images/boutonRouge.png");
+            this.game.load.image(AssetKeys.assetBilleBomb, "images/bomb.png");
         }
 
         create() {

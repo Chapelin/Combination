@@ -25,9 +25,9 @@
         }
 
         public refreshPosition() {
-          
+
             this.listTeensBloquants = new Array<Phaser.Tween>();
-            var debutX = (SimpleGame.realWidth - (this.pas * this.taillePlateauX) )/2
+            var debutX = (SimpleGame.realWidth - (this.pas * this.taillePlateauX)) / 2
             var debutY = (SimpleGame.realHeight - (this.taillePlateauY * this.pas)) / 2;
             for (var x = 0; x < this.taillePlateauX; x++) {
                 for (var y = 0; y < this.taillePlateauY; y++) {
@@ -166,8 +166,15 @@
         }
 
         public combineZone(x: number, y: number) {
-            var list = this.getZoneCombine(x, y);
-            if (list.length > 1) {
+            if (this.pieces[x][y] instanceof PieceBombe) {
+
+            } else {
+
+                var list = this.getZoneCombine(x, y);
+                if (list.length <= 1) {
+                    return;
+                }
+
                 this.nombreCoups++;
                 // à optimiser : refresh que les modifiés)
                 list.forEach((pos, i, arr) => {
@@ -175,27 +182,26 @@
                     p.delete();
                     this.pieces[pos[0]][pos[1]] = null;
                 });
-
-                this.fallingDown();
-                this.reduceSize();
-                this.refreshPosition();
-                this.checkIfEnd();
             }
-       
+            this.fallingDown();
+            this.reduceSize();
+            this.refreshPosition();
+            this.checkIfEnd();
         }
 
+
         private checkIfEnd() {
-            if (this.taillePlateauX === 0 ) {
+            if (this.taillePlateauX === 0) {
                 // gagné :)
-                this.game.state.start(stateLevelWon, true, false, this.currentLevel,this.nombreCoups);
-                
+                this.game.state.start(stateLevelWon, true, false, this.currentLevel, this.nombreCoups);
+
             } else {
                 var flagPasPerdu = false;
                 for (var x = 0; x < this.taillePlateauX; x++) {
                     for (var y = 0; y < this.taillePlateauY; y++) {
                         var p = this.pieces[x][y];
                         if (p !== null && p !== undefined) {
-                            flagPasPerdu = flagPasPerdu || this.getZoneCombine(x, y).length > 1;                            
+                            flagPasPerdu = flagPasPerdu || this.getZoneCombine(x, y).length > 1;
                         }
                     }
                 }
