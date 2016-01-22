@@ -167,9 +167,15 @@
         }
 
         public combineZone(x: number, y: number) {
-            this.listTweenBloquant = new Array<Phaser.Tween>();
-            var list = this.getZoneCombine(x, y);
-            if (list.length > 1) {
+            if (this.pieces[x][y] instanceof PieceBombe) {
+
+            } else {
+
+                var list = this.getZoneCombine(x, y);
+                if (list.length <= 1) {
+                    return;
+                }
+
                 this.nombreCoups++;
                 
                 var listToDelete = new Array<Piece>();
@@ -178,7 +184,7 @@
                     listToDelete.push(p);
                     this.pieces[pos[0]][pos[1]] = null;
                 });
-
+            }
                 listToDelete.forEach((p: Piece) => {
                     var tween = this.game.add.tween(p.scale);
                     tween.to(
@@ -193,16 +199,16 @@
                     v.onComplete.addOnce(() => {
                         // si tous les tweens sont finis
                         if (this.tweensFinished()) {
-                            this.fallingDown();
-                            this.reduceSize();
-                            this.refreshPosition();
+                this.fallingDown();
+                this.reduceSize();
+                this.refreshPosition();
                             this.checkEndCondition();
                         }
                     }, this);
                     v.start();
                 });
-            }
         }
+       
 
         private checkEndCondition() {
             if (this.taillePlateauX === 0) {
