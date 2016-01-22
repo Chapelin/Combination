@@ -46,7 +46,7 @@
                             p.y = debutY - this.pas;
                         }
 
-                       this.listTweenBloquant.push(tween);
+                        this.listTweenBloquant.push(tween);
                         // Si actif, on clean
                         this.setupClickEventPiece(p, x, y);
                     }
@@ -167,48 +167,82 @@
         }
 
         public combineZone(x: number, y: number) {
+            var listToDelete = new Array<Piece>();
+            var listOfCoord = new Array<Array<number>>();
+
             if (this.pieces[x][y] instanceof PieceBombe) {
+                listOfCoord = this.getZoneBombe(x, y);
 
             } else {
 
-                var list = this.getZoneCombine(x, y);
-                if (list.length <= 1) {
+                listOfCoord = this.getZoneCombine(x, y);
+                if (listOfCoord.length <= 1) {
                     return;
                 }
-
-                this.nombreCoups++;
-                
-                var listToDelete = new Array<Piece>();
-                list.forEach((pos, i, arr) => {
-                    var p = this.pieces[pos[0]][pos[1]];
-                    listToDelete.push(p);
-                    this.pieces[pos[0]][pos[1]] = null;
-                });
             }
-                listToDelete.forEach((p: Piece) => {
-                    var tween = this.game.add.tween(p.scale);
-                    tween.to(
-                        {
-                            x: 0.01,
-                            y: 0.01
-                        }, GameConfiguration.GAMEANIM_SPEED_FADE, Phaser.Easing.Exponential.Out, false);
-                    this.listTweenBloquant.push(tween);
-                });
+            this.nombreCoups++;
 
-                this.listTweenBloquant.forEach((v: Phaser.Tween, i: number, arr: Phaser.Tween[]) => {
-                    v.onComplete.addOnce(() => {
-                        // si tous les tweens sont finis
-                        if (this.tweensFinished()) {
-                this.fallingDown();
-                this.reduceSize();
-                this.refreshPosition();
-                            this.checkEndCondition();
-                        }
-                    }, this);
-                    v.start();
-                });
+            listOfCoord.forEach((pos, i, arr) => {
+                var p = this.pieces[pos[0]][pos[1]];
+                listToDelete.push(p);
+                this.pieces[pos[0]][pos[1]] = null;
+            });
+
+            listToDelete.forEach((p: Piece) => {
+                var tween = this.game.add.tween(p.scale);
+                tween.to(
+                    {
+                        x: 0.01,
+                        y: 0.01
+                    }, GameConfiguration.GAMEANIM_SPEED_FADE, Phaser.Easing.Exponential.Out, false);
+                this.listTweenBloquant.push(tween);
+            });
+
+            this.listTweenBloquant.forEach((v: Phaser.Tween, i: number, arr: Phaser.Tween[]) => {
+                v.onComplete.addOnce(() => {
+                    // si tous les tweens sont finis
+                    if (this.tweensFinished()) {
+                        this.fallingDown();
+                        this.reduceSize();
+                        this.refreshPosition();
+                        this.checkEndCondition();
+                    }
+                }, this);
+                v.start();
+            });
         }
-       
+
+        private getZoneBombe(x: number, y: number): number[][] {
+            var potentials = new Array<Array<number>>();
+            potentials.push([x, y]);
+            if (x > 0) {
+                potentials.push([x - 1, y]);
+            }
+            if (y > 0) {
+                potentials.push([x, y - 1]);
+            }
+            if (y < this.taillePlateauY - 1) {
+                potentials.push([x, y + 1]);
+            }
+            if (x < this.taillePlateauX - 1) {
+                potentials.push([x + 1, y]);
+            }
+
+            if (x > 0 && y > 0) {
+                potentials.push([x - 1, y-1]);
+            }
+            if (x > 0 && y < this.taillePlateauY-1) {
+                potentials.push([x - 1, y + 1]);
+            }
+            if (x < this.taillePlateauX-1 && y < this.taillePlateauY - 1) {
+                potentials.push([x +1 , y + 1]);
+            }
+            if (x < this.taillePlateauX-1 && y > 0) {
+                potentials.push([x + 1, y - 1]);
+            }
+
+            return potentials;
+        }
 
         private checkEndCondition() {
             if (this.taillePlateauX === 0) {
@@ -221,7 +255,9 @@
                 for (var x = 0; x < this.taillePlateauX; x++) {
                     for (var y = 0; y < this.taillePlateauY; y++) {
                         var p = this.pieces[x][y];
+
                         if (p !== null && p !== undefined) {
+                            flagPasPerdu = flagPasPerdu || p instanceof PieceBombe;
                             flagPasPerdu = flagPasPerdu || this.getZoneCombine(x, y).length > 1;
                         }
                     }
