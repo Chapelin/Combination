@@ -27,8 +27,8 @@
         public refreshPosition() {
 
             this.listTweenBloquant = new Array<Phaser.Tween>();
-            var debutX = (SimpleGame.realWidth - (this.pas * this.taillePlateauX)) / 2
-            var debutY = (SimpleGame.realHeight - (this.taillePlateauY * this.pas)) / 2;
+            var debutX = (SimpleGame.realWidth - (this.pas * (this.taillePlateauX-1)))/2 
+            var debutY = (SimpleGame.realHeight - ((this.taillePlateauY-1) * this.pas)) / 2;
             for (var x = 0; x < this.taillePlateauX; x++) {
                 for (var y = 0; y < this.taillePlateauY; y++) {
                     var p = this.pieces[x][y];

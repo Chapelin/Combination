@@ -5,8 +5,8 @@
 		"1" :
 	{
 		"level" : 1,
-		"sizeX" : 4,
-		"sizeY" : 5,
+		"sizeX" : 5,
+		"sizeY" : 4,
 		"data" :  [
 		0,0,1,1,
 		1,1,0,0,
