@@ -173,8 +173,10 @@
             if (this.pieces[x][y] instanceof PieceBombe) {
                 listOfCoord = this.getZoneBombe(x, y);
 
+            } else if (this.pieces[x][y] instanceof PieceLine) {
+                listOfCoord = this.getZoneLine(x, y);
+               
             } else {
-
                 listOfCoord = this.getZoneCombine(x, y);
                 if (listOfCoord.length <= 1) {
                     return;
@@ -210,6 +212,15 @@
                 }, this);
                 v.start();
             });
+        }
+
+        private getZoneLine(x: number, y: number): number[][] {
+            var potentials = new Array<Array<number>>();
+            for (var i = 0; i < this.taillePlateauX; i++) {
+                potentials.push([i, y]);
+            }
+
+            return potentials;
         }
 
         private getZoneBombe(x: number, y: number): number[][] {

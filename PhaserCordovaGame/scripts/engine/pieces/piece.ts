@@ -22,12 +22,13 @@
         }       
     }
 
-    export const NombreTypePiece =5;
+    export const NombreTypePiece =6;
     export enum TypePiece {
         Vert = 0,
         Rouge = 1,
         Bleu = 2,
         Jaune = 3,
-        Bombe = 4
+        Bombe = 4,
+        Line = 5
     }
 }

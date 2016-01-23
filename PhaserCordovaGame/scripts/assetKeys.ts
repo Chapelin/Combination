@@ -8,5 +8,6 @@
         public static assetBilleBomb : string = "bomb"
         public static assetBoutonVert: string = "boutonVert";
         public static assetBoutonRouge: string = "boutonRouge";
+        public static assetLine: string = "line";
     }
 }

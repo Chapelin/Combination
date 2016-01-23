@@ -20,6 +20,9 @@
                 case TypePiece.Bombe:
                     result = new PieceBombe(game);
                     break;
+                case TypePiece.Line:
+                    result = new PieceLine(game);
+                    break;
                 default:
                     throw new TypeError("Type de piece non géré");
             }
