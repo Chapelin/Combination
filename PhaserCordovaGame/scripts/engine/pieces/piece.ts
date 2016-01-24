@@ -13,7 +13,7 @@
             if (other == null || other == undefined) {
                 return false;
             }
-            return this.type == other.type;
+            return this.type == other.type && other.type != TypePiece.Obstacle;
         } 
         
         public delete() {
@@ -22,13 +22,14 @@
         }       
     }
 
-    export const NombreTypePiece =6;
+    export const NombreTypePiece =7;
     export enum TypePiece {
         Vert = 0,
         Rouge = 1,
         Bleu = 2,
         Jaune = 3,
         Bombe = 4,
-        Line = 5
+        Line = 5,
+        Obstacle = 6
     }
 }

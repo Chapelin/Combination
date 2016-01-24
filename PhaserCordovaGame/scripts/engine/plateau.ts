@@ -47,8 +47,10 @@
                         }
 
                         this.listTweenBloquant.push(tween);
-                        // Si actif, on clean
-                        this.setupClickEventPiece(p, x, y);
+                        // Si c'est pas un obstacle, on le rend clickable
+                        if (!(p instanceof PieceObstacle)) {
+                            this.setupClickEventPiece(p, x, y);
+                        }
                     }
                 }
             }
@@ -88,8 +90,6 @@
 
             this.fallingDown();
             this.reduceSize();
-
-
             this.refreshPosition();
             this.acceptInput = true;
         }
