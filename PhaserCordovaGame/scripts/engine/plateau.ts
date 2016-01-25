@@ -27,8 +27,8 @@
         public refreshPosition() {
 
             this.listTweenBloquant = new Array<Phaser.Tween>();
-            var debutX = (SimpleGame.realWidth - (this.pas * (this.taillePlateauX-1)))/2 
-            var debutY = (SimpleGame.realHeight - ((this.taillePlateauY-1) * this.pas)) / 2;
+            var debutX = (SimpleGame.realWidth - (this.pas * (this.taillePlateauX - 1))) / 2
+            var debutY = (SimpleGame.realHeight - ((this.taillePlateauY - 1) * this.pas)) / 2;
             for (var x = 0; x < this.taillePlateauX; x++) {
                 for (var y = 0; y < this.taillePlateauY; y++) {
                     var p = this.pieces[x][y];
@@ -175,7 +175,7 @@
 
             } else if (this.pieces[x][y] instanceof PieceLine) {
                 listOfCoord = this.getZoneLine(x, y);
-               
+
             } else {
                 listOfCoord = this.getZoneCombine(x, y);
                 if (listOfCoord.length <= 1) {
@@ -240,15 +240,15 @@
             }
 
             if (x > 0 && y > 0) {
-                potentials.push([x - 1, y-1]);
+                potentials.push([x - 1, y - 1]);
             }
-            if (x > 0 && y < this.taillePlateauY-1) {
+            if (x > 0 && y < this.taillePlateauY - 1) {
                 potentials.push([x - 1, y + 1]);
             }
-            if (x < this.taillePlateauX-1 && y < this.taillePlateauY - 1) {
-                potentials.push([x +1 , y + 1]);
+            if (x < this.taillePlateauX - 1 && y < this.taillePlateauY - 1) {
+                potentials.push([x + 1, y + 1]);
             }
-            if (x < this.taillePlateauX-1 && y > 0) {
+            if (x < this.taillePlateauX - 1 && y > 0) {
                 potentials.push([x + 1, y - 1]);
             }
 
@@ -288,15 +288,13 @@
             // et on continue
             for (var x = 0; x < this.taillePlateauX; x++) {
                 // on a un "obstacle" tout en haut
-                var positionYObstacle = new Array<number>();
-                positionYObstacles.push(-1)
-                var positionYObstacles = this.pieces[x].reduce((a: number[], e: Piece, i) => {
-                    if (e.type === TypePiece.Obstacle) {
-                        a.push(i);
-
+                var positionYObstacles = [-1];
+                this.pieces[x].forEach((p, i, a) => {
+                    if (p !== null && p !== undefined && p.type == TypePiece.Obstacle) {
+                        positionYObstacles.push(i);
                     }
-                    return a;
-                }, []);
+                });
+
                 // et pareille tout en bas
                 positionYObstacles.push(this.taillePlateauY);
 
@@ -304,19 +302,27 @@
                 // parcours des positions d'obstacles
                 for (var c = 1; c < positionYObstacles.length; c++) {
                     // tailleY
-                    var debut = positionYObstacles[c - 1];
+                    var basDuCrochet = positionYObstacles[c - 1];
                     // premier obstacle en remontant
-                    var fin = positionYObstacles[c];
-                    
-                    if (this.pieces[x].slice(debut - 1, fin).every((x, n, a) => x === null)) {
+                    var hautDuCrochet = positionYObstacles[c];
+
+                    // si que des vides, on skip le crochet
+                    if (this.pieces[x].slice(hautDuCrochet + 1, basDuCrochet).every((x, n, a) => x === null || x === undefined)) {
                         continue;
                     }
-                    // si pas que des null
-                    for (var y = debut - 1; y <= fin; y--) {
-                        
-                        while (this.pieces[x][y] == null ) {
-                            ArrayUtil.decalePiece(this.pieces[x], y,fin);
+                    
+                    for (var y = basDuCrochet - 1; y > hautDuCrochet; y--) {
+
+                        // si on a que des null au dessus, on arrete de bosser sur la zone
+                        if (this.pieces[x].slice(hautDuCrochet + 1, y).every((x, n, a) => x === null || x === undefined)) {
+                            break;
                         }
+
+                        // ici on a au moins un non null au dessus
+                        while (this.pieces[x][y] == null) {
+                            ArrayUtil.decalePiece(this.pieces[x], y, hautDuCrochet);
+                        }
+                                               
                     }
                 }
             }
