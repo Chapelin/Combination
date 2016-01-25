@@ -40,11 +40,11 @@
             return false;
         }
 
-        public static decalePiece(arrayOfPiece: Array<Piece>, indexMax: number) {
-            for (var pos = indexMax; pos > 0; pos--) {
+        public static decalePiece(arrayOfPiece: Array<Piece>, indexMax: number, indexMin: number = 0) {
+            for (var pos = indexMax; pos > indexMin; pos--) {
                 arrayOfPiece[pos] = arrayOfPiece[pos - 1];
             }
-            arrayOfPiece[0] = null;
+            arrayOfPiece[indexMin] = null;
         }
     }
 }

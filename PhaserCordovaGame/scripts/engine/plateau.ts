@@ -287,11 +287,36 @@
             // jusqu'a ce que ça soit bon
             // et on continue
             for (var x = 0; x < this.taillePlateauX; x++) {
-                for (var y = this.taillePlateauY - 1; y > 0; y--) {
-                    var reste = this.pieces[x].slice(0, y);
-                    // tant que la piece est null ET qu'on a pas que des null
-                    while (this.pieces[x][y] == null && !reste.every((x, n, a) => x == null)) {
-                        ArrayUtil.decalePiece(this.pieces[x], y);
+                // on a un "obstacle" tout en haut
+                var positionYObstacle = new Array<number>();
+                positionYObstacles.push(-1)
+                var positionYObstacles = this.pieces[x].reduce((a: number[], e: Piece, i) => {
+                    if (e.type === TypePiece.Obstacle) {
+                        a.push(i);
+
+                    }
+                    return a;
+                }, []);
+                // et pareille tout en bas
+                positionYObstacles.push(this.taillePlateauY);
+
+                positionYObstacles = positionYObstacles.reverse();
+                // parcours des positions d'obstacles
+                for (var c = 1; c < positionYObstacles.length; c++) {
+                    // tailleY
+                    var debut = positionYObstacles[c - 1];
+                    // premier obstacle en remontant
+                    var fin = positionYObstacles[c];
+                    
+                    if (this.pieces[x].slice(debut - 1, fin).every((x, n, a) => x === null)) {
+                        continue;
+                    }
+                    // si pas que des null
+                    for (var y = debut - 1; y <= fin; y--) {
+                        
+                        while (this.pieces[x][y] == null ) {
+                            ArrayUtil.decalePiece(this.pieces[x], y,fin);
+                        }
                     }
                 }
             }
