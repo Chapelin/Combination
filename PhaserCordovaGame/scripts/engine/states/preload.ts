@@ -10,15 +10,15 @@ module PhaserCordovaGame {
 
         preload() {
             this.game.load.image(AssetKeys.assetLogo, "images/phaser2.png");
-            this.game.load.image(AssetKeys.assetBilleVert, "images/bille.png");
-            this.game.load.image(AssetKeys.assetBillerouge, "images/billeRouge.png");
-            this.game.load.image(AssetKeys.assetBillebleu, "images/billeBleu.png");
-            this.game.load.image(AssetKeys.assetBilleJaune, "images/billeJaune.png");
-            this.game.load.image(AssetKeys.assetBoutonVert, "images/boutonVert.png");
-            this.game.load.image(AssetKeys.assetBoutonRouge, "images/boutonRouge.png");
-            this.game.load.image(AssetKeys.assetBilleBomb, "images/bomb.png");
-            this.game.load.image(AssetKeys.assetLine, "images/line.png");
-            this.game.load.image(AssetKeys.assetObstacle, "images/stone.png");
+            this.game.load.image(AssetKeys.assetBilleVert, "images/pieces/bille.png");
+            this.game.load.image(AssetKeys.assetBillerouge, "images/pieces/billeRouge.png");
+            this.game.load.image(AssetKeys.assetBillebleu, "images/pieces/billeBleu.png");
+            this.game.load.image(AssetKeys.assetBilleJaune, "images/pieces/billeJaune.png");
+            this.game.load.image(AssetKeys.assetBoutonVert, "images/pieces/boutonVert.png");
+            this.game.load.image(AssetKeys.assetBoutonRouge, "images/pieces/boutonRouge.png");
+            this.game.load.image(AssetKeys.assetBilleBomb, "images/pieces/bomb.png");
+            this.game.load.image(AssetKeys.assetLine, "images/pieces/line.png");
+            this.game.load.image(AssetKeys.assetObstacle, "images/pieces/stone.png");
         }
 
         create() {
