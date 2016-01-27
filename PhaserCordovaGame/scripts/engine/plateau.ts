@@ -5,7 +5,6 @@
         taillePlateauY: number;
         scaleDefaultPiece: Phaser.Point;
         pas: number;
-        acceptInput: boolean;
         listTweenBloquant: Phaser.Tween[];
         nombreCoups: number;
         currentLevel: number;
@@ -15,6 +14,17 @@
             this.taillePlateauX = sizeX;
             this.taillePlateauY = sizeY;
             // X est plus petit que Y
+        }
+
+        private acceptInput() {
+            for (var x = 0; x < this.taillePlateauX; x++) {
+                for (var y = 0; y < this.taillePlateauY; y++) {
+                    var p = this.pieces[x][y];
+                    if (p !== null && p!== undefined){
+                        p.inputEnabled = true;
+                    }
+                }
+            }
         }
 
         private processScale() {
@@ -59,7 +69,7 @@
                 v.onComplete.addOnce(() => {
                     // si tous les tweens sont finis
                     if (this.tweensFinished()) {
-                        this.acceptInput = true;
+                        this.acceptInput();
                     }
                 }, this);
                 v.start();
@@ -91,20 +101,17 @@
             this.fallingDown();
             this.reduceSize();
             this.refreshPosition();
-            this.acceptInput = true;
         }
 
         public setupClickEventPiece(p: Piece, x: number, y: number) {
-            if (p.inputEnabled) {
-                p.inputEnabled = false;
-                p.events.onInputUp.removeAll();
-            }
-            p.inputEnabled = true;
+
+
+            p.inputEnabled = false;
+            p.events.onInputUp.removeAll();
             p.events.onInputUp.addOnce((dummy, dummy2, dummy3, posX, posY) => {
-                if (this.acceptInput) {
-                    this.acceptInput = false;
-                    this.combineZone(posX, posY);
-                }
+
+                this.combineZone(posX, posY);
+
             }, this, 0, x, y);
         }
 
@@ -159,8 +166,11 @@
         public selectNeighborForCombine(origine: Piece, potentiels: Array<Array<number>>): Array<Array<number>> {
             var result = [];
             potentiels.forEach((pos, i, res) => {
-                if (origine.canCombine(this.pieces[pos[0]][pos[1]])) {
-                    result.push(pos);
+                var p = this.pieces[pos[0]][pos[1]]
+                if (p !== null && p !== undefined) {
+                    if (origine.canCombine(p)) {
+                        result.push(pos);
+                    }
                 }
             }, this);
             return result;
@@ -186,8 +196,10 @@
 
             listOfCoord.forEach((pos, i, arr) => {
                 var p = this.pieces[pos[0]][pos[1]];
-                listToDelete.push(p);
-                this.pieces[pos[0]][pos[1]] = null;
+                if (p !== null && p !== undefined) {
+                    listToDelete.push(p);
+                    this.pieces[pos[0]][pos[1]] = null;
+                }
             });
 
             listToDelete.forEach((p: Piece) => {
@@ -310,7 +322,7 @@
                     if (this.pieces[x].slice(hautDuCrochet + 1, basDuCrochet).every((x, n, a) => x === null || x === undefined)) {
                         continue;
                     }
-                    
+
                     for (var y = basDuCrochet - 1; y > hautDuCrochet; y--) {
 
                         // si on a que des null au dessus, on arrete de bosser sur la zone
@@ -322,7 +334,7 @@
                         while (this.pieces[x][y] == null) {
                             ArrayUtil.decalePiece(this.pieces[x], y, hautDuCrochet);
                         }
-                                               
+
                     }
                 }
             }

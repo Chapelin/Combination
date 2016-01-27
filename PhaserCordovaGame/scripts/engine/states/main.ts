@@ -15,8 +15,7 @@
                 this.startLevel(levelToStart);
             }
             else {
-                // display choose level
-                this.startLevel(1);
+                this.startLevel(3);
             }
         }
 
