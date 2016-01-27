@@ -3,10 +3,11 @@
     export abstract class Piece extends Phaser.Sprite {
 
         type: TypePiece;
-        
+        canBeAlone: boolean;
         constructor(game: Phaser.Game, texture : string) {
             super(game, 0, 0, texture);
             game.add.existing(this);
+            this.canBeAlone = false;
         }
 
         public canCombine(other: Piece) {

@@ -3,6 +3,7 @@
         constructor(game: Phaser.Game) {
             super(game, AssetKeys.assetBilleBomb);
             this.type = TypePiece.Bombe;
+            this.canBeAlone = true;
         }
 
     }

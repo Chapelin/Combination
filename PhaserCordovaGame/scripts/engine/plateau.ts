@@ -280,7 +280,7 @@
                         var p = this.pieces[x][y];
 
                         if (p !== null && p !== undefined) {
-                            flagPasPerdu = flagPasPerdu || p instanceof PieceBombe;
+                            flagPasPerdu = flagPasPerdu || p.canBeAlone;
                             flagPasPerdu = flagPasPerdu || this.getZoneCombine(x, y).length > 1;
                         }
                     }

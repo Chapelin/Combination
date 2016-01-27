@@ -41,11 +41,11 @@ module PhaserCordovaGame {
         }
 
         restart() {
-            this.game.state.start(stateMain, true, false, this.levelNumber);
+            this.game.state.start(stateChooser, true, false, this.levelNumber);
         }
 
         startMain() {
-            this.game.state.start(stateMain);
+            this.game.state.start(stateChooser);
         }
 
 
