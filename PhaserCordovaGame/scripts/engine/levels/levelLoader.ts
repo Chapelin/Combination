@@ -30,6 +30,10 @@
             }
             return null
         }
+
+        public getNumberOfLevels(): number {
+            return this.levelFileContent.levelEnd;
+        }
     }
 
     export class LevelsFileData {

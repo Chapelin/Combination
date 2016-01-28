@@ -10,5 +10,7 @@
         public static assetBoutonRouge: string = "boutonRouge";
         public static assetLine: string = "line";
         public static assetObstacle: string = "stone";
+
+        public static assetLevelBox: string = "levelBox";
     }
 }
