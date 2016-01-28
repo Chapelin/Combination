@@ -32,7 +32,8 @@
         }
 
         public getNumberOfLevels(): number {
-            return this.levelFileContent.levelEnd;
+          //  return this.levelFileContent.levelEnd;
+            return 150;
         }
     }
 
