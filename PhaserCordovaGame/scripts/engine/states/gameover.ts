@@ -16,8 +16,6 @@ module PhaserCordovaGame {
             if (window.cordova.platformId === "android") {
                 fontName = "Droid Sans";
             }
-
-
             this.defaultStyle = {
                 font: fontName,
                 fill: "#ff0044",

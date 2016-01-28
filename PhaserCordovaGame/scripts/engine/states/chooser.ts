@@ -40,13 +40,13 @@
             }
 
             var tailleX = SimpleGame.realWidth / ((this.numberOfColX * 1.5) + 0.5);
-            var tailleY = SimpleGame.realHeight / ((this.numberOfColY  * 1.5) + 0.5);
+            var tailleY = SimpleGame.realHeight / ((this.numberOfColY * 1.5) + 0.5);
             var taille = Math.min(tailleX, tailleY);
             var X = taille * 0.5;
             var Y = taille * 0.5;
-            
+
             for (var i = 1; i <= this.levelLoader.getNumberOfLevels(); i++) {
-                
+
                 var compteurY = i / this.numberOfColX;
                 var button = this.game.add.button(X, Y, AssetKeys.assetLevelBox);
                 button.width = taille;
@@ -55,6 +55,8 @@
                 text.anchor.set(0.5);
                 text.x = Math.floor(button.x + button.width / 2);
                 text.y = Math.floor(button.y + button.height / 2);
+                button.inputEnabled = true;
+                button.events.onInputUp.addOnce((d1, d2, d3, level) => this.startLevel(level), this, null , i);
 
                 if (i % this.numberOfColX === 0) {
                     X = taille * 0.5;
