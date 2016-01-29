@@ -13,10 +13,14 @@ module PhaserCordovaGame {
     export class SimpleGame {
         public static realWidth: number;
         public static realHeight: number;
+        public static data: FileData;
+        public fileService: FileService;        
         constructor() {
             SimpleGame.realHeight = window.innerHeight * window.devicePixelRatio;
             SimpleGame.realWidth = window.innerWidth * window.devicePixelRatio;
             this.game = new Phaser.Game(SimpleGame.realWidth, SimpleGame.realHeight, Phaser.AUTO, 'content');
+            this.fileService = new FileService();
+            SimpleGame.data = this.fileService.getData();
 
             //Add all states
             this.game.state.add(stateBoot, Boot);
@@ -32,6 +36,11 @@ module PhaserCordovaGame {
         }
 
         game: Phaser.Game;
+
+
+        public saveGameData() {
+            this.fileService.writeData(SimpleGame.data);
+        }
 
     }
 }

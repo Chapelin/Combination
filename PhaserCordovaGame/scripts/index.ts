@@ -8,6 +8,7 @@ module PhaserCordovaGame {
     "use strict";
 
     export module Application {
+        game: SimpleGame;
         export function initialize() {
             document.addEventListener("deviceready", onDeviceReady, false);
         }
@@ -15,12 +16,12 @@ module PhaserCordovaGame {
         var authWindows: InAppBrowser;
         function onDeviceReady() {
             // Handle the Cordova pause and resume events
-            
-            document.addEventListener("pause", onPause, false);
-            document.addEventListener("resume", onResume, false);
+
+            document.addEventListener("pause", onPause.bind(this), false);
+            document.addEventListener("resume", onResume.bind(this), false);
            
             // TODO: Cordova has been loaded. Perform any initialization that requires Cordova here.
-            var game = new SimpleGame();
+            this.game = new SimpleGame();
             
         }
 
@@ -30,6 +31,7 @@ module PhaserCordovaGame {
 
         function onPause() {
             // TODO: This application has been suspended. Save application state here.
+            this.game.saveGameData();
         }
 
         function onResume() {

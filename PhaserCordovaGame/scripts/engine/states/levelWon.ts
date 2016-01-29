@@ -38,6 +38,8 @@
             this.buttonMain.width = 150;
             this.buttonNextLevel = new Phaser.Button(this.game, 50, 450, AssetKeys.assetBoutonVert, this.startNextLevel, this)
             this.buttonNextLevel.width = 150;
+            SimpleGame.data.levelFinished.push(currentLevel);
+            SimpleGame.data.scores[currentLevel] = score;
             this.game.add.existing(this.textGain);
             this.game.add.existing(this.textScore);
             this.game.add.existing(this.buttonNextLevel);

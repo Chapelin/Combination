@@ -12,5 +12,6 @@
         public static assetObstacle: string = "stone";
 
         public static assetLevelBox: string = "levelBox";
+        public static assetLevelBoxDone: string = "levelBoxDone";
     }
 }
