@@ -36,6 +36,7 @@
         startLevel(targetLevel: number) {
             var data = this.levelLoader.readLevel(targetLevel);
             if (data !== null) {
+                this.interface.removeAll(true, true);
                 this.game.state.start(statePlaying, true, false, data);
             }
         }
@@ -80,7 +81,7 @@
 
         createButtonLevel(i: number, taille: number, X: number, Y: number) {
             var compteurY = i / this.numberOfColX;
-            var boxKey = SimpleGame.data.levelFinished.indexOf(i) !== -1 ? AssetKeys.assetLevelBoxDone : AssetKeys.assetLevelBox;
+            var boxKey = SimpleGame.dataService.isLevelFinished(i)  ? AssetKeys.assetLevelBoxDone : AssetKeys.assetLevelBox;
             var button = this.game.add.button(X, Y, boxKey);
 
             button.width = taille;
