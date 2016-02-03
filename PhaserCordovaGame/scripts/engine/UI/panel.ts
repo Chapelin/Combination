@@ -1,7 +1,7 @@
 ﻿module PhaserCordovaGame {
     export class Panel extends Phaser.Group {
         imagePanel: Phaser.Image;
-        defaultFontStyle: any;
+        defaultFontStyle: Phaser.PhaserTextStyle;
 
         constructor(game: Phaser.Game) {
             super(game, null, "Panel", false, false);
@@ -39,19 +39,19 @@
 
         public addButton(key: string, action: () => any, context: any, position: ButtonPosition) {
             var button = new Phaser.Button(this.game, 0, 0, key, action, context);
-            var y = this.imagePanel.y + ((this.imagePanel.height - 75) / 2);
+            var y = this.imagePanel.y + ((this.imagePanel.height - (button.height+60)) / 2);
             button.position.y = y;
             button.anchor.set(0.5);
             switch (position) {
                 case ButtonPosition.Left:
-                    var x = this.imagePanel.x - ((this.imagePanel.width - 170) / 2);
+                    var x = this.imagePanel.x - ((this.imagePanel.width - (button.width+60)) / 2);
                     button.position.x = x;
                     break;
                 case ButtonPosition.Center:
                     button.position.x = this.imagePanel.x;
                     break;
                 case ButtonPosition.Right:
-                    var x = this.imagePanel.x + ((this.imagePanel.width - 170) / 2);
+                    var x = this.imagePanel.x + ((this.imagePanel.width - (button.width + 60)) / 2);
                     button.position.x = x;
                     break;
             }
@@ -62,7 +62,6 @@
             this.imagePanel = null;
             super.destroy(true, false);
         }
-
     }
 
     export enum ButtonPosition {
