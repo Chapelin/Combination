@@ -21,6 +21,7 @@ module PhaserCordovaGame {
             this.game.load.image(AssetKeys.assetObstacle, "images/pieces/stone.png");
             this.game.load.image(AssetKeys.assetLevelBox, "images/ui/level-box.png");
             this.game.load.image(AssetKeys.assetLevelBoxDone, "images/ui/level-box_done.png");
+            this.game.load.image(AssetKeys.assetLevelBoxUnAvailable, "images/ui/level-box_inavailable.png");
         }
 
         create() {

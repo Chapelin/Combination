@@ -15,11 +15,11 @@
 
         public getLevelFinished(): number[] {
             var result = localStorage.getItem(PersistenceService.levelFinishedKey);
-            return result === null ? new Array<number>(): result;
+            return result === null ? new Array<number>() : JSON.parse(result);
         }
         public getScores(): { [k: number]: number } {
             var result = localStorage.getItem(PersistenceService.scoreKey);
-            return result === null ? {} : result;
+            return result === null ? {} : JSON.parse(result);
         }
     }
 }

@@ -13,5 +13,6 @@
 
         public static assetLevelBox: string = "levelBox";
         public static assetLevelBoxDone: string = "levelBoxDone";
+        public static assetLevelBoxUnAvailable: string = "levelUnAvailable";
     }
 }

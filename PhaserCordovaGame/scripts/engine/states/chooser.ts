@@ -81,7 +81,18 @@
 
         createButtonLevel(i: number, taille: number, X: number, Y: number) {
             var compteurY = i / this.numberOfColX;
-            var boxKey = SimpleGame.dataService.isLevelFinished(i)  ? AssetKeys.assetLevelBoxDone : AssetKeys.assetLevelBox;
+            var isLevelFinished = SimpleGame.dataService.isLevelFinished(i);
+            // un niveau est lançable s'il est fini, ou si son précédent l'est
+            var isLevelAvailable = isLevelFinished || SimpleGame.dataService.isLevelFinished(i - 1) || i === 1;
+
+            var boxKey = AssetKeys.assetLevelBoxUnAvailable;
+            if (isLevelFinished) {
+                boxKey = AssetKeys.assetLevelBoxDone;
+            }
+            else if (isLevelAvailable) {
+                boxKey = AssetKeys.assetLevelBox;
+            }
+
             var button = this.game.add.button(X, Y, boxKey);
 
             button.width = taille;
@@ -91,10 +102,10 @@
             text.x = Math.floor(button.x + button.width / 2);
             text.y = Math.floor(button.y + button.height / 2);
 
-
-            button.inputEnabled = true;
-            button.events.onInputUp.addOnce((d1, d2, d3, level) => this.startLevel(level), this, null, i);
-
+            if (isLevelAvailable) {
+                button.inputEnabled = true;
+                button.events.onInputUp.addOnce((d1, d2, d3, level) => this.startLevel(level), this, null, i);
+            }
 
             this.interface.add(button);
             this.interface.add(text);
