@@ -21,8 +21,9 @@
            
             var isNewLevelFinished  = SimpleGame.dataService.addLevelFinished(currentLevel);
             var isHighScore = SimpleGame.dataService.addScore(currentLevel, score);
-
+            this.panel.finishSetup();
             this.game.add.existing(this.panel);
+            this.panel.show();
         }
 
         startNextLevel() {

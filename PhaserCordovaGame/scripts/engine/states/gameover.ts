@@ -17,7 +17,9 @@ module PhaserCordovaGame {
             this.panel.addText("Dommage.");
             this.panel.addButton(AssetKeys.assetButtonChoose, this.startMain, this, ButtonPosition.Left);
             this.panel.addButton(AssetKeys.assetButtonRestart, this.restart, this, ButtonPosition.Right);
+            this.panel.finishSetup();
             this.game.add.existing(this.panel);
+            this.panel.show();
         }
 
         restart() {
@@ -25,7 +27,7 @@ module PhaserCordovaGame {
         }
 
         startMain() {
-            this.game.state.start(stateChooser);
+            this.game.state.start(stateChooser, true, false);
         }
 
 

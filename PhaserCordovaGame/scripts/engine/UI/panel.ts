@@ -2,7 +2,7 @@
     export class Panel extends Phaser.Group {
         imagePanel: Phaser.Image;
         defaultFontStyle: Phaser.PhaserTextStyle;
-
+        maxScale: Phaser.Point; 
         constructor(game: Phaser.Game) {
             super(game, null, "Panel", false, false);
 
@@ -16,12 +16,18 @@
                 fill: "#ff0044",
                 fontSize: 35
             }
+            this.maxScale = new Phaser.Point(1, 1);
         }
 
         public setBackImage(screenTx: number, screenTy: number) {
             this.imagePanel = new Phaser.Image(this.game, screenTx / 2, screenTy / 2, AssetKeys.assetPanel);
             this.imagePanel.anchor.set(0.5);
             this.add(this.imagePanel);
+            var scalMin = Math.min(screenTx / this.imagePanel.x, screenTy / this.imagePanel.y);
+            if (scalMin < 1) {
+                this.maxScale = new Phaser.Point(scalMin, scalMin);
+            }
+
         }
        
         public addTitle() {
@@ -56,6 +62,15 @@
                     break;
             }
             this.add(button);
+        }
+
+        public finishSetup() {
+            this.scale = new Phaser.Point(0.01, 0.01);
+        }
+
+        public show() {
+            var t = this.game.add.tween(this.scale);
+            t.to(this.maxScale, GameConfiguration.GAMEANIM_SPEED_FADE, Phaser.Easing.Exponential.In, true);
         }
 
         public destroy() {
