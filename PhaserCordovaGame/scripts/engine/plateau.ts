@@ -270,7 +270,7 @@
         private checkEndCondition() {
             if (this.taillePlateauX === 0) {
                 // gagné :)
-                this.game.state.start(stateLevelWon, true, false, this.currentLevel, this.nombreCoups);
+                this.game.state.start(stateLevelWon, false, false, this.currentLevel, this.nombreCoups);
 
             } else {
                 var flagPasPerdu = false;
