@@ -12,8 +12,8 @@ module PhaserCordovaGame {
 
         init(currentLevel: number) {
             this.levelNumber = currentLevel;
-            this.panel = new Panel(this.game);
-            this.panel.setBackImage(SimpleGame.realWidth, SimpleGame.realHeight);
+            this.panel = new Panel(this.game,SimpleGame.realWidth, SimpleGame.realHeight);
+        
             this.panel.addText("Dommage.");
             this.panel.addButton(AssetKeys.assetButtonChoose, this.startMain, this, ButtonPosition.Left);
             this.panel.addButton(AssetKeys.assetButtonRestart, this.restart, this, ButtonPosition.Right);

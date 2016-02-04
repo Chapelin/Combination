@@ -3,7 +3,7 @@
         imagePanel: Phaser.Image;
         defaultFontStyle: Phaser.PhaserTextStyle;
         maxScale: Phaser.Point; 
-        constructor(game: Phaser.Game) {
+        constructor(game: Phaser.Game, screenTx: number, screenTy : number) {
             super(game, null, "Panel", false, false);
 
             var fontName = "Arial";
@@ -17,9 +17,12 @@
                 fontSize: 35
             }
             this.maxScale = new Phaser.Point(1, 1);
-        }
 
-        public setBackImage(screenTx: number, screenTy: number) {
+            var back = new Phaser.Image(game, 0, 0, AssetKeys.assBackPanelModal);
+            back.inputEnabled = false;
+            back.width = screenTx;
+            back.height = screenTy;
+            this.add(back);
             this.imagePanel = new Phaser.Image(this.game, screenTx / 2, screenTy / 2, AssetKeys.assetPanel);
             this.imagePanel.anchor.set(0.5);
             this.add(this.imagePanel);
@@ -27,9 +30,8 @@
             if (scalMin < 1) {
                 this.maxScale = new Phaser.Point(scalMin, scalMin);
             }
-
         }
-       
+
         public addTitle() {
             var y = this.imagePanel.y - ((this.imagePanel.height - 10) / 2)
             var title = new Phaser.Image(this.game, this.imagePanel.x, y, AssetKeys.assetLevelCompleteTitle);
@@ -65,7 +67,7 @@
         }
 
         public finishSetup() {
-            this.scale = new Phaser.Point(0.01, 0.01);
+            this.scale = new Phaser.Point(0.001, 0.001);
         }
 
         public show() {

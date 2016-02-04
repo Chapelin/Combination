@@ -18,8 +18,7 @@
 
             this.plateauJoueur = new Plateau(this.game, 5, 5);
             this.plateauJoueur.loadPlateauFromLevelData(levelData);
-            this.panel = new Panel(this.game);
-            this.panel.setBackImage(SimpleGame.realWidth, SimpleGame.realHeight);
+            this.panel = new Panel(this.game, SimpleGame.realWidth, SimpleGame.realHeight);
             this.panel.addText("Que voulez vous faire ?");
             this.panel.addButton(AssetKeys.assetButtonRestart, this.restartLevel, this, ButtonPosition.Left);
             this.panel.addButton(AssetKeys.assetButtonChoose, this.chooseLevel, this, ButtonPosition.Right);

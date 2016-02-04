@@ -12,8 +12,7 @@
         init(currentLevel: number, score: number) {
             this.levelNumber = currentLevel;
             this.nombreCoup = score;
-            this.panel = new Panel(this.game);
-            this.panel.setBackImage(SimpleGame.realWidth, SimpleGame.realHeight);
+            this.panel = new Panel(this.game, SimpleGame.realWidth, SimpleGame.realHeight);
             this.panel.addTitle();
             this.panel.addText("Bravo ! \r\nVous avez fini le niveau " + this.levelNumber + " en " + this.nombreCoup + " coups");
             this.panel.addButton(AssetKeys.assetButtonChoose, this.startMain, this, ButtonPosition.Left);
