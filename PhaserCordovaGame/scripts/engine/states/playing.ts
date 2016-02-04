@@ -15,12 +15,12 @@
             this.currentData = levelData;
             this.buttonStop = new Phaser.Button(this.game, 10, 0, AssetKeys.assetButtonStap);
             this.buttonStop.inputEnabled = true;
-            this.buttonStop.events.onInputUp.addOnce(this.stap, this);
+            this.buttonStop.events.onInputUp.add(this.stap, this);
             this.game.add.existing(this.buttonStop);
            
             this.plateauJoueur = new Plateau(this.game, 5, 5);
             this.plateauJoueur.loadPlateauFromLevelData(levelData);
-           
+            
         
         }
 

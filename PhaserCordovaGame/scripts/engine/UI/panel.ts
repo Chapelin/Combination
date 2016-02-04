@@ -25,7 +25,7 @@
 
         private setupBack(config: PanelConfig) {
             var back = new Phaser.Image(this.game, 0, 0, AssetKeys.assBackPanelModal);
-            back.inputEnabled = false;
+            back.inputEnabled = true;
             back.width = config.screenWidth;
             back.height = config.screenHeight;
             this.add(back);

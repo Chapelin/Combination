@@ -29,7 +29,6 @@ module PhaserCordovaGame {
             this.game.state.add(stateGameOver, GameOver);
             this.game.state.add(stateLevelWon, LevelWon);
             this.game.state.add(statePlaying, Playing);
-
             //Start the first state
             this.game.state.start(stateBoot);
         }
