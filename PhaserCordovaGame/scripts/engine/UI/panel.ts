@@ -67,19 +67,19 @@
             var button = new Phaser.Button(this.game, 0, 0, config.key);
             button.inputEnabled = true;
             button.events.onInputUp.addOnce(config.action, config.contextAction);
-            var y = imagePanel.y + ((imagePanel.height - (button.height + 60)) / 2);
+            var y = imagePanel.bottom - (button.height /2 ) -50;
             button.position.y = y;
             button.anchor.set(0.5);
             switch (config.position) {
                 case ButtonPosition.Left:
-                    var x = imagePanel.x - ((imagePanel.width - (button.width + 60)) / 2);
+                    var x = imagePanel.left + (button.width / 2) + 50;
                     button.position.x = x;
                     break;
                 case ButtonPosition.Center:
                     button.position.x = imagePanel.x;
                     break;
                 case ButtonPosition.Right:
-                    var x = imagePanel.x + ((imagePanel.width - (button.width + 60)) / 2);
+                    var x = imagePanel.right - (button.width / 2) - 50;
                     button.position.x = x;
                     break;
             }

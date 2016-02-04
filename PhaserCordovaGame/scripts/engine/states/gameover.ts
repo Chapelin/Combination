@@ -23,12 +23,14 @@ module PhaserCordovaGame {
                         action: this.startMain,
                         contextAction: this,
                         key: AssetKeys.assetButtonChoose,
+                        keyClick: AssetKeys.assetButtonChoose_click,
                         position: ButtonPosition.Left
                     },
                     {
                         action: this.restart,
                         contextAction: this,
                         key: AssetKeys.assetButtonRestart,
+                        keyClick: AssetKeys.assetButtonRestart_click,
                         position: ButtonPosition.Right
                     }
                 ]

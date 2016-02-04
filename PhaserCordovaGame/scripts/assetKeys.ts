@@ -20,9 +20,13 @@
         public static assetCancelIcon: string = "cancel";
 
         public static assetButtonNextLevel: string = "btnNextLevel";
+        public static assetButtonNextLevel_click: string = "btnNextLevelClick";
         public static assetButtonRestart: string = "btnRestart";
+        public static assetButtonRestart_click: string = "btnRestartClick";
         public static assetButtonChoose: string = "btnChoose";
-        public static assetButtonStap: string = "btnStap";
+        public static assetButtonChoose_click: string = "btnChooseClick";
+        public static assetButtonStap: string = "btnStop";
+        public static assetButtonStap_click: string = "btnStopClick";
         public static assetButtonNext: string = "btnNext";
         public static assetButtonPrec: string = "btnPrec";
         

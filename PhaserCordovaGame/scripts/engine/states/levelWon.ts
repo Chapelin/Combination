@@ -23,12 +23,14 @@
                         action: this.startMain,
                         contextAction: this,
                         key: AssetKeys.assetButtonChoose,
+                        keyClick: AssetKeys.assetButtonChoose_click,
                         position: ButtonPosition.Left
                     },
                     {
                         action: this.startNextLevel,
                         contextAction: this,
                         key: AssetKeys.assetButtonNextLevel,
+                        keyClick: AssetKeys.assetButtonNextLevel_click,
                         position: ButtonPosition.Right
                     }
                 ]

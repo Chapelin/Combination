@@ -17,7 +17,6 @@
             this.buttonStop.inputEnabled = true;
             this.buttonStop.events.onInputUp.add(this.stap, this);
             this.game.add.existing(this.buttonStop);
-           
             this.plateauJoueur = new Plateau(this.game, 5, 5);
             this.plateauJoueur.loadPlateauFromLevelData(levelData);
             
@@ -29,7 +28,7 @@
             config = {
                 screenHeight: SimpleGame.realHeight,
                 screenWidth: SimpleGame.realWidth,
-                showTitle: true,
+                showTitle: false,
                 cancellable: true,
                 text: "Que voulez vous faire ?",
                 buttons: [
@@ -37,12 +36,14 @@
                         action: this.restartLevel,
                         contextAction: this,
                         key: AssetKeys.assetButtonRestart,
+                        keyClick: AssetKeys.assetButtonRestart_click,
                         position: ButtonPosition.Left
                     },
                     {
                         action: this.chooseLevel,
                         contextAction: this,
                         key: AssetKeys.assetButtonChoose,
+                        keyClick: AssetKeys.assetButtonChoose_click,
                         position: ButtonPosition.Right
                     }
                 ]

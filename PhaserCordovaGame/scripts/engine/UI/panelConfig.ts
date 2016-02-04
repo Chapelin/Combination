@@ -10,6 +10,7 @@
 
     export interface PanelButtonConfig {
         key: string;
+        keyClick?: string;
         position: ButtonPosition;
         action: () => any;
         contextAction?: any;
