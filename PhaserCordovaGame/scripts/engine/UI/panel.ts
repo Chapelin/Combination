@@ -46,7 +46,9 @@
         }
 
         public addButton(key: string, action: () => any, context: any, position: ButtonPosition) {
-            var button = new Phaser.Button(this.game, 0, 0, key, action, context);
+            var button = new Phaser.Button(this.game, 0, 0, key);
+            button.inputEnabled = true;
+            button.events.onInputUp.addOnce(action, context);
             var y = this.imagePanel.y + ((this.imagePanel.height - (button.height+60)) / 2);
             button.position.y = y;
             button.anchor.set(0.5);

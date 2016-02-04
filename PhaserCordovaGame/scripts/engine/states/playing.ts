@@ -13,7 +13,9 @@
 
         init(levelData: LevelFileData) {
             this.currentData = levelData;
-            this.buttonStop = new Phaser.Button(this.game, 10, 0, AssetKeys.assetButtonStap, this.stap, this);
+            this.buttonStop = new Phaser.Button(this.game, 10, 0, AssetKeys.assetButtonStap);
+            this.buttonStop.inputEnabled = true;
+            this.buttonStop.events.onInputUp.addOnce(this.stap, this);
             this.game.add.existing(this.buttonStop);
 
             this.plateauJoueur = new Plateau(this.game, 5, 5);
@@ -35,7 +37,7 @@
         }
 
         chooseLevel() {
-            this.game.state.start(stateChooser, true, false, this.currentData.level)
+            this.game.state.start(stateChooser, true, false)
         }
     }
 }
