@@ -16,7 +16,7 @@
             config = {
                 screenHeight: SimpleGame.realHeight,
                 screenWidth: SimpleGame.realWidth,
-                showTitle: true,
+                titleKey: AssetKeys.assetLevelCompleteTitle,
                 text: "Bravo ! \r\nVous avez fini le niveau " + this.levelNumber + " en " + this.nombreCoup + " coups",
                 buttons: [
                     {
@@ -45,7 +45,7 @@
         }
 
         startNextLevel() {
-            this.game.state.start(stateChooser,true,false, this.levelNumber++);
+            this.game.state.start(stateChooser,true,false, this.levelNumber+1);
         }
 
         startMain() {

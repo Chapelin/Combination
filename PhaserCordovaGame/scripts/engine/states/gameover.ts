@@ -16,7 +16,7 @@ module PhaserCordovaGame {
             config = {
                 screenHeight: SimpleGame.realHeight,
                 screenWidth: SimpleGame.realWidth,
-                showTitle: false,
+                titleKey: AssetKeys.assetLevelFailedTitle,
                 text: "Dommage",
                 buttons: [
                     {

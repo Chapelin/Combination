@@ -3,7 +3,8 @@
 
         defaultFontStyle: Phaser.PhaserTextStyle;
         maxScale: Phaser.Point;
-
+        panelHeight: number = 400;
+        panelWidth: number = 600;
         constructor(game: Phaser.Game, config: PanelConfig) {
             super(game, null, "Panel", false, false);
 
@@ -34,10 +35,12 @@
         private setupPanel(config: PanelConfig) {
             var imagePanel = new Phaser.Image(this.game, config.screenWidth / 2, config.screenHeight / 2, AssetKeys.assetPanel);
             imagePanel.anchor.set(0.5);
+            imagePanel.width = this.panelWidth;
+            imagePanel.height = this.panelHeight;
             this.add(imagePanel);
-            if (config.showTitle) {
+            if (config.titleKey) {
                 var y = imagePanel.y - ((imagePanel.height - 10) / 2)
-                var title = new Phaser.Image(this.game, imagePanel.x, y, AssetKeys.assetLevelCompleteTitle);
+                var title = new Phaser.Image(this.game, imagePanel.x, y, config.titleKey);
                 title.anchor.set(0.5);
                 this.add(title);
             }

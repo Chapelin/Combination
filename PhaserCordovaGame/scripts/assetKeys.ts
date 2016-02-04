@@ -16,6 +16,8 @@
 
         public static assetPanel: string = "panel";
         public static assetLevelCompleteTitle: string = "levelCompleteTitle";
+        public static assetLevelFailedTitle: string = "levelFailedTitle";
+        public static assetPauseTitle: string = "pauseTitle";
         public static assBackPanelModal: string = "backPanel";
         public static assetCancelIcon: string = "cancel";
 

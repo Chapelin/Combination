@@ -2,7 +2,7 @@
     export interface PanelConfig {
         screenWidth: number;
         screenHeight: number;
-        showTitle?: boolean;
+        titleKey?: string;
         text: string;
         cancellable?: boolean;
         buttons: PanelButtonConfig[];

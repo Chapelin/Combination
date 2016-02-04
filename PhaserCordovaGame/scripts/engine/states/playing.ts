@@ -28,7 +28,7 @@
             config = {
                 screenHeight: SimpleGame.realHeight,
                 screenWidth: SimpleGame.realWidth,
-                showTitle: false,
+                titleKey: AssetKeys.assetPauseTitle,
                 cancellable: true,
                 text: "Que voulez vous faire ?",
                 buttons: [

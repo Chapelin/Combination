@@ -23,8 +23,10 @@ module PhaserCordovaGame {
             this.game.load.image(AssetKeys.assetLevelBox, "images/ui/level-box.png");
             this.game.load.image(AssetKeys.assetLevelBoxDone, "images/ui/level-box_done.png");
             this.game.load.image(AssetKeys.assetLevelBoxUnAvailable, "images/ui/level-box_inavailable.png");
-            this.game.load.image(AssetKeys.assetPanel, "images/ui/panel-650x400.png");
-            this.game.load.image(AssetKeys.assetLevelCompleteTitle, "images/ui/lvlcomplete.png");
+            this.game.load.image(AssetKeys.assetPanel, "images/ui/blue_panel.png");
+            this.game.load.image(AssetKeys.assetLevelCompleteTitle, "images/ui/titlelvlcomplete.png");
+            this.game.load.image(AssetKeys.assetLevelFailedTitle, "images/ui/titlelvlfailed.png");
+            this.game.load.image(AssetKeys.assetPauseTitle, "images/ui/titlepause.png");
             this.game.load.image(AssetKeys.assBackPanelModal, "images/ui/backPanelModal.png");
             this.game.load.image(AssetKeys.assetCancelIcon, "images/ui/cancelIcon.png");
 
