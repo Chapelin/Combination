@@ -17,14 +17,31 @@
             this.buttonStop.inputEnabled = true;
             this.buttonStop.events.onInputUp.addOnce(this.stap, this);
             this.game.add.existing(this.buttonStop);
-
+            var config: PanelConfig;
+            config = {
+                screenHeight: SimpleGame.realHeight,
+                screenWidth: SimpleGame.realWidth,
+                showTitle: true,
+                text: "Que voulez vous faire ?",
+                buttons: [
+                    {
+                        action: this.restartLevel,
+                        contextAction: this,
+                        key: AssetKeys.assetButtonRestart,
+                        position: ButtonPosition.Left
+                    },
+                    {
+                        action: this.chooseLevel,
+                        contextAction: this,
+                        key: AssetKeys.assetButtonChoose,
+                        position: ButtonPosition.Right
+                    }
+                ]
+            }
             this.plateauJoueur = new Plateau(this.game, 5, 5);
             this.plateauJoueur.loadPlateauFromLevelData(levelData);
-            this.panel = new Panel(this.game, SimpleGame.realWidth, SimpleGame.realHeight);
-            this.panel.addText("Que voulez vous faire ?");
-            this.panel.addButton(AssetKeys.assetButtonRestart, this.restartLevel, this, ButtonPosition.Left);
-            this.panel.addButton(AssetKeys.assetButtonChoose, this.chooseLevel, this, ButtonPosition.Right);
-            this.panel.finishSetup();
+            this.panel = new Panel(this.game, config);
+        
         }
 
         stap() {

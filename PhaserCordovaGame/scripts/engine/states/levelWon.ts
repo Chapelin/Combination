@@ -12,15 +12,32 @@
         init(currentLevel: number, score: number) {
             this.levelNumber = currentLevel;
             this.nombreCoup = score;
-            this.panel = new Panel(this.game, SimpleGame.realWidth, SimpleGame.realHeight);
-            this.panel.addTitle();
-            this.panel.addText("Bravo ! \r\nVous avez fini le niveau " + this.levelNumber + " en " + this.nombreCoup + " coups");
-            this.panel.addButton(AssetKeys.assetButtonChoose, this.startMain, this, ButtonPosition.Left);
-            this.panel.addButton(AssetKeys.assetButtonNextLevel, this.startNextLevel, this, ButtonPosition.Right);
+            var config: PanelConfig;
+            config = {
+                screenHeight: SimpleGame.realHeight,
+                screenWidth: SimpleGame.realWidth,
+                showTitle: true,
+                text: "Bravo ! \r\nVous avez fini le niveau " + this.levelNumber + " en " + this.nombreCoup + " coups",
+                buttons: [
+                    {
+                        action: this.startMain,
+                        contextAction: this,
+                        key: AssetKeys.assetButtonChoose,
+                        position: ButtonPosition.Left
+                    },
+                    {
+                        action: this.startNextLevel,
+                        contextAction: this,
+                        key: AssetKeys.assetButtonNextLevel,
+                        position: ButtonPosition.Right
+                    }
+                ]
+            }
+
+            this.panel = new Panel(this.game, config);
            
             var isNewLevelFinished  = SimpleGame.dataService.addLevelFinished(currentLevel);
             var isHighScore = SimpleGame.dataService.addScore(currentLevel, score);
-            this.panel.finishSetup();
             this.game.add.existing(this.panel);
             this.panel.show();
         }

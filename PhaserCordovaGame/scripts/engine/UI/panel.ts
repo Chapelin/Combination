@@ -1,9 +1,10 @@
 ﻿module PhaserCordovaGame {
     export class Panel extends Phaser.Group {
-        imagePanel: Phaser.Image;
+
         defaultFontStyle: Phaser.PhaserTextStyle;
-        maxScale: Phaser.Point; 
-        constructor(game: Phaser.Game, screenTx: number, screenTy : number) {
+        maxScale: Phaser.Point;
+
+        constructor(game: Phaser.Game, config: PanelConfig) {
             super(game, null, "Panel", false, false);
 
             var fontName = "Arial";
@@ -17,59 +18,66 @@
                 fontSize: 35
             }
             this.maxScale = new Phaser.Point(1, 1);
+            this.setupBack(config);
+            this.setupPanel(config);
+            this.scale = new Phaser.Point(0.001, 0.001);
+        }
 
-            var back = new Phaser.Image(game, 0, 0, AssetKeys.assBackPanelModal);
+        private setupBack(config: PanelConfig) {
+            var back = new Phaser.Image(this.game, 0, 0, AssetKeys.assBackPanelModal);
             back.inputEnabled = false;
-            back.width = screenTx;
-            back.height = screenTy;
+            back.width = config.screenWidth;
+            back.height = config.screenHeight;
             this.add(back);
-            this.imagePanel = new Phaser.Image(this.game, screenTx / 2, screenTy / 2, AssetKeys.assetPanel);
-            this.imagePanel.anchor.set(0.5);
-            this.add(this.imagePanel);
-            var scalMin = Math.min(screenTx / this.imagePanel.x, screenTy / this.imagePanel.y);
+        }
+
+        private setupPanel(config: PanelConfig) {
+            var imagePanel = new Phaser.Image(this.game, config.screenWidth / 2, config.screenHeight / 2, AssetKeys.assetPanel);
+            imagePanel.anchor.set(0.5);
+            this.add(imagePanel);
+            if (config.showTitle) {
+                var y = imagePanel.y - ((imagePanel.height - 10) / 2)
+                var title = new Phaser.Image(this.game, imagePanel.x, y, AssetKeys.assetLevelCompleteTitle);
+                title.anchor.set(0.5);
+                this.add(title);
+            }
+
+            var textToAdd = new Phaser.Text(this.game, imagePanel.x, imagePanel.y, config.text, this.defaultFontStyle);
+            textToAdd.anchor.set(0.5);
+            this.add(textToAdd)
+
+            for (var i = 0; i < config.buttons.length; i++) {
+                this.addButton(config.buttons[i], imagePanel);
+            }
+
+            var scalMin = Math.min(config.screenWidth / imagePanel.x, config.screenHeight / imagePanel.y);
             if (scalMin < 1) {
                 this.maxScale = new Phaser.Point(scalMin, scalMin);
             }
+
         }
 
-        public addTitle() {
-            var y = this.imagePanel.y - ((this.imagePanel.height - 10) / 2)
-            var title = new Phaser.Image(this.game, this.imagePanel.x, y, AssetKeys.assetLevelCompleteTitle);
-            title.anchor.set(0.5);
-            this.add(title);
-        }
-
-        public addText(texte: string) {
-            var textToAdd = new Phaser.Text(this.game, this.imagePanel.x, this.imagePanel.y, texte, this.defaultFontStyle);
-            textToAdd.anchor.set(0.5);
-            this.add(textToAdd)
-        }
-
-        public addButton(key: string, action: () => any, context: any, position: ButtonPosition) {
-            var button = new Phaser.Button(this.game, 0, 0, key);
+        public addButton(config: PanelButtonConfig, imagePanel: Phaser.Image) {
+            var button = new Phaser.Button(this.game, 0, 0, config.key);
             button.inputEnabled = true;
-            button.events.onInputUp.addOnce(action, context);
-            var y = this.imagePanel.y + ((this.imagePanel.height - (button.height+60)) / 2);
+            button.events.onInputUp.addOnce(config.action, config.contextAction);
+            var y = imagePanel.y + ((imagePanel.height - (button.height + 60)) / 2);
             button.position.y = y;
             button.anchor.set(0.5);
-            switch (position) {
+            switch (config.position) {
                 case ButtonPosition.Left:
-                    var x = this.imagePanel.x - ((this.imagePanel.width - (button.width+60)) / 2);
+                    var x = imagePanel.x - ((imagePanel.width - (button.width + 60)) / 2);
                     button.position.x = x;
                     break;
                 case ButtonPosition.Center:
-                    button.position.x = this.imagePanel.x;
+                    button.position.x = imagePanel.x;
                     break;
                 case ButtonPosition.Right:
-                    var x = this.imagePanel.x + ((this.imagePanel.width - (button.width + 60)) / 2);
+                    var x = imagePanel.x + ((imagePanel.width - (button.width + 60)) / 2);
                     button.position.x = x;
                     break;
             }
             this.add(button);
-        }
-
-        public finishSetup() {
-            this.scale = new Phaser.Point(0.001, 0.001);
         }
 
         public show() {
@@ -77,10 +85,6 @@
             t.to(this.maxScale, GameConfiguration.GAMEANIM_SPEED_FADE, Phaser.Easing.Exponential.In, true);
         }
 
-        public destroy() {
-            this.imagePanel = null;
-            super.destroy(true, false);
-        }
     }
 
     export enum ButtonPosition {

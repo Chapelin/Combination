@@ -12,12 +12,29 @@ module PhaserCordovaGame {
 
         init(currentLevel: number) {
             this.levelNumber = currentLevel;
-            this.panel = new Panel(this.game,SimpleGame.realWidth, SimpleGame.realHeight);
-        
-            this.panel.addText("Dommage.");
-            this.panel.addButton(AssetKeys.assetButtonChoose, this.startMain, this, ButtonPosition.Left);
-            this.panel.addButton(AssetKeys.assetButtonRestart, this.restart, this, ButtonPosition.Right);
-            this.panel.finishSetup();
+            var config: PanelConfig;
+            config = {
+                screenHeight: SimpleGame.realHeight,
+                screenWidth: SimpleGame.realWidth,
+                showTitle: false,
+                text: "Dommage",
+                buttons: [
+                    {
+                        action: this.startMain,
+                        contextAction: this,
+                        key: AssetKeys.assetButtonChoose,
+                        position: ButtonPosition.Left
+                    },
+                    {
+                        action: this.restart,
+                        contextAction: this,
+                        key: AssetKeys.assetButtonRestart,
+                        position: ButtonPosition.Right
+                    }
+                ]
+            }
+            this.panel = new Panel(this.game, config);
+
             this.game.add.existing(this.panel);
             this.panel.show();
         }
