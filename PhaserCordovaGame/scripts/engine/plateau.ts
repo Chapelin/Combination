@@ -332,7 +332,7 @@
 
                         // ici on a au moins un non null au dessus
                         while (this.pieces[x][y] == null) {
-                            ArrayUtil.decalePiece(this.pieces[x], y, hautDuCrochet);
+                            ArrayUtil.decalePiece(this.pieces[x], y, hautDuCrochet+1);
                         }
 
                     }
