@@ -32,6 +32,8 @@ module PhaserCordovaGame {
             this.game.load.image(AssetKeys.assetButtonNextLevel, "images/ui/buttonNextLevel.png");
             this.game.load.image(AssetKeys.assetButtonRestart, "images/ui/buttonRestart.png");
             this.game.load.image(AssetKeys.assetButtonStap, "images/ui/buttonStop.png");
+            this.game.load.image(AssetKeys.assetButtonPrec, "images/ui/backButton.png");
+            this.game.load.image(AssetKeys.assetButtonNext, "images/ui/nextButton.png");
         }
 
         create() {

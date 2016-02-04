@@ -67,13 +67,13 @@
 
             if (start != 1) {
                 var min = Math.max(start - this.numberOfColX * this.numberOfColY, 1);
-                var prec = this.game.add.button(10, SimpleGame.realHeight * 0.9, AssetKeys.assetBoutonRouge, () => { this.setupLevelChooser(min); }, this);
+                var prec = this.game.add.button(10, SimpleGame.realHeight * 0.9, AssetKeys.assetButtonPrec, () => { this.setupLevelChooser(min); }, this);
                 this.interface.add(prec);
 
             }
             if (end <= numberOfLevels) {
 
-                var next = this.game.add.button(SimpleGame.realWidth - 10, SimpleGame.realHeight * 0.9, AssetKeys.assetBoutonRouge, () => { this.setupLevelChooser(end); }, this);
+                var next = this.game.add.button(SimpleGame.realWidth - 10, SimpleGame.realHeight * 0.9, AssetKeys.assetButtonNext, () => { this.setupLevelChooser(end); }, this);
                 next.anchor = new Phaser.Point(1, 0);
                 this.interface.add(next);
             }

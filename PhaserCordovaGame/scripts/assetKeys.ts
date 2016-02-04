@@ -23,6 +23,8 @@
         public static assetButtonRestart: string = "btnRestart";
         public static assetButtonChoose: string = "btnChoose";
         public static assetButtonStap: string = "btnStap";
+        public static assetButtonNext: string = "btnNext";
+        public static assetButtonPrec: string = "btnPrec";
         
     }
 }
