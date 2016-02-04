@@ -17,11 +17,20 @@
             this.buttonStop.inputEnabled = true;
             this.buttonStop.events.onInputUp.addOnce(this.stap, this);
             this.game.add.existing(this.buttonStop);
+           
+            this.plateauJoueur = new Plateau(this.game, 5, 5);
+            this.plateauJoueur.loadPlateauFromLevelData(levelData);
+           
+        
+        }
+
+        stap() {
             var config: PanelConfig;
             config = {
                 screenHeight: SimpleGame.realHeight,
                 screenWidth: SimpleGame.realWidth,
                 showTitle: true,
+                cancellable: true,
                 text: "Que voulez vous faire ?",
                 buttons: [
                     {
@@ -38,13 +47,7 @@
                     }
                 ]
             }
-            this.plateauJoueur = new Plateau(this.game, 5, 5);
-            this.plateauJoueur.loadPlateauFromLevelData(levelData);
             this.panel = new Panel(this.game, config);
-        
-        }
-
-        stap() {
             this.game.add.existing(this.panel);
             this.panel.show();
         }

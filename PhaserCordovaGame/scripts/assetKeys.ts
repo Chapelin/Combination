@@ -17,10 +17,12 @@
         public static assetPanel: string = "panel";
         public static assetLevelCompleteTitle: string = "levelCompleteTitle";
         public static assBackPanelModal: string = "backPanel";
+        public static assetCancelIcon: string = "cancel";
 
         public static assetButtonNextLevel: string = "btnNextLevel";
         public static assetButtonRestart: string = "btnRestart";
         public static assetButtonChoose: string = "btnChoose";
         public static assetButtonStap: string = "btnStap";
+        
     }
 }

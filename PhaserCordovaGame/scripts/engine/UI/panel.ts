@@ -45,7 +45,13 @@
             var textToAdd = new Phaser.Text(this.game, imagePanel.x, imagePanel.y, config.text, this.defaultFontStyle);
             textToAdd.anchor.set(0.5);
             this.add(textToAdd)
-
+            if (config.cancellable) {
+                var cancel = new Phaser.Button(this.game, imagePanel.right-20, imagePanel.top+20, AssetKeys.assetCancelIcon);
+                cancel.anchor.set(0.5, 0.5);
+                cancel.inputEnabled = true;
+                cancel.events.onInputUp.addOnce(() => { this.destroy(true, false); }, this);
+                this.add(cancel);
+            }
             for (var i = 0; i < config.buttons.length; i++) {
                 this.addButton(config.buttons[i], imagePanel);
             }

@@ -4,6 +4,7 @@
         screenHeight: number;
         showTitle?: boolean;
         text: string;
+        cancellable?: boolean;
         buttons: PanelButtonConfig[];
     }
 

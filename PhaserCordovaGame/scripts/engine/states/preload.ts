@@ -26,6 +26,7 @@ module PhaserCordovaGame {
             this.game.load.image(AssetKeys.assetPanel, "images/ui/panel-650x400.png");
             this.game.load.image(AssetKeys.assetLevelCompleteTitle, "images/ui/lvlcomplete.png");
             this.game.load.image(AssetKeys.assBackPanelModal, "images/ui/backPanelModal.png");
+            this.game.load.image(AssetKeys.assetCancelIcon, "images/ui/cancelIcon.png");
 
             this.game.load.image(AssetKeys.assetButtonChoose, "images/ui/buttonChooseLevel.png");
             this.game.load.image(AssetKeys.assetButtonNextLevel, "images/ui/buttonNextLevel.png");
