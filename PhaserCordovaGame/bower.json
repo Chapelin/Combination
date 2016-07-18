@@ -1,6 +1,4 @@
 {
-    "name": "PhaserCordovaGame",
-    "dependencies": {
-      "phaser": "latest"
-    }
+  "name": "PhaserCordovaGame",
+  "dependencies": {}
 }

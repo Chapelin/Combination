@@ -1,4 +1,4 @@
-﻿/// <reference path="../bower_components/phaser/typescript/phaser.d.ts" />
+﻿/// <reference path="definitions/phaser.d.ts" />
 
 module PhaserCordovaGame {
 
