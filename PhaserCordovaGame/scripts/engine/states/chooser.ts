@@ -80,7 +80,7 @@
 
         createButtonLevel(i: number, taille: number, X: number, Y: number) {
             var compteurY = i / this.numberOfColX;
-            var boxKey = SimpleGame.data.levelFinished.indexOf(i) !== -1 ? AssetKeys.assetLevelBoxDone : AssetKeys.assetLevelBox;
+            var boxKey = (SimpleGame.data.levelFinished && SimpleGame.data.levelFinished.indexOf(i) !== -1) ? AssetKeys.assetLevelBoxDone : AssetKeys.assetLevelBox;
             var button = this.game.add.button(X, Y, boxKey);
 
             button.width = taille;

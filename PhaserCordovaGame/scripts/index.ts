@@ -8,7 +8,7 @@ module PhaserCordovaGame {
     "use strict";
 
     export module Application {
-        game: SimpleGame;
+        //game: SimpleGame;
         export function initialize() {
             document.addEventListener("deviceready", onDeviceReady, false);
         }
@@ -25,9 +25,7 @@ module PhaserCordovaGame {
             
         }
 
-     
-
-   
+      
 
         function onPause() {
             // TODO: This application has been suspended. Save application state here.

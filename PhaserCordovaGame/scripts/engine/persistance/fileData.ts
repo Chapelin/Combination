@@ -5,5 +5,9 @@
             [k: number]: number
         }
 
+        constructor() {
+            this.levelFinished = [];
+            this.scores = {}
+        }
     }
 }
