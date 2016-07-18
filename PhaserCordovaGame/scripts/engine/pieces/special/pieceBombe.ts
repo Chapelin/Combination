@@ -6,5 +6,9 @@
             this.canBeAlone = true;
         }
 
+        public canCombine(other: Piece) {
+            return false;
+        }
+
     }
 }

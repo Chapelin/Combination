@@ -58,7 +58,7 @@
 
                         this.listTweenBloquant.push(tween);
                         // Si c'est pas un obstacle, on le rend clickable
-                        if (!(p instanceof PieceObstacle)) {
+                        if (p.isClickable) {
                             this.setupClickEventPiece(p, x, y);
                         }
                     }
@@ -104,14 +104,10 @@
         }
 
         public setupClickEventPiece(p: Piece, x: number, y: number) {
-
-
             p.inputEnabled = false;
             p.events.onInputUp.removeAll();
-            p.events.onInputUp.addOnce((dummy, dummy2, dummy3, posX, posY) => {
-
+            p.events.onInputUp.addOnce((a, b, c, posX, posY) => {
                 this.combineZone(posX, posY);
-
             }, this, 0, x, y);
         }
 

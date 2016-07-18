@@ -4,17 +4,19 @@
 
         type: TypePiece;
         canBeAlone: boolean;
+        isClickable: boolean;
         constructor(game: Phaser.Game, texture : string) {
             super(game, 0, 0, texture);
             game.add.existing(this);
             this.canBeAlone = false;
+            this.isClickable = true;
         }
 
         public canCombine(other: Piece) {
             if (other == null || other == undefined) {
                 return false;
             }
-            return this.type == other.type && other.type != TypePiece.Obstacle;
+            return this.type == other.type;
         } 
         
         public delete() {
