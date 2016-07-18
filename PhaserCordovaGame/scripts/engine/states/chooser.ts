@@ -36,6 +36,7 @@
         startLevel(targetLevel: number) {
             var data = this.levelLoader.readLevel(targetLevel);
             if (data !== null) {
+                this.interface.removeAll(true, true);
                 this.game.state.start(statePlaying, true, false, data);
             }
         }
@@ -66,13 +67,13 @@
 
             if (start != 1) {
                 var min = Math.max(start - this.numberOfColX * this.numberOfColY, 1);
-                var prec = this.game.add.button(10, SimpleGame.realHeight * 0.9, AssetKeys.assetBoutonRouge, () => { this.setupLevelChooser(min); }, this);
+                var prec = this.game.add.button(10, SimpleGame.realHeight * 0.9, AssetKeys.assetButtonPrec, () => { this.setupLevelChooser(min); }, this);
                 this.interface.add(prec);
 
             }
             if (end <= numberOfLevels) {
 
-                var next = this.game.add.button(SimpleGame.realWidth - 10, SimpleGame.realHeight * 0.9, AssetKeys.assetBoutonRouge, () => { this.setupLevelChooser(end); }, this);
+                var next = this.game.add.button(SimpleGame.realWidth - 10, SimpleGame.realHeight * 0.9, AssetKeys.assetButtonNext, () => { this.setupLevelChooser(end); }, this);
                 next.anchor = new Phaser.Point(1, 0);
                 this.interface.add(next);
             }
@@ -80,7 +81,18 @@
 
         createButtonLevel(i: number, taille: number, X: number, Y: number) {
             var compteurY = i / this.numberOfColX;
-            var boxKey = (SimpleGame.data.levelFinished && SimpleGame.data.levelFinished.indexOf(i) !== -1) ? AssetKeys.assetLevelBoxDone : AssetKeys.assetLevelBox;
+            var isLevelFinished = SimpleGame.dataService.isLevelFinished(i);
+            // un niveau est lançable s'il est fini, ou si son précédent l'est
+            var isLevelAvailable = isLevelFinished || SimpleGame.dataService.isLevelFinished(i - 1) || i === 1;
+
+            var boxKey = AssetKeys.assetLevelBoxUnAvailable;
+            if (isLevelFinished) {
+                boxKey = AssetKeys.assetLevelBoxDone;
+            }
+            else if (isLevelAvailable) {
+                boxKey = AssetKeys.assetLevelBox;
+            }
+
             var button = this.game.add.button(X, Y, boxKey);
 
             button.width = taille;
@@ -90,10 +102,10 @@
             text.x = Math.floor(button.x + button.width / 2);
             text.y = Math.floor(button.y + button.height / 2);
 
-
-            button.inputEnabled = true;
-            button.events.onInputUp.addOnce((d1, d2, d3, level) => this.startLevel(level), this, null, i);
-
+            if (isLevelAvailable) {
+                button.inputEnabled = true;
+                button.events.onInputUp.addOnce((d1, d2, d3, level) => this.startLevel(level), this, null, i);
+            }
 
             this.interface.add(button);
             this.interface.add(text);

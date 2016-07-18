@@ -12,6 +12,7 @@ module PhaserCordovaGame {
 
         create() {
             this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+            this.game.input.mouse.enabled = false;
             this.game.state.start(statePreload);
         }
     }
