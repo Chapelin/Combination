@@ -7,7 +7,6 @@ module PhaserCordovaGame {
         }
 
         preload() {
-
         }
 
         create() {

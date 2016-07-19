@@ -1,5 +1,6 @@
 ﻿module PhaserCordovaGame {
     export class Plateau extends Phaser.Group {
+        destructionCalculator: DestructionZoneCalculator;
         pieces: Array<Array<Piece>>;
         taillePlateauX: number;
         taillePlateauY: number;
@@ -14,6 +15,7 @@
             this.taillePlateauX = sizeX;
             this.taillePlateauY = sizeY;
             // X est plus petit que Y
+            this.destructionCalculator = new DestructionZoneCalculator();
         }
 
         private acceptInput() {
@@ -57,7 +59,7 @@
                         }
 
                         this.listTweenBloquant.push(tween);
-                        // Si c'est pas un obstacle, on le rend clickable
+                        // on le rend clickable si besoin
                         if (p.isClickable) {
                             this.setupClickEventPiece(p, x, y);
                         }
@@ -175,14 +177,11 @@
         public combineZone(x: number, y: number) {
             var listToDelete = new Array<Piece>();
             var listOfCoord = new Array<Array<number>>();
-
-            if (this.pieces[x][y] instanceof PieceBombe) {
-                listOfCoord = this.getZoneBombe(x, y);
-
-            } else if (this.pieces[x][y] instanceof PieceLine) {
-                listOfCoord = this.getZoneLine(x, y);
-
-            } else {
+            if (this.pieces[x][y] instanceof PieceDestruction) {
+                var pd: PieceDestruction = this.pieces[x][y] as PieceDestruction;
+                listOfCoord = this.destructionCalculator.getZoneDestruction(pd.pattern, this.taillePlateauX, this.taillePlateauY,x, y );
+            }
+            else {
                 listOfCoord = this.getZoneCombine(x, y);
                 if (listOfCoord.length <= 1) {
                     return;

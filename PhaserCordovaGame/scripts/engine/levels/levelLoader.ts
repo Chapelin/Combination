@@ -1,10 +1,10 @@
 ﻿module PhaserCordovaGame {
     export class LevelLoader {
 
-        levelFileContent : LevelsFileData;
+        levelFileContent: LevelsFileData;
 
         constructor() {
-          
+
         }
 
         public storeLevelData() {
@@ -32,8 +32,8 @@
         }
 
         public getNumberOfLevels(): number {
-          //  return this.levelFileContent.levelEnd;
-            return 150;
+            return this.levelFileContent.levelEnd;
+
         }
     }
 

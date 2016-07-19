@@ -7,7 +7,7 @@
             [k: number]: number
         }
 
-        constructor() {
+        public constructor() {
             this.persistance = new PersistenceService();
             this.levelFinished = this.persistance.getLevelFinished();
             this.scores = this.persistance.getScores();
