@@ -9,13 +9,15 @@
         listTweenBloquant: Phaser.Tween[];
         nombreCoups: number;
         currentLevel: number;
+        callBack: (a: number) => void;
 
-        constructor(game: Phaser.Game, sizeX: number, sizeY: number) {
+        constructor(game: Phaser.Game, sizeX: number, sizeY: number, callbackCoup: (a: number) => void) {
             super(game, null, "plateau", true);
             this.taillePlateauX = sizeX;
             this.taillePlateauY = sizeY;
             // X est plus petit que Y
             this.destructionCalculator = new DestructionZoneCalculator();
+            this.callBack = callbackCoup;
         }
 
         private acceptInput() {
@@ -85,7 +87,7 @@
             this.pas = (SimpleGame.realWidth * 0.8) / this.taillePlateauX;
             this.processScale();
             this.currentLevel = data.level;
-            this.nombreCoups = 0;
+            this.razNombreCoup();
             this.pieces = [];
             for (var x = 0; x < this.taillePlateauX; x++) {
                 this.pieces[x] = [];
@@ -187,7 +189,7 @@
                     return;
                 }
             }
-            this.nombreCoups++;
+            this.majNombreCoup();
 
             listOfCoord.forEach((pos, i, arr) => {
                 var p = this.pieces[pos[0]][pos[1]];
@@ -352,6 +354,19 @@
                 }
 
             } while (x < this.taillePlateauX);
+        }
+
+        private majNombreCoup() {
+            this.nombreCoups++;
+            this.refreshCompteurVisuel();
+        }
+        private razNombreCoup() {
+            this.nombreCoups = 0;
+            this.refreshCompteurVisuel();
+        }
+
+        private refreshCompteurVisuel() {
+            this.callBack(this.nombreCoups);
         }
 
     }

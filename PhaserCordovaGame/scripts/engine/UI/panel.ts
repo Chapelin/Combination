@@ -8,16 +8,7 @@
         constructor(game: Phaser.Game, config: PanelConfig) {
             super(game, null, "Panel", false, false);
 
-            var fontName = "Arial";
-            if (window.cordova.platformId === "android") {
-                fontName = "Droid Sans";
-            }
-
-            this.defaultFontStyle = {
-                font: fontName,
-                fill: "#ff0044",
-                fontSize: 35
-            }
+            this.defaultFontStyle = GameConfiguration.getDefaultFont();
             this.maxScale = new Phaser.Point(1, 1);
             this.setupBack(config);
             this.setupPanel(config);
