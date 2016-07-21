@@ -15,7 +15,7 @@ module PhaserCordovaGame {
         }
 
         startGame() {
-            this.game.state.start(stateChooser);
+            this.game.state.start(stateChooseMode);
         }
     }
 }

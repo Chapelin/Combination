@@ -11,8 +11,6 @@
             this.persistance = new PersistenceService();
             this.levelFinished = this.persistance.getLevelFinished();
             this.scores = this.persistance.getScores();
-            console.log(this.scores);
-            console.log(this.levelFinished);
         }
 
         public saveData() {

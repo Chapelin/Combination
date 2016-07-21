@@ -1,5 +1,5 @@
 ﻿module PhaserCordovaGame {
-    export class Chooser extends Phaser.State {
+    export class LevelChooser extends Phaser.State {
         game: Phaser.Game;
         numberOfColX: number = 4;
         numberOfColY: number = 7;

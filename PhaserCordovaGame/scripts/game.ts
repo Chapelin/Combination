@@ -6,9 +6,10 @@ module PhaserCordovaGame {
     export var statePreload = "Preload";
     export var stateGameTitle = "GameTitle";
     export var stateLevelWon = "LevelWon";
-    export var stateChooser = "Chooser";
+    export var stateChooser = "LevelChooser";
     export var stateGameOver = "GameOver";
     export var statePlaying = "Playing";
+    export var stateChooseMode = "ChooseMode";
 
     export class SimpleGame {
         public static realWidth: number;
@@ -25,7 +26,8 @@ module PhaserCordovaGame {
             this.game.state.add(stateBoot, Boot);
             this.game.state.add(statePreload, Preload);
             this.game.state.add(stateGameTitle, GameTitle);
-            this.game.state.add(stateChooser, Chooser);
+            this.game.state.add(stateChooseMode, ChooseMode);
+            this.game.state.add(stateChooser, LevelChooser);
             this.game.state.add(stateGameOver, GameOver);
             this.game.state.add(stateLevelWon, LevelWon);
             this.game.state.add(statePlaying, Playing);
