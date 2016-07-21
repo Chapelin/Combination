@@ -10,14 +10,18 @@
         nombreCoups: number;
         currentLevel: number;
         callBack: (a: number) => void;
+        playMode: PlayMode;
 
-        constructor(game: Phaser.Game, sizeX: number, sizeY: number, callbackCoup: (a: number) => void) {
+        constructor(game: Phaser.Game, sizeX: number, sizeY: number, callbackCoup: (a: number) => void, playMode: PlayMode = PlayMode.Puzzle) {
             super(game, null, "plateau", true);
             this.taillePlateauX = sizeX;
             this.taillePlateauY = sizeY;
             // X est plus petit que Y
             this.destructionCalculator = new DestructionZoneCalculator();
             this.callBack = callbackCoup;
+            this.playMode = playMode;
+            this.razNombreCoup();
+            this.pieces = [];
         }
 
         private acceptInput() {
@@ -87,8 +91,7 @@
             this.pas = (SimpleGame.realWidth * 0.8) / this.taillePlateauX;
             this.processScale();
             this.currentLevel = data.level;
-            this.razNombreCoup();
-            this.pieces = [];
+           
             for (var x = 0; x < this.taillePlateauX; x++) {
                 this.pieces[x] = [];
                 for (var y = 0; y < this.taillePlateauY; y++) {
@@ -101,10 +104,38 @@
                     }
                 }
             }
+            this.updatePlateau();
+         
+        }
 
+        public updatePlateau() {
             this.fallingDown();
-            this.reduceSize();
+            // On ne crop le plateau qui si on est en mode puzzle
+            if (this.playMode === PlayMode.Puzzle) {
+                this.cropPlateauSize();
+
+            }
+            // si on est en infinit : on gènere de nouvelles pieces
+            else if (this.playMode === PlayMode.Infinite) {
+                //this.fillMissingRandom();
+            }
             this.refreshPosition();
+        }
+
+        public fillMissingRandom() {
+            throw TypeError("Pas encore géré");
+            if (!this.pieces) {
+                this.pieces = [];
+            }
+            for (var x = 0; x < this.taillePlateauX; x++) {
+                if (!this.pieces[x]) {
+                    this.pieces[x] = [];
+                }
+                for (var y = 0; y < this.taillePlateauY; y++) {
+                    this.pieces[x][y] = PieceFactory.CreatePieceRandom(this.game);
+                }
+            }
+            this.updatePlateau();
         }
 
         public setupClickEventPiece(p: Piece, x: number, y: number) {
@@ -213,9 +244,7 @@
                 v.onComplete.addOnce(() => {
                     // si tous les tweens sont finis
                     if (this.tweensFinished()) {
-                        this.fallingDown();
-                        this.reduceSize();
-                        this.refreshPosition();
+                        this.updatePlateau();
                         this.checkEndCondition();
                     }
                 }, this);
@@ -284,7 +313,12 @@
                 }
                 // si pas de combinason possible
                 if (!flagPasPerdu) {
-                    this.game.state.start(stateGameOver, true, false, this.currentLevel);
+                    if (this.playMode === PlayMode.Puzzle) {
+                        this.game.state.start(stateGameOver, true, false, this.currentLevel);
+                    }
+                    else {
+                        console.log("FINI");
+                    }
                 }
                 // si que des simples : Perdu
             }
@@ -337,7 +371,7 @@
             }
         }
 
-        private reduceSize() {
+        private cropPlateauSize() {
             // pour chaque ligne verticale, si elle est vide on reduit la taille du plateau en la virant
             var x = 0;
             do {

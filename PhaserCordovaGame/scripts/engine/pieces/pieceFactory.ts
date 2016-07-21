@@ -2,6 +2,8 @@
 
     export class PieceFactory {
 
+
+
         public static CreatePiece(game: Phaser.Game, typeP: TypePiece, scalePiece? : Phaser.Point ): Piece {
             var result: Piece;
             switch (typeP) {
@@ -39,5 +41,6 @@
         public static CreatePieceRandom(game: Phaser.Game): Piece {
             return PieceFactory.CreatePiece(game, Math.floor(Math.random() * NombreTypePiece));
         }
+        
     }
 }
