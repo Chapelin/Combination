@@ -1,30 +1,21 @@
 ﻿module PhaserCordovaGame {
 
-    export class Playing extends Phaser.State {
+    export class PlayingInfinite extends Phaser.State {
         game: Phaser.Game;
         plateauJoueur: Plateau;
         buttonStop: Phaser.Button;
-        currentData: LevelFileData;
         panel: Panel;
-        libelleCoups: Phaser.Text;
         constructor() {
             super();
         }
 
 
         init(levelData: LevelFileData) {
-            this.currentData = levelData;
             this.buttonStop = new Phaser.Button(this.game, 10, 0, AssetKeys.assetButtonStap);
             this.buttonStop.inputEnabled = true;
             this.buttonStop.events.onInputUp.add(this.stap, this);
             this.game.add.existing(this.buttonStop);
             this.plateauJoueur = new Plateau(this.game, 5, 5, this.majLibelleCoup.bind(this));
-            this.libelleCoups = new Phaser.Text(this.game, 300, 10, "", GameConfiguration.getDefaultFont());
-            this.libelleCoups.inputEnabled = false;
-            this.game.add.existing(this.libelleCoups);
-            this.plateauJoueur.loadPlateauFromLevelData(levelData);
-            
-        
         }
 
         stap() {
@@ -58,7 +49,7 @@
         }
 
         restartLevel() {
-            this.game.state.start(statePlaying, true, false, this.currentData);
+            this.game.state.start(statePlayingInfinite, true, false, null);
         }
 
         chooseLevel() {
@@ -66,7 +57,6 @@
         }
 
         majLibelleCoup(score: number) {
-            this.libelleCoups.setText("" + score,true);
         }
     }
 }
