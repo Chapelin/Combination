@@ -136,11 +136,14 @@
         }
 
         public fillMissingRandom() {
-            throw Error("Ne gère pas les obstacles");
             for (var x = 0; x < this.taillePlateauX; x++) {
                 for (var y = 0; y < this.taillePlateauY; y++) {
+                    
                     if (!this.pieces[x][y]) {
                         this.pieces[x][y] = PieceFactory.CreatePieceRandom(this.game, this.scaleDefaultPiece);
+                    } else if (this.pieces[x][y] instanceof PieceObstacle) {
+                        //un obstacle : on arrete d'ajouter des pieces ici
+                        break;
                     }
                 }
             }
