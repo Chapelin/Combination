@@ -2,22 +2,20 @@
 
     export class PieceFactory {
 
-
-
         public static CreatePiece(game: Phaser.Game, typeP: TypePiece, scalePiece? : Phaser.Point ): Piece {
             var result: Piece;
             switch (typeP) {
                 case TypePiece.Vert:
-                    result = new PieceVerte(game);
+                    result = new PieceSimple(game, TypePiece.Vert, AssetKeys.assetBilleVert);
                     break;
                 case TypePiece.Rouge:
-                    result = new PieceRouge(game);
+                    result = new PieceSimple(game, TypePiece.Rouge, AssetKeys.assetBillerouge);
                     break;
                 case TypePiece.Bleu:
-                    result = new PieceBleu(game);
+                    result = new PieceSimple(game, TypePiece.Bleu, AssetKeys.assetBillebleu);
                     break;
                 case TypePiece.Jaune:
-                    result = new PieceJaune(game);
+                    result = new PieceSimple(game, TypePiece.Jaune, AssetKeys.assetBilleJaune);
                     break;
                 case TypePiece.Bombe:
                     result = new PieceBombe(game);

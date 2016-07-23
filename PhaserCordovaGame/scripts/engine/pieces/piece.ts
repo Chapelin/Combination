@@ -23,7 +23,11 @@
             console.log("Deleté");
             this.kill();
         }       
+
+        public abstract onActivate()
     }
+
+
 
     export const NombreTypePiece =7;
     export enum TypePiece {
