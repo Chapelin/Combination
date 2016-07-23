@@ -6,7 +6,7 @@
         buttonStop: Phaser.Button;
         currentData: LevelFileData;
         panel: Panel;
-        libelleCoups: Phaser.Text;
+        public libelleCoups: Phaser.Text;
         constructor() {
             super();
         }
@@ -18,13 +18,11 @@
             this.buttonStop.inputEnabled = true;
             this.buttonStop.events.onInputUp.add(this.stap, this);
             this.game.add.existing(this.buttonStop);
-            this.plateauJoueur = new Plateau(this.game, 5, 5, this.majLibelleCoup.bind(this));
             this.libelleCoups = new Phaser.Text(this.game, 300, 10, "", GameConfiguration.getDefaultFont());
             this.libelleCoups.inputEnabled = false;
             this.game.add.existing(this.libelleCoups);
+            this.plateauJoueur = new Plateau(this.game, 5, 5, this.majLibelleCoup.bind(this));
             this.plateauJoueur.loadPlateauFromLevelData(levelData);
-            
-        
         }
 
         stap() {

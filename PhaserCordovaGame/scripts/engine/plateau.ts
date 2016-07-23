@@ -28,7 +28,7 @@
             for (var x = 0; x < this.taillePlateauX; x++) {
                 for (var y = 0; y < this.taillePlateauY; y++) {
                     var p = this.pieces[x][y];
-                    if (p !== null && p!== undefined){
+                    if (p !== null && p !== undefined) {
                         p.inputEnabled = true;
                     }
                 }
@@ -91,7 +91,7 @@
             this.pas = (SimpleGame.realWidth * 0.8) / this.taillePlateauX;
             this.processScale();
             this.currentLevel = data.level;
-           
+
             for (var x = 0; x < this.taillePlateauX; x++) {
                 this.pieces[x] = [];
                 for (var y = 0; y < this.taillePlateauY; y++) {
@@ -105,7 +105,7 @@
                 }
             }
             this.updatePlateau();
-         
+
         }
 
         public updatePlateau() {
@@ -117,25 +117,33 @@
             }
             // si on est en infinit : on gènere de nouvelles pieces
             else if (this.playMode === PlayMode.Infinite) {
-                //this.fillMissingRandom();
+                this.fillMissingRandom();
             }
             this.refreshPosition();
         }
 
-        public fillMissingRandom() {
-            throw TypeError("Pas encore géré");
-            if (!this.pieces) {
-                this.pieces = [];
-            }
+        public fillWholeRandom() {
+            this.pas = (SimpleGame.realWidth * 0.8) / this.taillePlateauX;
+            this.processScale();
+            this.pieces = [];
             for (var x = 0; x < this.taillePlateauX; x++) {
-                if (!this.pieces[x]) {
-                    this.pieces[x] = [];
-                }
+                this.pieces[x] = [];
                 for (var y = 0; y < this.taillePlateauY; y++) {
-                    this.pieces[x][y] = PieceFactory.CreatePieceRandom(this.game);
+                    this.pieces[x].push(PieceFactory.CreatePieceRandom(this.game, this.scaleDefaultPiece));
                 }
             }
             this.updatePlateau();
+        }
+
+        public fillMissingRandom() {
+            throw Error("Ne gère pas les obstacles");
+            for (var x = 0; x < this.taillePlateauX; x++) {
+                for (var y = 0; y < this.taillePlateauY; y++) {
+                    if (!this.pieces[x][y]) {
+                        this.pieces[x][y] = PieceFactory.CreatePieceRandom(this.game, this.scaleDefaultPiece);
+                    }
+                }
+            }
         }
 
         public setupClickEventPiece(p: Piece, x: number, y: number) {
@@ -212,7 +220,7 @@
             var listOfCoord = new Array<Array<number>>();
             if (this.pieces[x][y] instanceof PieceDestruction) {
                 var pd: PieceDestruction = this.pieces[x][y] as PieceDestruction;
-                listOfCoord = this.destructionCalculator.getZoneDestruction(pd.pattern, this.taillePlateauX, this.taillePlateauY,x, y );
+                listOfCoord = this.destructionCalculator.getZoneDestruction(pd.pattern, this.taillePlateauX, this.taillePlateauY, x, y);
             }
             else {
                 listOfCoord = this.getZoneCombine(x, y);
@@ -363,7 +371,7 @@
 
                         // ici on a au moins un non null au dessus
                         while (this.pieces[x][y] == null) {
-                            ArrayUtil.decalePiece(this.pieces[x], y, hautDuCrochet+1);
+                            ArrayUtil.decalePiece(this.pieces[x], y, hautDuCrochet + 1);
                         }
 
                     }

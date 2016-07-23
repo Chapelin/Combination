@@ -38,8 +38,8 @@
             return result;
         }
 
-        public static CreatePieceRandom(game: Phaser.Game): Piece {
-            return PieceFactory.CreatePiece(game, Math.floor(Math.random() * NombreTypePiece));
+        public static CreatePieceRandom(game: Phaser.Game, scalePiece?: Phaser.Point): Piece {
+            return PieceFactory.CreatePiece(game, Math.floor(Math.random() * NombreTypePiece), scalePiece);
         }
         
     }
