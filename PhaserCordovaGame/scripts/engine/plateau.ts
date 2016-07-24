@@ -137,7 +137,7 @@
             for (var x = 0; x < this.taillePlateauX; x++) {
                 this.pieces[x] = [];
                 for (var y = 0; y < this.taillePlateauY; y++) {
-                    this.pieces[x].push(PieceFactory.CreatePieceRandom(this.game, this.scaleDefaultPiece));
+                    this.pieces[x].push(PieceFactory.CreatePieceRandomWeighted(this.game, this.scaleDefaultPiece));
                 }
             }
             this.updatePlateau();
@@ -149,7 +149,7 @@
                 for (var y = 0; y < this.taillePlateauY; y++) {
                     
                     if (!this.pieces[x][y]) {
-                        this.pieces[x][y] = PieceFactory.CreatePieceRandom(this.game, this.scaleDefaultPiece);
+                        this.pieces[x][y] = PieceFactory.CreatePieceRandomWeighted(this.game, this.scaleDefaultPiece);
                     } else if (this.pieces[x][y] instanceof PieceObstacle) {
                         //un obstacle : on arrete d'ajouter des pieces ici
                         break;

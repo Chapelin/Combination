@@ -42,6 +42,27 @@
         public static CreatePieceRandom(game: Phaser.Game, scalePiece?: Phaser.Point): Piece {
             return PieceFactory.CreatePiece(game, Math.floor(Math.random() * NombreTypePiece), scalePiece);
         }
-        
+
+        public static CreatePieceRandomWeighted(game: Phaser.Game, scalePiece?: Phaser.Point): Piece {
+            var weight = [
+                TypePiece.Bleu, TypePiece.Bleu, TypePiece.Bleu, TypePiece.Bleu, TypePiece.Bleu,
+                TypePiece.Bleu, TypePiece.Bleu, TypePiece.Bleu, TypePiece.Bleu, TypePiece.Bleu,
+                TypePiece.Bleu, TypePiece.Bleu, TypePiece.Bleu, TypePiece.Bleu, TypePiece.Bleu,
+                TypePiece.Bleu, TypePiece.Bleu, TypePiece.Bleu, TypePiece.Bleu, TypePiece.Bleu,
+                TypePiece.Jaune, TypePiece.Jaune, TypePiece.Jaune, TypePiece.Jaune, TypePiece.Jaune,
+                TypePiece.Jaune, TypePiece.Jaune, TypePiece.Jaune, TypePiece.Jaune, TypePiece.Jaune,
+                TypePiece.Jaune, TypePiece.Jaune, TypePiece.Jaune, TypePiece.Jaune, TypePiece.Jaune,
+                TypePiece.Jaune, TypePiece.Jaune, TypePiece.Jaune, TypePiece.Jaune, TypePiece.Jaune,
+                TypePiece.Rouge, TypePiece.Rouge, TypePiece.Rouge, TypePiece.Rouge, TypePiece.Rouge,
+                TypePiece.Rouge, TypePiece.Rouge, TypePiece.Rouge, TypePiece.Rouge, TypePiece.Rouge,
+                TypePiece.Rouge, TypePiece.Rouge, TypePiece.Rouge, TypePiece.Rouge, TypePiece.Rouge,
+                TypePiece.Rouge, TypePiece.Rouge, TypePiece.Rouge, TypePiece.Rouge, TypePiece.Rouge,
+                TypePiece.Vert, TypePiece.Vert, TypePiece.Vert, TypePiece.Vert, TypePiece.Vert,
+                TypePiece.Vert, TypePiece.Vert, TypePiece.Vert, TypePiece.Vert, TypePiece.Vert,
+                TypePiece.Vert, TypePiece.Vert, TypePiece.Vert, TypePiece.Vert, TypePiece.Vert,
+                TypePiece.Vert, TypePiece.Vert, TypePiece.Vert, TypePiece.Vert, TypePiece.Vert,
+                TypePiece.Obstacle, TypePiece.Obstacle, TypePiece.Obstacle, TypePiece.Obstacle, TypePiece.Bombe, TypePiece.Bombe,TypePiece.Line, TypePiece.VerticalLine];
+            return PieceFactory.CreatePiece(game, weight[Math.floor(Math.random() * weight.length)], scalePiece);
+        }
     }
 }

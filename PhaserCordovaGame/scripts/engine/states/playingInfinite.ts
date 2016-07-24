@@ -15,7 +15,7 @@
             this.buttonStop.inputEnabled = true;
             this.buttonStop.events.onInputUp.add(this.stap, this);
             this.game.add.existing(this.buttonStop);
-            this.plateauJoueur = new Plateau(this.game, 10, 10, this.majLibelleCoup.bind(this), PlayMode.Infinite);
+            this.plateauJoueur = new Plateau(this.game, 8, 8, this.majLibelleCoup.bind(this), PlayMode.Infinite);
             this.plateauJoueur.fillWholeRandom();
         }
 
