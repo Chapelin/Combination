@@ -5,11 +5,14 @@
         type: TypePiece;
         canBeAlone: boolean;
         isClickable: boolean;
+        canDeleteMore: boolean;
+
         constructor(game: Phaser.Game, texture : string) {
             super(game, 0, 0, texture);
             game.add.existing(this);
             this.canBeAlone = false;
             this.isClickable = true;
+            this.canDeleteMore = false;
         }
 
         public canCombine(other: Piece) {
@@ -24,7 +27,10 @@
             this.kill();
         }       
 
-        public abstract onActivate()
+
+        public processMore(x: number, y: number, xMax: number, yMax: number): number[][]{
+            return [];
+        }
     }
 
 

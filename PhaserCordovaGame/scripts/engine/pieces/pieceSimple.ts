@@ -5,9 +5,7 @@
             this.type = type;
         } 
 
-        public onActivate() {
-        }
-
+      
        
     }
 }
