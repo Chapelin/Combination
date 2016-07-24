@@ -306,8 +306,8 @@
             } else {
                 var flagPasPerdu = false;
                 // parcours ud tableau, s'il y a au moins une combinaison,flagPasPerdu est à True
-                for (var x = 0; x < this.taillePlateauX; x++) {
-                    for (var y = 0; y < this.taillePlateauY; y++) {
+                for (var x = 0; x < this.taillePlateauX && !flagPasPerdu; x++) {
+                    for (var y = 0; y < this.taillePlateauY && !flagPasPerdu; y++) {
                         var p = this.pieces[x][y];
 
                         if (p !== null && p !== undefined) {

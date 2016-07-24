@@ -8,7 +8,10 @@
                     result = DestructionZoneCalculator.getZoneBombe(posX, posY, tailleX, tailleY);
                     break;
                 case PatternDestruction.Ligne:
-                    result = DestructionZoneCalculator.getZoneLine(posX, posY, tailleX);
+                    result = DestructionZoneCalculator.getZoneLine(posY, tailleX);
+                    break;
+                case PatternDestruction.VerticalLine:
+                    result = DestructionZoneCalculator.getZoneVerticalLine(posX, tailleY);
                     break;
             }
             return result;
@@ -16,10 +19,20 @@
 
 
         // ligne horizontale
-        private static getZoneLine(x: number, y: number, tailleX : number): number[][] {
+        private static getZoneLine(y: number, tailleX : number): number[][] {
             var potentials = new Array<Array<number>>();
             for (var i = 0; i < tailleX; i++) {
                 potentials.push([i, y]);
+            }
+
+            return potentials;
+        }
+
+        // ligne verticale
+        private static getZoneVerticalLine(x: number, tailleY: number): number[][] {
+            var potentials = new Array<Array<number>>();
+            for (var i = 0; i < tailleY; i++) {
+                potentials.push([x, i]);
             }
 
             return potentials;

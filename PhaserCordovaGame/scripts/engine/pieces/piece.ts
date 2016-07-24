@@ -35,7 +35,7 @@
 
 
 
-    export const NombreTypePiece =7;
+    export const NombreTypePiece =8;
     export enum TypePiece {
         Vert = 0,
         Rouge = 1,
@@ -43,6 +43,7 @@
         Jaune = 3,
         Bombe = 4,
         Line = 5,
-        Obstacle = 6
+        Obstacle = 6,
+        VerticalLine = 7
     }
 }

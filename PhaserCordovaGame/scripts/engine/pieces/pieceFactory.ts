@@ -23,6 +23,9 @@
                 case TypePiece.Line:
                     result = new PieceLine(game);
                     break;
+                case TypePiece.VerticalLine:
+                    result = new PieceVerticalLine(game);
+                    break;
                 case TypePiece.Obstacle:
                     result = new PieceObstacle(game);
                     break;
