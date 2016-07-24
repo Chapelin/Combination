@@ -23,10 +23,11 @@
             this.game.add.existing(this.libelleCoups);
             this.plateauJoueur = new Plateau(this.game, 5, 5, this.majLibelleCoup.bind(this));
             this.plateauJoueur.loadPlateauFromLevelData(levelData);
+            this.setupUI();
         }
 
-        stap() {
-            var config: PanelConfig;
+        setupUI() {
+            var config: PanelConfiguration;
             config = {
                 screenHeight: SimpleGame.realHeight,
                 screenWidth: SimpleGame.realWidth,
@@ -52,6 +53,10 @@
             }
             this.panel = new Panel(this.game, config);
             this.game.add.existing(this.panel);
+        }
+
+        stap() {
+
             this.panel.show();
         }
 

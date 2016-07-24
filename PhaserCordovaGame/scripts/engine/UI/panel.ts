@@ -5,7 +5,7 @@
         maxScale: Phaser.Point;
         panelHeight: number = 400;
         panelWidth: number = 600;
-        constructor(game: Phaser.Game, config: PanelConfig) {
+        constructor(game: Phaser.Game, config: PanelConfiguration) {
             super(game, null, "Panel", false, false);
 
             this.defaultFontStyle = GameConfiguration.getDefaultFont();
@@ -15,7 +15,7 @@
             this.scale = new Phaser.Point(0.001, 0.001);
         }
 
-        private setupBack(config: PanelConfig) {
+        private setupBack(config: PanelConfiguration) {
             var back = new Phaser.Image(this.game, 0, 0, AssetKeys.assBackPanelModal);
             back.inputEnabled = true;
             back.width = config.screenWidth;
@@ -23,7 +23,7 @@
             this.add(back);
         }
 
-        private setupPanel(config: PanelConfig) {
+        private setupPanel(config: PanelConfiguration) {
             var imagePanel = new Phaser.Image(this.game, config.screenWidth / 2, config.screenHeight / 2, AssetKeys.assetPanel);
             imagePanel.anchor.set(0.5);
             imagePanel.width = this.panelWidth;
@@ -43,7 +43,7 @@
                 var cancel = new Phaser.Button(this.game, imagePanel.right-20, imagePanel.top+20, AssetKeys.assetCancelIcon);
                 cancel.anchor.set(0.5, 0.5);
                 cancel.inputEnabled = true;
-                cancel.events.onInputUp.addOnce(() => { this.destroy(true, false); }, this);
+                cancel.events.onInputUp.add(() => { this.hide() }, this);
                 this.add(cancel);
             }
             for (var i = 0; i < config.buttons.length; i++) {
@@ -83,6 +83,11 @@
         public show() {
             var t = this.game.add.tween(this.scale);
             t.to(this.maxScale, GameConfiguration.GAMEANIM_SPEED_FADE, Phaser.Easing.Exponential.In, true);
+        }
+
+        public hide() {
+            var t = this.game.add.tween(this.scale);
+            t.to(new Phaser.Point(0.001, 0.001), GameConfiguration.GAMEANIM_SPEED_FADE, Phaser.Easing.Exponential.In, true);
         }
 
     }

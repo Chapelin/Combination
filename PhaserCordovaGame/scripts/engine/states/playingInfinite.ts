@@ -17,10 +17,15 @@
             this.game.add.existing(this.buttonStop);
             this.plateauJoueur = new Plateau(this.game, 8, 8, this.majLibelleCoup.bind(this), PlayMode.Infinite);
             this.plateauJoueur.fillWholeRandom();
+            this.setupUI();
         }
 
-        stap() {
-            var config: PanelConfig;
+
+        setupUI() {
+
+
+
+            var config: PanelConfiguration;
             config = {
                 screenHeight: SimpleGame.realHeight,
                 screenWidth: SimpleGame.realWidth,
@@ -46,6 +51,10 @@
             }
             this.panel = new Panel(this.game, config);
             this.game.add.existing(this.panel);
+        }
+
+        stap() {
+
             this.panel.show();
         }
 

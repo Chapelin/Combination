@@ -12,7 +12,7 @@
         init(currentLevel: number, score: number) {
             this.levelNumber = currentLevel;
             this.nombreCoup = score;
-            var config: PanelConfig;
+            var config: PanelConfiguration;
             config = {
                 screenHeight: SimpleGame.realHeight,
                 screenWidth: SimpleGame.realWidth,
