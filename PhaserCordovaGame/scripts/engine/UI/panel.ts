@@ -83,10 +83,13 @@
         public show() {
             var t = this.game.add.tween(this.scale);
             t.to(this.maxScale, GameConfiguration.GAMEANIM_SPEED_FADE, Phaser.Easing.Exponential.In, true);
+            this.game.world.bringToTop(this);
+
         }
 
         public hide() {
             var t = this.game.add.tween(this.scale);
+            t.onComplete.addOnce(() => this.game.world.sendToBack(this),this);
             t.to(new Phaser.Point(0.001, 0.001), GameConfiguration.GAMEANIM_SPEED_FADE, Phaser.Easing.Exponential.In, true);
         }
 

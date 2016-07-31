@@ -8,14 +8,16 @@
         listTweenBloquant: Phaser.Tween[];
         nombreCoups: number;
         currentLevel: number;
-        callBack: (a: number) => void;
+        callBackNmbreCoups: (a: number) => void;
+        callBackScore: (a: number) => void;
         playMode: PlayMode;
 
-        constructor(game: Phaser.Game, sizeX: number, sizeY: number, callbackCoup: (a: number) => void, playMode: PlayMode = PlayMode.Puzzle) {
+        constructor(game: Phaser.Game, sizeX: number, sizeY: number, callbackCoup: (a: number) => void, callBackscore : (a:number) => void, playMode: PlayMode = PlayMode.Puzzle) {
             super(game, null, "plateau", true);
             this.taillePlateauX = sizeX;
             this.taillePlateauY = sizeY;
-            this.callBack = callbackCoup;
+            this.callBackNmbreCoups = callbackCoup;
+            this.callBackScore = callBackscore;
             this.playMode = playMode;
             this.razNombreCoup();
             this.pieces = [];
@@ -248,7 +250,8 @@
                     return;
                 }
             }
-            this.majNombreCoup();
+           
+            var compteurNombreSupprime: number = 0;
             // pour chaque element à supprimer
             for (var iCoord = 0; iCoord < listOfCoord.length; iCoord++) {
                 var pos = listOfCoord[iCoord];
@@ -270,6 +273,7 @@
                     // puis on supprime l'element traité
                     listToDelete.push(p);
                     this.pieces[pos[0]][pos[1]] = null;
+                    compteurNombreSupprime++;
                 }
             }
 
@@ -295,6 +299,7 @@
                 }, this);
                 v.start();
             });
+            this.majNombreCoup(compteurNombreSupprime);
         }
 
        // Verifie si une condition de gain ou perte est vraie.
@@ -398,17 +403,22 @@
             } while (x < this.taillePlateauX);
         }
 
-        private majNombreCoup() {
+        private majNombreCoup(nmbreSupprime: number) {
             this.nombreCoups++;
-            this.refreshCompteurVisuel();
+            this.refreshCompteurVisuel(nmbreSupprime);
         }
         private razNombreCoup() {
             this.nombreCoups = 0;
-            this.refreshCompteurVisuel();
+            this.refreshCompteurVisuel(0);
         }
 
-        private refreshCompteurVisuel() {
-            this.callBack(this.nombreCoups);
+        private refreshCompteurVisuel(nmbreSupprime: number) {
+            if (this.callBackNmbreCoups) {
+                this.callBackNmbreCoups(this.nombreCoups);
+            }
+            if (this.callBackScore) {
+                this.callBackScore(nmbreSupprime);
+            }
         }
 
     }

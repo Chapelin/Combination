@@ -21,9 +21,10 @@
             this.libelleCoups = new Phaser.Text(this.game, 300, 10, "", GameConfiguration.getDefaultFont());
             this.libelleCoups.inputEnabled = false;
             this.game.add.existing(this.libelleCoups);
-            this.plateauJoueur = new Plateau(this.game, 5, 5, this.majLibelleCoup.bind(this));
+            this.plateauJoueur = new Plateau(this.game, 5, 5, this.majLibelleCoup.bind(this), null, PlayMode.Puzzle);
             this.plateauJoueur.loadPlateauFromLevelData(levelData);
             this.setupUI();
+            
         }
 
         setupUI() {

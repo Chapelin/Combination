@@ -15,16 +15,14 @@
             this.buttonStop.inputEnabled = true;
             this.buttonStop.events.onInputUp.add(this.stap, this);
             this.game.add.existing(this.buttonStop);
-            this.plateauJoueur = new Plateau(this.game, 8, 8, this.majLibelleCoup.bind(this), PlayMode.Infinite);
+            this.plateauJoueur = new Plateau(this.game, 8, 8, null,this.majScore.bind(this), PlayMode.Infinite);
             this.plateauJoueur.fillWholeRandom();
             this.setupUI();
         }
 
 
         setupUI() {
-
-
-
+       
             var config: PanelConfiguration;
             config = {
                 screenHeight: SimpleGame.realHeight,
@@ -66,7 +64,9 @@
             this.game.state.start(stateChooser, true, false)
         }
 
-        majLibelleCoup(score: number) {
+     
+
+        majScore(score: number) {
         }
     }
 }
