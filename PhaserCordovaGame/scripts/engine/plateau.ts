@@ -12,10 +12,8 @@
         callBackScore: (a: number) => void;
         playMode: PlayMode;
 
-        constructor(game: Phaser.Game, sizeX: number, sizeY: number, callbackCoup: (a: number) => void, callBackscore : (a:number) => void, playMode: PlayMode = PlayMode.Puzzle) {
+        constructor(game: Phaser.Game, callbackCoup: (a: number) => void, callBackscore : (a:number) => void, playMode: PlayMode = PlayMode.Puzzle) {
             super(game, null, "plateau", true);
-            this.taillePlateauX = sizeX;
-            this.taillePlateauY = sizeY;
             this.callBackNmbreCoups = callbackCoup;
             this.callBackScore = callBackscore;
             this.playMode = playMode;
@@ -86,6 +84,16 @@
 
         }
 
+        // Point d'entrée pour le mode infini
+        public loadPlateauForInfinite(tx: number, ty: number) {
+            this.taillePlateauX = tx;
+            this.taillePlateauY = ty;
+            this.pas = (SimpleGame.realWidth * 0.8) / this.taillePlateauX;
+            this.processScale();
+            this.fillWholeRandom();
+
+        }
+
         // Peuple le plateau en se basant sur un objet d'information de niveau
         public loadPlateauFromLevelData(data: LevelFileData) {
             this.taillePlateauX = data.sizeX;
@@ -132,9 +140,7 @@
         }
 
         // REmpli le plateau de pieces aléatoires
-        public fillWholeRandom() {
-            this.pas = (SimpleGame.realWidth * 0.8) / this.taillePlateauX;
-            this.processScale();
+        private fillWholeRandom() {
             this.pieces = [];
             for (var x = 0; x < this.taillePlateauX; x++) {
                 this.pieces[x] = [];
@@ -146,7 +152,7 @@
         }
 
         // Rempli le plateau de pieces aléaoitre par le haut (cad on prend en compte les obstacles)
-        public fillMissingRandom() {
+        private fillMissingRandom() {
             for (var x = 0; x < this.taillePlateauX; x++) {
                 for (var y = 0; y < this.taillePlateauY; y++) {
                     

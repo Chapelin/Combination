@@ -1,25 +1,18 @@
-﻿module PhaserCordovaGame {
+﻿/// <reference path="parent/baseplaying.ts" />
+module PhaserCordovaGame {
 
-    export class PlayingInfinite extends Phaser.State {
-        game: Phaser.Game;
-        plateauJoueur: Plateau;
-        buttonStop: Phaser.Button;
-        panel: Panel;
+    export class PlayingInfinite extends BasePlaying {
         constructor() {
             super();
         }
 
 
-        init(levelData: LevelFileData) {
-            this.buttonStop = new Phaser.Button(this.game, 10, 0, AssetKeys.assetButtonStap);
-            this.buttonStop.inputEnabled = true;
-            this.buttonStop.events.onInputUp.add(this.stap, this);
-            this.game.add.existing(this.buttonStop);
-            this.plateauJoueur = new Plateau(this.game, 8, 8, null,this.majScore.bind(this), PlayMode.Infinite);
-            this.plateauJoueur.fillWholeRandom();
+        init() {
+            super.init();
+            this.plateauJoueur = new Plateau(this.game, null, this.majScore.bind(this), PlayMode.Infinite);
+            this.plateauJoueur.loadPlateauForInfinite(8, 8);
             this.setupUI();
         }
-
 
         setupUI() {
        
@@ -49,11 +42,6 @@
             }
             this.panel = new Panel(this.game, config);
             this.game.add.existing(this.panel);
-        }
-
-        stap() {
-
-            this.panel.show();
         }
 
         restartLevel() {
