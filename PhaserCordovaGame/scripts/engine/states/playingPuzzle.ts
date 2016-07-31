@@ -21,33 +21,25 @@ module PhaserCordovaGame {
             this.setupUI();
         }
 
-        setupUI() {
-            var config: PanelConfiguration;
-            config = {
-                screenHeight: SimpleGame.realHeight,
-                screenWidth: SimpleGame.realWidth,
-                titleKey: AssetKeys.assetPauseTitle,
-                cancellable: true,
-                text: "Que voulez vous faire ?",
-                buttons: [
-                    {
-                        action: this.restartLevel,
-                        contextAction: this,
-                        key: AssetKeys.assetButtonRestart,
-                        keyClick: AssetKeys.assetButtonRestart_click,
-                        position: ButtonPosition.Left
-                    },
-                    {
-                        action: this.chooseLevel,
-                        contextAction: this,
-                        key: AssetKeys.assetButtonChoose,
-                        keyClick: AssetKeys.assetButtonChoose_click,
-                        position: ButtonPosition.Right
-                    }
-                ]
-            }
-            this.panel = new Panel(this.game, config);
-            this.game.add.existing(this.panel);
+        prepareConfiguration(baseConfig: PanelConfiguration) {
+            baseConfig.text = "Que voulez vous faire ?";
+            baseConfig.buttons = [
+                {
+                    action: this.restartLevel,
+                    contextAction: this,
+                    key: AssetKeys.assetButtonRestart,
+                    keyClick: AssetKeys.assetButtonRestart_click,
+                    position: ButtonPosition.Left
+                },
+                {
+                    action: this.chooseLevel,
+                    contextAction: this,
+                    key: AssetKeys.assetButtonChoose,
+                    keyClick: AssetKeys.assetButtonChoose_click,
+                    position: ButtonPosition.Right
+                }
+            ]
+            return baseConfig;
         }
 
         restartLevel() {

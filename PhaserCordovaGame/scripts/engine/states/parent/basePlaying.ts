@@ -14,8 +14,26 @@
             this.buttonStop.inputEnabled = true;
             this.buttonStop.events.onInputUp.add(this.stap, this);
             this.game.add.existing(this.buttonStop);
+            this.setupUI();
         }
 
+
+        abstract prepareConfiguration(baseConfig: PanelConfiguration): PanelConfiguration;
+
+
+        setupUI() {
+            var config: PanelConfiguration;
+            config = {
+                screenHeight: SimpleGame.realHeight,
+                screenWidth: SimpleGame.realWidth,
+                titleKey: AssetKeys.assetPauseTitle,
+                cancellable: true,
+                buttons: []
+            }
+            var fullConfig = this.prepareConfiguration(config);
+            this.panel = new Panel(this.game, fullConfig);
+            this.game.add.existing(this.panel);
+        }
 
         stap() {
             this.panel.show();
