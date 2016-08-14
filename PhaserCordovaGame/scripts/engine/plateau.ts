@@ -42,7 +42,7 @@
         }
 
         // créé les animations de deplacement des pieces qui  bougent
-        public refreshPosition() {
+        private refreshPosition() {
             this.listTweenBloquant = new Array<Phaser.Tween>();
             var debutX = (SimpleGame.realWidth - (this.pas * (this.taillePlateauX - 1))) / 2
             var debutY = (SimpleGame.realHeight - ((this.taillePlateauY - 1) * this.pas)) / 2;
@@ -125,7 +125,7 @@
           2 - Genere de nouvelles pieces (mode inifni)
           3 - Créé et lance les animations de chutee
         */
-        public updatePlateau() {
+        private updatePlateau() {
             this.fallingDown();
             // On ne crop le plateau qui si on est en mode puzzle
             if (this.playMode === PlayMode.Puzzle) {
@@ -167,7 +167,7 @@
         }
 
         // Met en place un enement de click sur une piece
-        public setupClickEventPiece(p: Piece, x: number, y: number) {
+        private setupClickEventPiece(p: Piece, x: number, y: number) {
             p.inputEnabled = false;
             p.events.onInputUp.removeAll();
             p.events.onInputUp.addOnce((a, b, c, posX, posY) => {
@@ -176,14 +176,14 @@
         }
 
         // Indique si toutes les animations bloquant sont finies
-        public tweensFinished(): boolean {
+        private tweensFinished(): boolean {
             return this.listTweenBloquant.every((v) => {
                 return !v.isRunning;
             });
         }
 
         // calcule la zone combinatoire (pieces identiques se touchant)
-        public getZoneCombine(x: number, y: number): Array<Array<number>> {
+        private getZoneCombine(x: number, y: number): Array<Array<number>> {
             var valid = [[x, y]];
             // valid change de taille en live
             for (var compteurDeTest = 0; compteurDeTest < valid.length; compteurDeTest++) {
@@ -203,14 +203,14 @@
         }
 
         // REtourne la liste des voisin d'une piece pouvant se combiner avec
-        public findValidNeighbors(x: number, y: number): Array<Array<number>> {
+        private findValidNeighbors(x: number, y: number): Array<Array<number>> {
             var listNeigbor = this.getNeigbhor(x, y);
             var p = this.pieces[x][y];
             return this.selectNeighborForCombine(p, listNeigbor);
         }
 
         // REtourne la liste des pieces voisines d'une position
-        public getNeigbhor(x: number, y: number): Array<Array<number>> {
+        private getNeigbhor(x: number, y: number): Array<Array<number>> {
             var potentials = [];
             if (x > 0) {
                 potentials.push([x - 1, y]);
@@ -228,7 +228,7 @@
         }
 
         // Retourne la liste des positions de voisines d'une pieces
-        public selectNeighborForCombine(origine: Piece, potentiels: Array<Array<number>>): Array<Array<number>> {
+        private selectNeighborForCombine(origine: Piece, potentiels: Array<Array<number>>): Array<Array<number>> {
             var result = [];
             potentiels.forEach((pos, i, res) => {
                 var p = this.pieces[pos[0]][pos[1]]
@@ -242,7 +242,7 @@
         }
 
         // Lance la combination de pieces (gestion de la zone, lancement de la suppression & effets de bord, repeuplement ensuite)
-        public combineZone(x: number, y: number) {
+        private combineZone(x: number, y: number) {
             var listToDelete = new Array<Piece>();
             var listOfCoord = new Array<Array<number>>();
             // s'il peut etre seul : il peut declencher une zone
@@ -423,6 +423,7 @@
                 this.callBackNmbreCoups(this.nombreCoups);
             }
             if (this.callBackScore) {
+
                 this.callBackScore(nmbreSupprime);
             }
         }

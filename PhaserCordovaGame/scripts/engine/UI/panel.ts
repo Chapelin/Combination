@@ -57,7 +57,7 @@
 
         }
 
-        public addButton(config: PanelButtonConfig, imagePanel: Phaser.Image) {
+        private addButton(config: PanelButtonConfig, imagePanel: Phaser.Image) {
             var button = new Phaser.Button(this.game, 0, 0, config.key);
             button.inputEnabled = true;
             button.events.onInputUp.addOnce(config.action, config.contextAction);
