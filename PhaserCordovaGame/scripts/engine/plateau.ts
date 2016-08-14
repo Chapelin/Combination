@@ -1,6 +1,5 @@
 ﻿module PhaserCordovaGame {
     export class Plateau extends Phaser.Group {
-        destructionCalculator: DestructionZoneCalculator;
         pieces: Array<Array<Piece>>;
         taillePlateauX: number;
         taillePlateauY: number;
@@ -9,28 +8,32 @@
         listTweenBloquant: Phaser.Tween[];
         nombreCoups: number;
         currentLevel: number;
-        callBack: (a: number) => void;
+        callBackNmbreCoups: (a: number) => void;
+        callBackScore: (a: number) => void;
+        playMode: PlayMode;
 
-        constructor(game: Phaser.Game, sizeX: number, sizeY: number, callbackCoup: (a: number) => void) {
+        constructor(game: Phaser.Game, callbackCoup: (a: number) => void, callBackscore : (a:number) => void, playMode: PlayMode = PlayMode.Puzzle) {
             super(game, null, "plateau", true);
-            this.taillePlateauX = sizeX;
-            this.taillePlateauY = sizeY;
-            // X est plus petit que Y
-            this.destructionCalculator = new DestructionZoneCalculator();
-            this.callBack = callbackCoup;
+            this.callBackNmbreCoups = callbackCoup;
+            this.callBackScore = callBackscore;
+            this.playMode = playMode;
+            this.razNombreCoup();
+            this.pieces = [];
         }
 
+        // appelé une fois tous les evenemtns résolus
         private acceptInput() {
             for (var x = 0; x < this.taillePlateauX; x++) {
                 for (var y = 0; y < this.taillePlateauY; y++) {
                     var p = this.pieces[x][y];
-                    if (p !== null && p!== undefined){
+                    if (p !== null && p !== undefined) {
                         p.inputEnabled = true;
                     }
                 }
             }
         }
 
+        // Calcule l'echelle à utiliser sur les pieces, à lancer au demarrage du plateau
         private processScale() {
             var p = PieceFactory.CreatePiece(this.game, TypePiece.Vert);
             var originalHeight = p.texture.height
@@ -38,8 +41,8 @@
             p.kill();
         }
 
-        public refreshPosition() {
-
+        // créé les animations de deplacement des pieces qui  bougent
+        private refreshPosition() {
             this.listTweenBloquant = new Array<Phaser.Tween>();
             var debutX = (SimpleGame.realWidth - (this.pas * (this.taillePlateauX - 1))) / 2
             var debutY = (SimpleGame.realHeight - ((this.taillePlateauY - 1) * this.pas)) / 2;
@@ -81,14 +84,24 @@
 
         }
 
+        // Point d'entrée pour le mode infini
+        public loadPlateauForInfinite(tx: number, ty: number) {
+            this.taillePlateauX = tx;
+            this.taillePlateauY = ty;
+            this.pas = (SimpleGame.realWidth * 0.8) / this.taillePlateauX;
+            this.processScale();
+            this.fillWholeRandom();
+
+        }
+
+        // Peuple le plateau en se basant sur un objet d'information de niveau
         public loadPlateauFromLevelData(data: LevelFileData) {
             this.taillePlateauX = data.sizeX;
             this.taillePlateauY = data.sizeY;
             this.pas = (SimpleGame.realWidth * 0.8) / this.taillePlateauX;
             this.processScale();
             this.currentLevel = data.level;
-            this.razNombreCoup();
-            this.pieces = [];
+
             for (var x = 0; x < this.taillePlateauX; x++) {
                 this.pieces[x] = [];
                 for (var y = 0; y < this.taillePlateauY; y++) {
@@ -101,13 +114,60 @@
                     }
                 }
             }
+            this.updatePlateau();
 
+        }
+
+        /* MEt à jour le plateau : 
+         1 - Lance le calcul des chutes
+         2 - Supprime les lignes/colonnes inutiles (mode puzzle)
+            OU
+          2 - Genere de nouvelles pieces (mode inifni)
+          3 - Créé et lance les animations de chutee
+        */
+        private updatePlateau() {
             this.fallingDown();
-            this.reduceSize();
+            // On ne crop le plateau qui si on est en mode puzzle
+            if (this.playMode === PlayMode.Puzzle) {
+                this.cropPlateauSize();
+
+            }
+            // si on est en infinit : on gènere de nouvelles pieces
+            else if (this.playMode === PlayMode.Infinite) {
+                this.fillMissingRandom();
+            }
             this.refreshPosition();
         }
 
-        public setupClickEventPiece(p: Piece, x: number, y: number) {
+        // REmpli le plateau de pieces aléatoires
+        private fillWholeRandom() {
+            this.pieces = [];
+            for (var x = 0; x < this.taillePlateauX; x++) {
+                this.pieces[x] = [];
+                for (var y = 0; y < this.taillePlateauY; y++) {
+                    this.pieces[x].push(PieceFactory.CreatePieceRandomWeighted(this.game, this.scaleDefaultPiece));
+                }
+            }
+            this.updatePlateau();
+        }
+
+        // Rempli le plateau de pieces aléaoitre par le haut (cad on prend en compte les obstacles)
+        private fillMissingRandom() {
+            for (var x = 0; x < this.taillePlateauX; x++) {
+                for (var y = 0; y < this.taillePlateauY; y++) {
+                    
+                    if (!this.pieces[x][y]) {
+                        this.pieces[x][y] = PieceFactory.CreatePieceRandomWeighted(this.game, this.scaleDefaultPiece);
+                    } else if (this.pieces[x][y] instanceof PieceObstacle) {
+                        //un obstacle : on arrete d'ajouter des pieces ici
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Met en place un enement de click sur une piece
+        private setupClickEventPiece(p: Piece, x: number, y: number) {
             p.inputEnabled = false;
             p.events.onInputUp.removeAll();
             p.events.onInputUp.addOnce((a, b, c, posX, posY) => {
@@ -115,13 +175,15 @@
             }, this, 0, x, y);
         }
 
-        public tweensFinished(): boolean {
+        // Indique si toutes les animations bloquant sont finies
+        private tweensFinished(): boolean {
             return this.listTweenBloquant.every((v) => {
                 return !v.isRunning;
             });
         }
 
-        public getZoneCombine(x: number, y: number): Array<Array<number>> {
+        // calcule la zone combinatoire (pieces identiques se touchant)
+        private getZoneCombine(x: number, y: number): Array<Array<number>> {
             var valid = [[x, y]];
             // valid change de taille en live
             for (var compteurDeTest = 0; compteurDeTest < valid.length; compteurDeTest++) {
@@ -140,13 +202,15 @@
             return valid;
         }
 
-        public findValidNeighbors(x: number, y: number): Array<Array<number>> {
+        // REtourne la liste des voisin d'une piece pouvant se combiner avec
+        private findValidNeighbors(x: number, y: number): Array<Array<number>> {
             var listNeigbor = this.getNeigbhor(x, y);
             var p = this.pieces[x][y];
             return this.selectNeighborForCombine(p, listNeigbor);
         }
 
-        public getNeigbhor(x: number, y: number): Array<Array<number>> {
+        // REtourne la liste des pieces voisines d'une position
+        private getNeigbhor(x: number, y: number): Array<Array<number>> {
             var potentials = [];
             if (x > 0) {
                 potentials.push([x - 1, y]);
@@ -163,7 +227,8 @@
             return potentials;
         }
 
-        public selectNeighborForCombine(origine: Piece, potentiels: Array<Array<number>>): Array<Array<number>> {
+        // Retourne la liste des positions de voisines d'une pieces
+        private selectNeighborForCombine(origine: Piece, potentiels: Array<Array<number>>): Array<Array<number>> {
             var result = [];
             potentiels.forEach((pos, i, res) => {
                 var p = this.pieces[pos[0]][pos[1]]
@@ -176,29 +241,49 @@
             return result;
         }
 
-        public combineZone(x: number, y: number) {
+        // Lance la combination de pieces (gestion de la zone, lancement de la suppression & effets de bord, repeuplement ensuite)
+        private combineZone(x: number, y: number) {
             var listToDelete = new Array<Piece>();
             var listOfCoord = new Array<Array<number>>();
-            if (this.pieces[x][y] instanceof PieceDestruction) {
-                var pd: PieceDestruction = this.pieces[x][y] as PieceDestruction;
-                listOfCoord = this.destructionCalculator.getZoneDestruction(pd.pattern, this.taillePlateauX, this.taillePlateauY,x, y );
+            // s'il peut etre seul : il peut declencher une zone
+            if (this.pieces[x][y].canBeAlone) {
+                listOfCoord.push([x, y]);
             }
+
             else {
                 listOfCoord = this.getZoneCombine(x, y);
                 if (listOfCoord.length <= 1) {
                     return;
                 }
             }
-            this.majNombreCoup();
-
-            listOfCoord.forEach((pos, i, arr) => {
+           
+            var compteurNombreSupprime: number = 0;
+            // pour chaque element à supprimer
+            for (var iCoord = 0; iCoord < listOfCoord.length; iCoord++) {
+                var pos = listOfCoord[iCoord];
                 var p = this.pieces[pos[0]][pos[1]];
+                // s'il est existant
                 if (p !== null && p !== undefined) {
+                    // s'il peut killer des elements
+                    if (p.canDeleteMore) {
+                        // on lui laisse calculer
+                        var adding = p.processMore(pos[0], pos[1], this.taillePlateauX, this.taillePlateauY);
+                        // et on les ajoute à la liste à traiter
+                        for (var i = 0; i < adding.length; i++) {
+                            var temp = adding[i];
+                            if (this.pieces[temp[0]][temp[1]]) {
+                                listOfCoord.push(temp);
+                            }
+                        }
+                    }
+                    // puis on supprime l'element traité
                     listToDelete.push(p);
                     this.pieces[pos[0]][pos[1]] = null;
+                    compteurNombreSupprime++;
                 }
-            });
+            }
 
+            // pour chaque element supprimé, on prépare l'animation
             listToDelete.forEach((p: Piece) => {
                 var tween = this.game.add.tween(p.scale);
                 tween.to(
@@ -209,61 +294,21 @@
                 this.listTweenBloquant.push(tween);
             });
 
+            // puis on les execute tous, et lorsque le dernier l'est, on nettoye et verifie la fin
             this.listTweenBloquant.forEach((v: Phaser.Tween, i: number, arr: Phaser.Tween[]) => {
                 v.onComplete.addOnce(() => {
                     // si tous les tweens sont finis
                     if (this.tweensFinished()) {
-                        this.fallingDown();
-                        this.reduceSize();
-                        this.refreshPosition();
+                        this.updatePlateau();
                         this.checkEndCondition();
                     }
                 }, this);
                 v.start();
             });
+            this.majNombreCoup(compteurNombreSupprime);
         }
 
-        private getZoneLine(x: number, y: number): number[][] {
-            var potentials = new Array<Array<number>>();
-            for (var i = 0; i < this.taillePlateauX; i++) {
-                potentials.push([i, y]);
-            }
-
-            return potentials;
-        }
-
-        private getZoneBombe(x: number, y: number): number[][] {
-            var potentials = new Array<Array<number>>();
-            potentials.push([x, y]);
-            if (x > 0) {
-                potentials.push([x - 1, y]);
-            }
-            if (y > 0) {
-                potentials.push([x, y - 1]);
-            }
-            if (y < this.taillePlateauY - 1) {
-                potentials.push([x, y + 1]);
-            }
-            if (x < this.taillePlateauX - 1) {
-                potentials.push([x + 1, y]);
-            }
-
-            if (x > 0 && y > 0) {
-                potentials.push([x - 1, y - 1]);
-            }
-            if (x > 0 && y < this.taillePlateauY - 1) {
-                potentials.push([x - 1, y + 1]);
-            }
-            if (x < this.taillePlateauX - 1 && y < this.taillePlateauY - 1) {
-                potentials.push([x + 1, y + 1]);
-            }
-            if (x < this.taillePlateauX - 1 && y > 0) {
-                potentials.push([x + 1, y - 1]);
-            }
-
-            return potentials;
-        }
-
+       // Verifie si une condition de gain ou perte est vraie.
         private checkEndCondition() {
             if (this.taillePlateauX === 0) {
                 // gagné :)
@@ -272,8 +317,8 @@
             } else {
                 var flagPasPerdu = false;
                 // parcours ud tableau, s'il y a au moins une combinaison,flagPasPerdu est à True
-                for (var x = 0; x < this.taillePlateauX; x++) {
-                    for (var y = 0; y < this.taillePlateauY; y++) {
+                for (var x = 0; x < this.taillePlateauX && !flagPasPerdu; x++) {
+                    for (var y = 0; y < this.taillePlateauY && !flagPasPerdu; y++) {
                         var p = this.pieces[x][y];
 
                         if (p !== null && p !== undefined) {
@@ -284,12 +329,19 @@
                 }
                 // si pas de combinason possible
                 if (!flagPasPerdu) {
-                    this.game.state.start(stateGameOver, true, false, this.currentLevel);
+                    if (this.playMode === PlayMode.Puzzle) {
+                        this.game.state.start(stateGameOver, true, false, this.currentLevel);
+                    }
+                    else {
+                        console.log("FINI");
+                    }
                 }
                 // si que des simples : Perdu
             }
         }
 
+
+        // Fait tomber les pieces en prenant en compte les obstacles
         private fallingDown() {
             // pour chaque X : on regarde les Y  depuis la fin
             // dès qu'on trouve un null, et qu'il n'y a pas que des null avant, on avance les precedents de 1
@@ -329,7 +381,7 @@
 
                         // ici on a au moins un non null au dessus
                         while (this.pieces[x][y] == null) {
-                            ArrayUtil.decalePiece(this.pieces[x], y, hautDuCrochet+1);
+                            ArrayUtil.decalePiece(this.pieces[x], y, hautDuCrochet + 1);
                         }
 
                     }
@@ -337,7 +389,8 @@
             }
         }
 
-        private reduceSize() {
+        // Reduit la taille logique du plateau selon les colonnes/lignes vides
+        private cropPlateauSize() {
             // pour chaque ligne verticale, si elle est vide on reduit la taille du plateau en la virant
             var x = 0;
             do {
@@ -356,17 +409,23 @@
             } while (x < this.taillePlateauX);
         }
 
-        private majNombreCoup() {
+        private majNombreCoup(nmbreSupprime: number) {
             this.nombreCoups++;
-            this.refreshCompteurVisuel();
+            this.refreshCompteurVisuel(nmbreSupprime);
         }
         private razNombreCoup() {
             this.nombreCoups = 0;
-            this.refreshCompteurVisuel();
+            this.refreshCompteurVisuel(0);
         }
 
-        private refreshCompteurVisuel() {
-            this.callBack(this.nombreCoups);
+        private refreshCompteurVisuel(nmbreSupprime: number) {
+            if (this.callBackNmbreCoups) {
+                this.callBackNmbreCoups(this.nombreCoups);
+            }
+            if (this.callBackScore) {
+
+                this.callBackScore(nmbreSupprime);
+            }
         }
 
     }

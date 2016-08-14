@@ -10,5 +10,6 @@
             return false;
         }
 
+        public onActivate() { }
     }
 }

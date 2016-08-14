@@ -8,7 +8,8 @@ module PhaserCordovaGame {
     export var stateLevelWon = "LevelWon";
     export var stateChooser = "LevelChooser";
     export var stateGameOver = "GameOver";
-    export var statePlaying = "Playing";
+    export var statePlayingPuzzle = "PlayingPuzzle";
+    export var statePlayingInfinite = "PlayingInfinite";
     export var stateChooseMode = "ChooseMode";
 
     export class SimpleGame {
@@ -30,7 +31,8 @@ module PhaserCordovaGame {
             this.game.state.add(stateChooser, LevelChooser);
             this.game.state.add(stateGameOver, GameOver);
             this.game.state.add(stateLevelWon, LevelWon);
-            this.game.state.add(statePlaying, Playing);
+            this.game.state.add(statePlayingPuzzle, PlayingPuzzle);
+            this.game.state.add(statePlayingInfinite, PlayingInfinite);
             //Start the first state
             this.game.state.start(stateBoot);
         }

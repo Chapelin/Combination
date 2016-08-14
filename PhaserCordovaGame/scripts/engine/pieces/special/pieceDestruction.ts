@@ -6,6 +6,7 @@
 
         constructor(game: Phaser.Game, assetKey: string) {
             super(game, assetKey);
+            this.canDeleteMore = true;
         }
 
 
@@ -13,6 +14,10 @@
             return false;
         }
 
+   
 
+        public processMore(x: number, y: number, xMax: number, yMax: number) {
+            return DestructionZoneCalculator.getZoneDestruction(this.pattern, xMax, yMax, x, y);
+        }
     }
 }

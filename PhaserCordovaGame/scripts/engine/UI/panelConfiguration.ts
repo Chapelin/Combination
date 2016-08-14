@@ -1,9 +1,9 @@
 ﻿module PhaserCordovaGame {
-    export interface PanelConfig {
+    export interface PanelConfiguration {
         screenWidth: number;
         screenHeight: number;
         titleKey?: string;
-        text: string;
+        text?: string;
         cancellable?: boolean;
         buttons: PanelButtonConfig[];
     }

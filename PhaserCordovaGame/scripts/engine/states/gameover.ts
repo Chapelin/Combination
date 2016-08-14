@@ -12,7 +12,7 @@ module PhaserCordovaGame {
 
         init(currentLevel: number) {
             this.levelNumber = currentLevel;
-            var config: PanelConfig;
+            var config: PanelConfiguration;
             config = {
                 screenHeight: SimpleGame.realHeight,
                 screenWidth: SimpleGame.realWidth,

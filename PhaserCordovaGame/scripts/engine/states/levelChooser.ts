@@ -34,10 +34,10 @@
         }
 
         startLevel(targetLevel: number) {
-            var data = this.levelLoader.readLevel(targetLevel);
-            if (data !== null) {
+            var levelData = this.levelLoader.readLevel(targetLevel);
+            if (levelData !== null) {
                 this.interface.removeAll(true, true);
-                this.game.state.start(statePlaying, true, false, data);
+                this.game.state.start(statePlayingPuzzle, true, false, levelData);
             }
         }
 

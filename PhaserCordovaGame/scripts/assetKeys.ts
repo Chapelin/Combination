@@ -7,6 +7,7 @@
         public static assetBilleJaune: string = "billeJaune";
         public static assetBilleBomb : string = "bomb"
         public static assetLine: string = "line";
+        public static assetVerticalLine: string = "vertLine";
         public static assetObstacle: string = "stone";
         public static assetBoutonVert: string = "boutonVert";
         public static assetBoutonRouge: string = "boutonRouge";
